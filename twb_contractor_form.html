@@ -1,0 +1,3159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Well Build — Contractor Specifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          twb: {
+            green: '#1E4430',
+            green2: '#2B5C3F',
+            sage: '#7A9E8A',
+            sage2: '#C5D8CC',
+            copper: '#B07D4A',
+            copper2: '#C4915E',
+            cream: '#FAF8F4',
+            cream2: '#FEFDFB',
+            blue: '#A8C8D6',
+            blue2: '#D4E8EF',
+            ink: '#2A2A2A',
+            text: '#3A3A3A',
+            mute: '#6B6B6B',
+            clay: '#A8593E'
+          }
+        },
+        fontFamily: {
+          serif: ['"DM Serif Display"', 'serif'],
+          sans: ['"DM Sans"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html, body { background:#FAF8F4; color:#3A3A3A; font-family:'DM Sans',system-ui,sans-serif; }
+  h1,h2,h3,.serif { font-family:'DM Serif Display', serif; color:#1E4430; }
+  .field-input {
+    width:100%; border:1px solid #C5D8CC; background:#FEFDFB; border-radius:8px;
+    padding:10px 12px; color:#2A2A2A; transition:border-color .15s, box-shadow .15s;
+  }
+  .field-input:focus { outline:none; border-color:#2B5C3F; box-shadow:0 0 0 3px rgba(43,92,63,.15); }
+  .field-input::placeholder { color:#9CA8A0; }
+  .chip {
+    display:inline-flex; align-items:center; gap:8px; padding:8px 14px;
+    border:1px solid #C5D8CC; background:#FEFDFB; border-radius:999px; cursor:pointer;
+    transition:all .12s ease; font-size:14px;
+  }
+  .chip:hover { border-color:#7A9E8A; background:#F1F6F2; }
+  .chip[aria-pressed="true"] {
+    background:#1E4430; color:#FEFDFB; border-color:#1E4430;
+  }
+  .yn { min-width:78px; justify-content:center; font-weight:500; }
+  .btn-primary {
+    background:#1E4430; color:#FEFDFB; padding:10px 18px; border-radius:8px; font-weight:600;
+    transition:background .15s, transform .05s;
+  }
+  .btn-primary:hover { background:#2B5C3F; }
+  .btn-primary:active { transform:translateY(1px); }
+  .btn-secondary {
+    background:#FEFDFB; color:#1E4430; padding:10px 18px; border-radius:8px; font-weight:600;
+    border:1px solid #C5D8CC;
+  }
+  .btn-secondary:hover { border-color:#7A9E8A; background:#F1F6F2; }
+  .btn-ghost {
+    color:#6B6B6B; padding:8px 12px; border-radius:8px; font-weight:500;
+  }
+  .btn-ghost:hover { color:#1E4430; background:#F1F6F2; }
+  .btn-copper {
+    background:#B07D4A; color:#FEFDFB; padding:10px 18px; border-radius:8px; font-weight:600;
+  }
+  .btn-copper:hover { background:#C4915E; }
+  .sec-link {
+    display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;
+    color:#3A3A3A; cursor:pointer; font-size:14px; line-height:1.3;
+  }
+  .sec-link:hover { background:#F1F6F2; }
+  .sec-link.active { background:#C5D8CC; color:#1E4430; font-weight:600; }
+  .sec-link.skipped { opacity:.55; text-decoration:line-through; }
+  .sec-dot {
+    flex-shrink:0; width:10px; height:10px; border-radius:999px;
+    background:#E8E0D4; border:1px solid #C5D8CC;
+  }
+  .sec-link[data-status="started"] .sec-dot { background:#A8C8D6; border-color:#A8C8D6; }
+  .sec-link[data-status="complete"] .sec-dot { background:#1E4430; border-color:#1E4430; }
+  .sec-link[data-status="skipped"] .sec-dot { background:#E8E0D4; border-color:#C5D8CC; }
+  .sec-num { width:22px; flex-shrink:0; text-align:right; color:#6B6B6B; font-variant-numeric:tabular-nums; font-size:12px; }
+  .progress-bar { background:#E8E0D4; height:6px; border-radius:999px; overflow:hidden; }
+  .progress-fill { background:linear-gradient(90deg,#2B5C3F,#7A9E8A); height:100%; transition:width .3s ease; }
+  .question-card {
+    background:#FEFDFB; border:1px solid rgba(123,158,138,.25); border-radius:14px;
+    padding:18px 20px; margin-bottom:14px; transition:border-color .15s;
+  }
+  .question-card:focus-within { border-color:#7A9E8A; }
+  .qlabel { font-weight:600; color:#2A2A2A; margin-bottom:6px; }
+  .qhelper { font-size:13px; color:#6B6B6B; margin-bottom:10px; }
+  .req { color:#A8593E; margin-left:4px; }
+  .save-pill {
+    font-size:12px; color:#6B6B6B; padding:4px 10px; border-radius:999px;
+    background:#F1F6F2; display:inline-flex; align-items:center; gap:6px;
+  }
+  .toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:#1E4430; color:#FEFDFB; padding:12px 20px; border-radius:10px;
+    box-shadow:0 10px 40px rgba(30,68,48,.25); z-index:100;
+    opacity:0; transition:opacity .25s, transform .25s;
+    pointer-events:none;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(-6px); }
+  .overlay {
+    position:fixed; inset:0; background:rgba(30,68,48,.55); display:flex;
+    align-items:center; justify-content:center; padding:20px; z-index:50;
+    backdrop-filter:blur(4px);
+  }
+  .overlay-card {
+    background:#FEFDFB; border-radius:18px; max-width:620px; width:100%;
+    padding:32px; max-height:90vh; overflow:auto;
+  }
+  .subhead {
+    font-family:'DM Serif Display', serif; color:#1E4430; font-size:18px;
+    border-top:1px dashed #C5D8CC; padding-top:18px; margin:14px 4px 4px;
+  }
+  .subhead:first-child { border-top:0; padding-top:0; }
+  details > summary { cursor:pointer; list-style:none; }
+  details > summary::-webkit-details-marker { display:none; }
+  @media print {
+    .no-print { display:none !important; }
+    body { background:#fff; }
+    .question-card { break-inside:avoid; }
+  }
+  /* Scrollbar styling */
+  .nice-scroll::-webkit-scrollbar { width:8px; }
+  .nice-scroll::-webkit-scrollbar-track { background:transparent; }
+  .nice-scroll::-webkit-scrollbar-thumb { background:#C5D8CC; border-radius:4px; }
+  .nice-scroll::-webkit-scrollbar-thumb:hover { background:#7A9E8A; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ============ INTRO OVERLAY ============ -->
+<div id="introOverlay" class="overlay no-print hidden">
+  <div class="overlay-card">
+    <div class="text-xs uppercase tracking-widest text-twb-copper font-semibold mb-2">The Well Build</div>
+    <h1 class="text-3xl mb-3">Contractor Specifications</h1>
+    <p class="text-twb-text mb-4">
+      This form captures the materials and methods you'll use on the build, so we can build
+      a clear roadmap and quality guidelines for the homeowner.
+    </p>
+    <ul class="space-y-2 text-sm text-twb-text mb-5">
+      <li class="flex gap-2"><span class="text-twb-green flex-shrink-0">●</span><span>Roughly <strong>30–60 minutes</strong> if you have specs in hand. You can take longer.</span></li>
+      <li class="flex gap-2"><span class="text-twb-green flex-shrink-0">●</span><span>Your progress is <strong>auto-saved</strong> on this device as you type.</span></li>
+      <li class="flex gap-2"><span class="text-twb-green flex-shrink-0">●</span><span>Need to step away? Hit <strong>"Save &amp; email me a link"</strong> to resume on any device.</span></li>
+      <li class="flex gap-2"><span class="text-twb-green flex-shrink-0">●</span><span>You'll receive a <strong>copy of all your answers by email</strong> when you submit.</span></li>
+      <li class="flex gap-2"><span class="text-twb-green flex-shrink-0">●</span><span>Sections that don't apply to your build can be <strong>skipped</strong> in one click.</span></li>
+    </ul>
+    <div class="flex flex-wrap gap-3">
+      <button id="introStart" class="btn-primary">Start the form →</button>
+      <button id="introResume" class="btn-secondary hidden">Resume where I left off</button>
+    </div>
+    <p class="text-xs text-twb-mute mt-5">
+      © The Well Build™. This document is the exclusive property of The Well Build and is intended solely
+      for the use of the authorized recipient.
+    </p>
+  </div>
+</div>
+
+<!-- ============ COMPLETION OVERLAY ============ -->
+<div id="doneOverlay" class="overlay no-print hidden">
+  <div class="overlay-card text-center">
+    <div class="text-5xl mb-3">🎉</div>
+    <h1 class="text-3xl mb-2">Submitted!</h1>
+    <p class="text-twb-text mb-5">
+      Thank you. The Well Build team has received your specifications and a copy
+      has been emailed to you for your records.
+    </p>
+    <div class="bg-twb-cream rounded-xl p-4 text-left text-sm mb-5">
+      <div class="font-semibold text-twb-green mb-2">What happens next</div>
+      <ol class="list-decimal pl-5 space-y-1 text-twb-text">
+        <li>Greg's team reviews your specs (typically within 2 business days).</li>
+        <li>You'll receive a follow-up with any clarifying questions.</li>
+        <li>Once approved, your roadmap and quality guidelines are issued.</li>
+      </ol>
+    </div>
+    <button id="doneClose" class="btn-secondary">Close</button>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="bg-white border-b border-twb-sage2 sticky top-0 z-30 no-print">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-3">
+        <div class="text-xs uppercase tracking-widest text-twb-copper font-semibold">The Well Build</div>
+        <span class="text-twb-sage2">•</span>
+        <h1 class="text-base sm:text-lg serif truncate">Contractor Specifications</h1>
+      </div>
+      <div class="mt-2 flex items-center gap-3">
+        <div class="progress-bar flex-1 max-w-md"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
+        <div id="progressLabel" class="text-xs text-twb-mute font-medium tabular-nums">0%</div>
+      </div>
+    </div>
+    <div class="hidden sm:flex items-center gap-2">
+      <span id="saveStatus" class="save-pill"><span>●</span> Not started</span>
+      <button id="saveLinkBtn" class="btn-secondary text-sm">Save &amp; email link</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MAIN LAYOUT ============ -->
+<div class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+
+  <!-- Sidebar -->
+  <aside class="lg:sticky lg:top-[88px] lg:self-start no-print">
+    <div class="bg-white border border-twb-sage2 rounded-2xl p-3 lg:max-h-[calc(100vh-110px)] overflow-auto nice-scroll">
+      <div class="text-xs uppercase tracking-wider text-twb-mute font-semibold px-2 pt-1 pb-2">Sections</div>
+      <nav id="sectionNav" class="space-y-0.5"></nav>
+    </div>
+    <div class="mt-3 sm:hidden">
+      <button id="saveLinkBtnMobile" class="btn-secondary w-full text-sm">Save &amp; email me a link</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main>
+    <div id="sectionRoot"></div>
+
+    <!-- Section nav buttons -->
+    <div class="mt-6 flex flex-wrap items-center gap-3 no-print">
+      <button id="prevBtn" class="btn-secondary">← Previous</button>
+      <button id="skipBtn" class="btn-ghost">Skip this section (not applicable)</button>
+      <div class="flex-1"></div>
+      <button id="nextBtn" class="btn-primary">Next →</button>
+    </div>
+
+    <!-- Submit button (revealed on last section) -->
+    <div id="submitWrap" class="mt-6 hidden">
+      <div class="bg-twb-cream2 border border-twb-sage2 rounded-2xl p-6">
+        <h2 class="text-2xl mb-2">Ready to submit?</h2>
+        <p class="text-twb-text mb-4">
+          Double-check that the required fields in <strong>Project Information</strong> are filled out.
+          When you submit, we'll email you a copy of all your answers.
+        </p>
+        <button id="submitBtn" class="btn-copper text-base">Submit specifications</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ============ SCHEMA ============ -->
+<script>
+// Auto-generated from the live Google Form on 2026-04-19
+// Source: https://docs.google.com/forms/d/e/1FAIpQLSdwICEBLPYSTdBTVVPf5j_eeWqSbYWFOQrbM51EdeDbwNsJHA/viewform
+// Edit this object to add/remove/edit questions. Question types: short, paragraph, radio, select, checkboxes, yesno, date, subheading.
+const FORM_SCHEMA = {
+  title: `The Well Build - Contractor Specifications Form`,
+  description: `Please complete all applicable sections. Check boxes for selected options and fill in product names, brands, and specifications. Use "Other" fields where standard options don't apply.
+
+This document and its contents are the exclusive property of The Well Build (TM). It is intended solely for the use of the authorized recipient. Any reproduction, redistribution, or unauthorized use of this material — in whole or in part — without prior written consent is strictly prohibited and may result in legal action.`,
+  sections: [
+    {
+      id: `project_info`,
+      title: `Project Information`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Project Information`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Project Name`,
+          required: true,
+          id: `project_name`
+        },
+        {
+          type: `short`,
+          label: `Address`,
+          required: true,
+          id: `address`
+        },
+        {
+          type: `short`,
+          label: `Contractor Company Name`,
+          required: true,
+          id: `contractor_company_name`
+        },
+        {
+          type: `radio`,
+          label: `IECC Climate Zone`,
+          required: true,
+          choices: [
+            `Zone 1`,
+            `Zone 2`,
+            `Zone 3`,
+            `Zone 4`,
+            `Zone 5`,
+            `Zone 6`,
+            `Zone 7`,
+            `Zone 8`
+          ],
+          id: `iecc_climate_zone`
+        },
+        {
+          type: `short`,
+          label: `Architect of Record`,
+          required: true,
+          id: `architect_of_record`
+        },
+        {
+          type: `short`,
+          label: `Contact Person`,
+          required: true,
+          id: `contact_person`
+        },
+        {
+          type: `short`,
+          label: `Phone Number`,
+          required: true,
+          id: `phone_number`
+        },
+        {
+          type: `short`,
+          label: `Email Address`,
+          required: true,
+          id: `email_address`
+        },
+        {
+          type: `date`,
+          label: `Today's Date`,
+          required: true,
+          id: `today_s_date`
+        }
+      ]
+    },
+    {
+      id: `foundation`,
+      title: `Foundation`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Foundation Type`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `What type of foundation will be used?`,
+          choices: [
+            `Slab on grade`,
+            `Crawl space`,
+            `Full basement`,
+            `Partial basement`,
+            `Pier and beam`
+          ],
+          allowOther: true,
+          id: `what_type_of_foundation_will_be_used`
+        },
+        {
+          type: `short`,
+          label: `How high do you pour foundation walls above grade?`,
+          id: `how_high_do_you_pour_foundation_walls_above_grade`
+        },
+        {
+          type: `subheading`,
+          label: `Concrete`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `What is the concrete PSI rating?`,
+          id: `what_is_the_concrete_psi_rating`
+        },
+        {
+          type: `short`,
+          label: `What is the concrete slump?`,
+          id: `what_is_the_concrete_slump`
+        },
+        {
+          type: `checkboxes`,
+          label: `What concrete reinforcement will be used? (Select all that apply)`,
+          choices: [
+            `Rebar`,
+            `Wire mesh`,
+            `Fiber reinforcement`,
+            `Post-tensioning`
+          ],
+          id: `what_concrete_reinforcement_will_be_used_select_all_that_app`
+        },
+        {
+          type: `short`,
+          label: `Reinforcement specifications:`,
+          id: `reinforcement_specifications`
+        },
+        {
+          type: `short`,
+          label: `Concrete supplier:`,
+          id: `concrete_supplier`
+        }
+      ]
+    },
+    {
+      id: `foundation_vapor_barrier_gravel_insulation`,
+      title: `Foundation — Vapor Barrier, Gravel & Insulation`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Vapor Barrier (under concrete slab)`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Vapor barrier mil thickness:`,
+          id: `vapor_barrier_mil_thickness`
+        },
+        {
+          type: `short`,
+          label: `Vapor barrier brand/product:`,
+          id: `vapor_barrier_brand_product`
+        },
+        {
+          type: `subheading`,
+          label: `Crushed Stone/Gravel Base Under Slab`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Will a crushed stone/gravel base be installed under the slab?`,
+          id: `will_a_crushed_stone_gravel_base_be_installed_under_the_slab`
+        },
+        {
+          type: `short`,
+          label: `If yes, what is the depth?`,
+          id: `if_yes_what_is_the_depth`,
+          showIf: {
+            field: `will_a_crushed_stone_gravel_base_be_installed_under_the_slab`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `short`,
+          label: `Crushed stone/gravel material type:`,
+          id: `crushed_stone_gravel_material_type`
+        },
+        {
+          type: `subheading`,
+          label: `Under-Slab Insulation`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Will under-slab insulation be installed?`,
+          id: `will_under_slab_insulation_be_installed`
+        },
+        {
+          type: `short`,
+          label: `If yes, insulation type:`,
+          id: `if_yes_insulation_type`,
+          showIf: {
+            field: `will_under_slab_insulation_be_installed`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `short`,
+          label: `Under-slab insulation brand:`,
+          id: `under_slab_insulation_brand`
+        },
+        {
+          type: `short`,
+          label: `Under-slab insulation R-Value:`,
+          id: `under_slab_insulation_r_value`
+        },
+        {
+          type: `yesno`,
+          label: `Will you be installing a perforated pipe below slab for radon?`,
+          id: `will_you_be_installing_a_perforated_pipe_below_slab_for_rado`
+        }
+      ]
+    },
+    {
+      id: `foundation_slab_edge_basement_insulation`,
+      title: `Foundation — Slab Edge & Basement Insulation`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Slab Edge Insulation`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Code-required R-values for slab edge insulation in your area:`,
+          id: `code_required_r_values_for_slab_edge_insulation_in_your_area`
+        },
+        {
+          type: `short`,
+          label: `Slab edge insulation location (inside or outside):`,
+          id: `slab_edge_insulation_location_inside_or_outside`
+        },
+        {
+          type: `short`,
+          label: `Slab edge insulation type/brand:`,
+          id: `slab_edge_insulation_type_brand`
+        },
+        {
+          type: `short`,
+          label: `Slab edge insulation R-Value:`,
+          id: `slab_edge_insulation_r_value`
+        },
+        {
+          type: `subheading`,
+          label: `Basement Insulation`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Code-required R-values for basement insulation in your area:`,
+          id: `code_required_r_values_for_basement_insulation_in_your_area`
+        },
+        {
+          type: `short`,
+          label: `Basement insulation on exterior walls or interior walls:`,
+          id: `basement_insulation_on_exterior_walls_or_interior_walls`
+        },
+        {
+          type: `short`,
+          label: `Basement insulation type:`,
+          id: `basement_insulation_type`
+        },
+        {
+          type: `short`,
+          label: `Basement insulation brand:`,
+          id: `basement_insulation_brand`
+        },
+        {
+          type: `short`,
+          label: `Basement insulation R-Value:`,
+          id: `basement_insulation_r_value`
+        }
+      ]
+    },
+    {
+      id: `foundation_waterproofing_drainage`,
+      title: `Foundation — Waterproofing & Drainage`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Foundation Waterproofing/Dampproofing`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `What type of foundation waterproofing/dampproofing is used?`,
+          choices: [
+            `Dampproofing (spray/brush-on)`,
+            `Membrane waterproofing`,
+            `Liquid-applied waterproofing`
+          ],
+          allowOther: true,
+          id: `what_type_of_foundation_waterproofing_dampproofing_is_used`
+        },
+        {
+          type: `short`,
+          label: `Waterproofing brand/product:`,
+          id: `waterproofing_brand_product`
+        },
+        {
+          type: `subheading`,
+          label: `Dimple Mat/Drainage Board`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Will a dimple mat/drainage board be installed?`,
+          id: `will_a_dimple_mat_drainage_board_be_installed`
+        },
+        {
+          type: `short`,
+          label: `If yes, dimple mat brand:`,
+          id: `if_yes_dimple_mat_brand`,
+          showIf: {
+            field: `will_a_dimple_mat_drainage_board_be_installed`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `subheading`,
+          label: `Capillary Break (between framing & foundation)`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Capillary break type between framing and foundation:`,
+          choices: [
+            `Fluid-applied`,
+            `Sill seal foam`,
+            `Polyethylene sheet`
+          ],
+          allowOther: true,
+          id: `capillary_break_type_between_framing_and_foundation`
+        },
+        {
+          type: `short`,
+          label: `If fluid-applied, what brand?`,
+          id: `if_fluid_applied_what_brand`
+        },
+        {
+          type: `subheading`,
+          label: `Capillary Break (between footing & foundation wall)`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Capillary break type between footing and foundation wall:`,
+          choices: [
+            `Fluid-applied`,
+            `Sill seal foam`,
+            `Polyethylene sheet`,
+            `None`
+          ],
+          allowOther: true,
+          id: `capillary_break_type_between_footing_and_foundation_wall`
+        },
+        {
+          type: `short`,
+          label: `If fluid-applied, what brand?`,
+          id: `if_fluid_applied_what_brand_2`
+        }
+      ]
+    },
+    {
+      id: `foundation_termite_protection_drain_system`,
+      title: `Foundation — Termite Protection & Drain System`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Termite Protection`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Is a termite shield installed between foundation and framing?`,
+          id: `is_a_termite_shield_installed_between_foundation_and_framing`
+        },
+        {
+          type: `short`,
+          label: `If yes, termite shield material:`,
+          id: `if_yes_termite_shield_material`,
+          showIf: {
+            field: `is_a_termite_shield_installed_between_foundation_and_framing`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `radio`,
+          label: `Termite treatment method:`,
+          choices: [
+            `Soil treatment`,
+            `Borate treatment of lumber`,
+            `Physical barrier`,
+            `None`
+          ],
+          allowOther: true,
+          id: `termite_treatment_method`
+        },
+        {
+          type: `subheading`,
+          label: `Foundation Drain System`,
+          helper: ``
+        },
+        {
+          type: `checkboxes`,
+          label: `Foundation drain system type (select all that apply):`,
+          choices: [
+            `Perforated drain pipe`,
+            `Exterior drain tile`,
+            `Interior drain tile`,
+            `Sump pump system`,
+            `None`
+          ],
+          id: `foundation_drain_system_type_select_all_that_apply`
+        },
+        {
+          type: `paragraph`,
+          label: `Drain system specifications:`,
+          id: `drain_system_specifications`
+        },
+        {
+          type: `short`,
+          label: `Where does foundation drainage discharge to?`,
+          id: `where_does_foundation_drainage_discharge_to`
+        },
+        {
+          type: `short`,
+          label: `Where do gutters drain to?`,
+          id: `where_do_gutters_drain_to`
+        }
+      ]
+    },
+    {
+      id: `framing_lumber`,
+      title: `Framing — Lumber`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Lumber`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Lumber grade:`,
+          id: `lumber_grade`
+        },
+        {
+          type: `short`,
+          label: `Lumber species:`,
+          id: `lumber_species`
+        },
+        {
+          type: `short`,
+          label: `Moisture content spec:`,
+          id: `moisture_content_spec`
+        },
+        {
+          type: `yesno`,
+          label: `Is the lumber kiln dried?`,
+          id: `is_the_lumber_kiln_dried`
+        },
+        {
+          type: `subheading`,
+          label: `Engineered Lumber`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `LVLs — Brand/Spec:`,
+          id: `lvls_brand_spec`
+        },
+        {
+          type: `short`,
+          label: `I-Joists — Brand/Spec:`,
+          id: `i_joists_brand_spec`
+        },
+        {
+          type: `short`,
+          label: `Other engineered lumber:`,
+          id: `other_engineered_lumber`
+        }
+      ]
+    },
+    {
+      id: `framing_subfloor`,
+      title: `Framing — Subfloor`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Subfloor`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Subfloor type:`,
+          choices: [
+            `Plywood`,
+            `OSB`,
+            `AdvanTech`
+          ],
+          allowOther: true,
+          id: `subfloor_type`
+        },
+        {
+          type: `short`,
+          label: `Subfloor thickness:`,
+          id: `subfloor_thickness`
+        },
+        {
+          type: `short`,
+          label: `Subfloor brand:`,
+          id: `subfloor_brand`
+        },
+        {
+          type: `short`,
+          label: `Subfloor grade:`,
+          id: `subfloor_grade`
+        },
+        {
+          type: `yesno`,
+          label: `Will subfloor be glued and screwed down?`,
+          id: `will_subfloor_be_glued_and_screwed_down`
+        },
+        {
+          type: `short`,
+          label: `Adhesive/glue used:`,
+          id: `adhesive_glue_used`
+        },
+        {
+          type: `paragraph`,
+          label: `How will moisture be removed from the subfloor and how often if it gets wet?`,
+          id: `how_will_moisture_be_removed_from_the_subfloor_and_how_often`
+        }
+      ]
+    },
+    {
+      id: `framing_floor_wall_roof`,
+      title: `Framing — Floor, Wall & Roof`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Floor Framing`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Floor framing type:`,
+          choices: [
+            `Dimensional lumber`,
+            `I-Joists`,
+            `Open-web trusses`
+          ],
+          allowOther: true,
+          id: `floor_framing_type`
+        },
+        {
+          type: `short`,
+          label: `Joist size:`,
+          id: `joist_size`
+        },
+        {
+          type: `short`,
+          label: `Joist spacing:`,
+          id: `joist_spacing`
+        },
+        {
+          type: `short`,
+          label: `Brand (if engineered):`,
+          id: `brand_if_engineered`
+        },
+        {
+          type: `subheading`,
+          label: `Wall Framing — Exterior Walls`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Exterior wall stud size:`,
+          choices: [
+            `2x4`,
+            `2x6`
+          ],
+          allowOther: true,
+          id: `exterior_wall_stud_size`
+        },
+        {
+          type: `short`,
+          label: `Exterior wall stud spacing (on center):`,
+          id: `exterior_wall_stud_spacing_on_center`
+        },
+        {
+          type: `subheading`,
+          label: `Wall Framing — Interior Walls`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Interior wall stud size:`,
+          choices: [
+            `2x4`,
+            `2x6`
+          ],
+          allowOther: true,
+          id: `interior_wall_stud_size`
+        },
+        {
+          type: `short`,
+          label: `Interior wall stud spacing (16" OC, 24" OC, etc.):`,
+          id: `interior_wall_stud_spacing_16_oc_24_oc_etc`
+        },
+        {
+          type: `subheading`,
+          label: `Attic/Roof Framing`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Attic/roof framing type:`,
+          choices: [
+            `Conventional trusses`,
+            `Raised-heel/energy trusses`,
+            `Stick framing`,
+            `Scissor trusses`
+          ],
+          allowOther: true,
+          id: `attic_roof_framing_type`
+        },
+        {
+          type: `short`,
+          label: `Specifications/heel height:`,
+          id: `specifications_heel_height`
+        },
+        {
+          type: `short`,
+          label: `Truss manufacturer:`,
+          id: `truss_manufacturer`
+        }
+      ]
+    },
+    {
+      id: `building_envelope`,
+      title: `Building Envelope`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Wall Sheathing`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Wall sheathing type:`,
+          choices: [
+            `Plywood`,
+            `OSB`,
+            `Zip System`,
+            `Huber Zip System R-Sheathing`
+          ],
+          allowOther: true,
+          id: `wall_sheathing_type`
+        },
+        {
+          type: `short`,
+          label: `Wall sheathing thickness:`,
+          id: `wall_sheathing_thickness`
+        },
+        {
+          type: `short`,
+          label: `Wall sheathing grade/rating:`,
+          id: `wall_sheathing_grade_rating`
+        },
+        {
+          type: `subheading`,
+          label: `Weather Resistive Barrier (WRB)`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `WRB application method:`,
+          choices: [
+            `Self-adhered`,
+            `Mechanically fastened`
+          ],
+          id: `wrb_application_method`
+        },
+        {
+          type: `radio`,
+          label: `WRB type:`,
+          choices: [
+            `Tyvek`,
+            `Typar`,
+            `Henry Blueskin VP100`,
+            `Zip System (integrated with sheathing)`
+          ],
+          allowOther: true,
+          id: `wrb_type`
+        },
+        {
+          type: `short`,
+          label: `WRB product name/model:`,
+          id: `wrb_product_name_model`
+        },
+        {
+          type: `subheading`,
+          label: `Rainscreen System`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Will a rainscreen system be installed?`,
+          id: `will_a_rainscreen_system_be_installed`
+        },
+        {
+          type: `short`,
+          label: `Rainscreen type/brand:`,
+          id: `rainscreen_type_brand`
+        },
+        {
+          type: `short`,
+          label: `Rainscreen gap spacing:`,
+          id: `rainscreen_gap_spacing`
+        },
+        {
+          type: `short`,
+          label: `Rainscreen material:`,
+          id: `rainscreen_material`
+        }
+      ]
+    },
+    {
+      id: `insulation_exterior_walls`,
+      title: `Insulation — Exterior Walls`,
+      description: ``,
+      items: [
+        {
+          type: `short`,
+          label: `Code-required R-values for exterior walls in your area:`,
+          id: `code_required_r_values_for_exterior_walls_in_your_area`
+        },
+        {
+          type: `checkboxes`,
+          label: `Exterior wall insulation type (select all that apply):`,
+          choices: [
+            `Fiberglass batts`,
+            `Rockwool/Mineral wool batts`,
+            `Sheep's wool`,
+            `Dense-pack cellulose`,
+            `Spray foam - Open cell`,
+            `Spray foam - Closed cell`,
+            `Flash and Batt`,
+            `Exterior insulation (EIFS, mineral wool board, foam board)`
+          ],
+          id: `exterior_wall_insulation_type_select_all_that_apply`
+        },
+        {
+          type: `short`,
+          label: `Exterior wall insulation brand:`,
+          id: `exterior_wall_insulation_brand`
+        },
+        {
+          type: `short`,
+          label: `Exterior wall insulation R-Value:`,
+          id: `exterior_wall_insulation_r_value`
+        },
+        {
+          type: `yesno`,
+          label: `Is Rockwool/mineral wool an upcharge?`,
+          id: `is_rockwool_mineral_wool_an_upcharge`
+        },
+        {
+          type: `yesno`,
+          label: `Are you installing an interior air barrier?`,
+          id: `are_you_installing_an_interior_air_barrier`
+        },
+        {
+          type: `paragraph`,
+          label: `If so, please list the brand and specifications.`,
+          id: `if_so_please_list_the_brand_and_specifications`
+        }
+      ]
+    },
+    {
+      id: `insulation_ceiling_attic_floor`,
+      title: `Insulation — Ceiling/Attic & Floor`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Ceiling/Attic Insulation`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Code-required R-values for ceiling/attic in your area:`,
+          id: `code_required_r_values_for_ceiling_attic_in_your_area`
+        },
+        {
+          type: `radio`,
+          label: `Is the roof vented or unvented?`,
+          choices: [
+            `Vented`,
+            `Unvented`
+          ],
+          id: `is_the_roof_vented_or_unvented`
+        },
+        {
+          type: `radio`,
+          label: `Is insulation on the attic floor or roof deck?`,
+          choices: [
+            `Attic floor`,
+            `Roof deck (cathedral ceiling)`
+          ],
+          id: `is_insulation_on_the_attic_floor_or_roof_deck`
+        },
+        {
+          type: `radio`,
+          label: `Ceiling/attic insulation type:`,
+          choices: [
+            `Blown fiberglass`,
+            `Blown cellulose`,
+            `Batt insulation`,
+            `Spray foam`
+          ],
+          allowOther: true,
+          id: `ceiling_attic_insulation_type`
+        },
+        {
+          type: `short`,
+          label: `Ceiling/attic insulation brand:`,
+          id: `ceiling_attic_insulation_brand`
+        },
+        {
+          type: `short`,
+          label: `Ceiling/attic insulation R-Value:`,
+          id: `ceiling_attic_insulation_r_value`
+        },
+        {
+          type: `subheading`,
+          label: `Floor Insulation Between Living Areas`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Which areas have floor insulation (if applicable)?`,
+          id: `which_areas_have_floor_insulation_if_applicable`
+        },
+        {
+          type: `short`,
+          label: `Floor insulation type:`,
+          id: `floor_insulation_type`
+        },
+        {
+          type: `short`,
+          label: `Floor insulation brand:`,
+          id: `floor_insulation_brand`
+        },
+        {
+          type: `short`,
+          label: `Floor insulation R-Value:`,
+          id: `floor_insulation_r_value`
+        },
+        {
+          type: `subheading`,
+          label: `Interior Wall Insulation for Sound Control`,
+          helper: ``
+        },
+        {
+          type: `paragraph`,
+          label: `What insulation is typically included for interior wall sound control?`,
+          id: `what_insulation_is_typically_included_for_interior_wall_soun`
+        }
+      ]
+    },
+    {
+      id: `roofing_sheathing_ventilation`,
+      title: `Roofing — Sheathing & Ventilation`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Roof Sheathing`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Roof sheathing type:`,
+          choices: [
+            `Plywood`,
+            `OSB`,
+            `Zip System`
+          ],
+          allowOther: true,
+          id: `roof_sheathing_type`
+        },
+        {
+          type: `short`,
+          label: `Roof sheathing thickness:`,
+          id: `roof_sheathing_thickness`
+        },
+        {
+          type: `short`,
+          label: `Roof sheathing grade:`,
+          id: `roof_sheathing_grade`
+        },
+        {
+          type: `subheading`,
+          label: `Roof Ventilation`,
+          helper: ``
+        },
+        {
+          type: `checkboxes`,
+          label: `Roof ventilation type (select all that apply):`,
+          choices: [
+            `Ridge vent`,
+            `Soffit vents`,
+            `Gable vents`,
+            `Power attic fan`,
+            `None - Unvented roof assembly`
+          ],
+          id: `roof_ventilation_type_select_all_that_apply`
+        },
+        {
+          type: `short`,
+          label: `Net free ventilation area:`,
+          id: `net_free_ventilation_area`
+        }
+      ]
+    },
+    {
+      id: `roofing_material_underlayment_gutters`,
+      title: `Roofing — Material, Underlayment & Gutters`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Roofing Material`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Roofing material type:`,
+          choices: [
+            `Asphalt shingles`,
+            `Cedar shake`,
+            `Metal roofing`,
+            `Tile`,
+            `Slate`
+          ],
+          allowOther: true,
+          id: `roofing_material_type`
+        },
+        {
+          type: `short`,
+          label: `Roofing brand:`,
+          id: `roofing_brand`
+        },
+        {
+          type: `short`,
+          label: `Roofing product line:`,
+          id: `roofing_product_line`
+        },
+        {
+          type: `short`,
+          label: `Roofing color:`,
+          id: `roofing_color`
+        },
+        {
+          type: `subheading`,
+          label: `Underlayment`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Underlayment type:`,
+          choices: [
+            `Felt paper (#15, #30)`,
+            `Synthetic underlayment`,
+            `Self-adhering membrane (ice/water shield)`
+          ],
+          allowOther: true,
+          id: `underlayment_type`
+        },
+        {
+          type: `short`,
+          label: `Underlayment brand/product:`,
+          id: `underlayment_brand_product`
+        },
+        {
+          type: `subheading`,
+          label: `Gutters & Downspouts`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Gutter material:`,
+          choices: [
+            `Aluminum`,
+            `Copper`,
+            `Galvanized steel`
+          ],
+          allowOther: true,
+          id: `gutter_material`
+        },
+        {
+          type: `short`,
+          label: `Gutter size:`,
+          id: `gutter_size`
+        },
+        {
+          type: `yesno`,
+          label: `Are gutter guards included?`,
+          id: `are_gutter_guards_included`
+        }
+      ]
+    },
+    {
+      id: `windows`,
+      title: `Windows`,
+      description: ``,
+      items: [
+        {
+          type: `short`,
+          label: `Window manufacturer:`,
+          id: `window_manufacturer`
+        },
+        {
+          type: `short`,
+          label: `Window product line/series:`,
+          id: `window_product_line_series`
+        },
+        {
+          type: `radio`,
+          label: `Window frame material:`,
+          choices: [
+            `Vinyl`,
+            `Aluminum-clad wood`,
+            `Fiberglass`,
+            `Wood`,
+            `Aluminum`
+          ],
+          allowOther: true,
+          id: `window_frame_material`
+        },
+        {
+          type: `radio`,
+          label: `Window frame type:`,
+          choices: [
+            `Flange (nail fin)`,
+            `Flangeless`,
+            `Block frame`
+          ],
+          id: `window_frame_type`
+        },
+        {
+          type: `radio`,
+          label: `Window installation method:`,
+          choices: [
+            `Nail fin`,
+            `Retrofit/insert`
+          ],
+          allowOther: true,
+          id: `window_installation_method`
+        },
+        {
+          type: `radio`,
+          label: `Glass type:`,
+          choices: [
+            `Double-pane`,
+            `Triple-pane`
+          ],
+          id: `glass_type`
+        },
+        {
+          type: `short`,
+          label: `Window U-Factor:`,
+          id: `window_u_factor`
+        },
+        {
+          type: `short`,
+          label: `SHGC (Solar Heat Gain Coefficient):`,
+          id: `shgc_solar_heat_gain_coefficient`
+        },
+        {
+          type: `short`,
+          label: `Window warranty:`,
+          id: `window_warranty`
+        }
+      ]
+    },
+    {
+      id: `window_flashing_doors`,
+      title: `Window Flashing & Doors`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Window Flashing & Air Sealing`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Flashing tape brand:`,
+          id: `flashing_tape_brand`
+        },
+        {
+          type: `short`,
+          label: `Sealant/caulk brand:`,
+          id: `sealant_caulk_brand`
+        },
+        {
+          type: `yesno`,
+          label: `Installation per manufacturer specifications?`,
+          id: `installation_per_manufacturer_specifications`
+        },
+        {
+          type: `yesno`,
+          label: `Rigid head flashing included?`,
+          id: `rigid_head_flashing_included`
+        },
+        {
+          type: `yesno`,
+          label: `Drip cap included?`,
+          id: `drip_cap_included`
+        },
+        {
+          type: `subheading`,
+          label: `Exterior Doors`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Exterior door brand:`,
+          id: `exterior_door_brand`
+        },
+        {
+          type: `radio`,
+          label: `Exterior door material:`,
+          choices: [
+            `Wood`,
+            `Fiberglass`,
+            `Steel`,
+            `Composite`
+          ],
+          allowOther: true,
+          id: `exterior_door_material`
+        },
+        {
+          type: `short`,
+          label: `Exterior door U-factor:`,
+          id: `exterior_door_u_factor`
+        },
+        {
+          type: `short`,
+          label: `Threshold type:`,
+          id: `threshold_type`
+        },
+        {
+          type: `short`,
+          label: `Weatherstripping type:`,
+          id: `weatherstripping_type`
+        }
+      ]
+    },
+    {
+      id: `garage_doors`,
+      title: `Garage Doors`,
+      description: ``,
+      items: [
+        {
+          type: `short`,
+          label: `Garage door brand:`,
+          id: `garage_door_brand`
+        },
+        {
+          type: `yesno`,
+          label: `Are the garage doors insulated?`,
+          id: `are_the_garage_doors_insulated`
+        },
+        {
+          type: `short`,
+          label: `If insulated, what is the R-value?`,
+          id: `if_insulated_what_is_the_r_value`
+        },
+        {
+          type: `radio`,
+          label: `Garage door material:`,
+          choices: [
+            `Steel`,
+            `Wood`,
+            `Aluminum/glass`
+          ],
+          allowOther: true,
+          id: `garage_door_material`
+        },
+        {
+          type: `short`,
+          label: `Garage door opener brand:`,
+          id: `garage_door_opener_brand`
+        },
+        {
+          type: `short`,
+          label: `Number of garage doors:`,
+          id: `number_of_garage_doors`
+        }
+      ]
+    },
+    {
+      id: `hvac_system_design`,
+      title: `HVAC — System Design`,
+      description: ``,
+      items: [
+        {
+          type: `yesno`,
+          label: `Is the system based on mechanical specs provided?`,
+          id: `is_the_system_based_on_mechanical_specs_provided`
+        },
+        {
+          type: `yesno`,
+          label: `Was a Manual J load calculation performed or will it be done?`,
+          id: `was_a_manual_j_load_calculation_performed_or_will_it_be_done`
+        },
+        {
+          type: `checkboxes`,
+          label: `Were the following also performed? (Select all that apply)`,
+          choices: [
+            `Manual D`,
+            `Manual S`,
+            `Manual T`
+          ],
+          id: `were_the_following_also_performed_select_all_that_apply`
+        },
+        {
+          type: `yesno`,
+          label: `Are mechanical plans going to be performed by a mechanical engineer?`,
+          id: `are_mechanical_plans_going_to_be_performed_by_a_mechanical_e`
+        },
+        {
+          type: `yesno`,
+          label: `Is a blower door test required by code?`,
+          id: `is_a_blower_door_test_required_by_code`
+        },
+        {
+          type: `yesno`,
+          label: `Will temporary heating/cooling and dehumidification be used during construction?`,
+          id: `will_temporary_heating_cooling_and_dehumidification_be_used_`
+        }
+      ]
+    },
+    {
+      id: `hvac_equipment`,
+      title: `HVAC — Equipment`,
+      description: ``,
+      items: [
+        {
+          type: `radio`,
+          label: `HVAC system type:`,
+          choices: [
+            `Central forced air`,
+            `Heat pump (air source)`,
+            `Heat pump (ground source/geothermal)`,
+            `Mini-split/Multi-split`,
+            `Radiant floor heating`,
+            `Boiler with radiators`,
+            `VRF/VRV system`
+          ],
+          allowOther: true,
+          id: `hvac_system_type`
+        },
+        {
+          type: `short`,
+          label: `HVAC manufacturer:`,
+          id: `hvac_manufacturer`
+        },
+        {
+          type: `short`,
+          label: `HVAC model/series:`,
+          id: `hvac_model_series`
+        },
+        {
+          type: `short`,
+          label: `SEER rating (cooling):`,
+          id: `seer_rating_cooling`
+        },
+        {
+          type: `short`,
+          label: `HSPF rating (heating):`,
+          id: `hspf_rating_heating`
+        },
+        {
+          type: `short`,
+          label: `Tonnage/BTU:`,
+          id: `tonnage_btu`
+        },
+        {
+          type: `short`,
+          label: `Number of zones:`,
+          id: `number_of_zones`
+        },
+        {
+          type: `short`,
+          label: `HVAC warranty:`,
+          id: `hvac_warranty`
+        }
+      ]
+    },
+    {
+      id: `hvac_ductwork_iaq`,
+      title: `HVAC — Ductwork & IAQ`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Ductwork`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Ductwork material:`,
+          choices: [
+            `Sheet metal`,
+            `Flex duct`,
+            `Combination`
+          ],
+          allowOther: true,
+          id: `ductwork_material`
+        },
+        {
+          type: `radio`,
+          label: `Where are ducts located?`,
+          choices: [
+            `Conditioned space (within building envelope)`,
+            `Unconditioned space (attic, crawl, etc.)`,
+            `Combination`
+          ],
+          id: `where_are_ducts_located`
+        },
+        {
+          type: `radio`,
+          label: `Duct sealing method:`,
+          choices: [
+            `Mastic`,
+            `Aeroseal`,
+            `Mastic and mesh`
+          ],
+          allowOther: true,
+          id: `duct_sealing_method`
+        },
+        {
+          type: `short`,
+          label: `Duct insulation R-value:`,
+          id: `duct_insulation_r_value`
+        },
+        {
+          type: `short`,
+          label: `Brand/type of duct tape (if used):`,
+          id: `brand_type_of_duct_tape_if_used`
+        },
+        {
+          type: `yesno`,
+          label: `Will a duct blast test be performed?`,
+          id: `will_a_duct_blast_test_be_performed`
+        },
+        {
+          type: `subheading`,
+          label: `Filtration & Indoor Air Quality`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Where will filters be located?`,
+          choices: [
+            `At returns`,
+            `At HVAC unit`
+          ],
+          id: `where_will_filters_be_located`
+        },
+        {
+          type: `radio`,
+          label: `Filter type included:`,
+          choices: [
+            `1" disposable`,
+            `4" media filter`,
+            `HEPA bypass`
+          ],
+          id: `filter_type_included`
+        },
+        {
+          type: `short`,
+          label: `If 4" media filter, what brand?`,
+          id: `if_4_media_filter_what_brand`
+        },
+        {
+          type: `checkboxes`,
+          label: `Additional IAQ equipment (select all that apply):`,
+          choices: [
+            `Whole-home dehumidifier`,
+            `Basement dehumidifier`,
+            `Humidifier`,
+            `ERV/HRV (energy/heat recovery ventilator)`,
+            `UV light`,
+            `Make-up air`,
+            `None`
+          ],
+          id: `additional_iaq_equipment_select_all_that_apply`
+        },
+        {
+          type: `short`,
+          label: `IAQ equipment specifications/brands:`,
+          id: `iaq_equipment_specifications_brands`
+        },
+        {
+          type: `short`,
+          label: `Bathroom exhaust fan type:`,
+          id: `bathroom_exhaust_fan_type`
+        },
+        {
+          type: `short`,
+          label: `Kitchen range hood CFM rating:`,
+          id: `kitchen_range_hood_cfm_rating`
+        }
+      ]
+    },
+    {
+      id: `plumbing_water_supply`,
+      title: `Plumbing — Water Supply`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Water Supply Piping`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Water supply piping type:`,
+          choices: [
+            `PEX`,
+            `Copper (Type L, M, K)`,
+            `CPVC`,
+            `PEX-AL-PEX`
+          ],
+          allowOther: true,
+          id: `water_supply_piping_type`
+        },
+        {
+          type: `short`,
+          label: `Water supply piping brand:`,
+          id: `water_supply_piping_brand`
+        },
+        {
+          type: `short`,
+          label: `Piping connection method:`,
+          id: `piping_connection_method`
+        },
+        {
+          type: `yesno`,
+          label: `Is a manifold system used?`,
+          id: `is_a_manifold_system_used`
+        },
+        {
+          type: `subheading`,
+          label: `Drain/Waste/Vent Piping`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `DWV piping type:`,
+          choices: [
+            `PVC (Schedule 40)`,
+            `ABS`,
+            `Cast iron`
+          ],
+          allowOther: true,
+          id: `dwv_piping_type`
+        },
+        {
+          type: `short`,
+          label: `DWV piping brand:`,
+          id: `dwv_piping_brand`
+        },
+        {
+          type: `short`,
+          label: `Fitting types (solvent weld, mechanical, etc.):`,
+          id: `fitting_types_solvent_weld_mechanical_etc`
+        }
+      ]
+    },
+    {
+      id: `plumbing_hot_water_treatment`,
+      title: `Plumbing — Hot Water & Treatment`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Hot Water Heater`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Hot water heater type:`,
+          choices: [
+            `Tank water heater`,
+            `Tankless (on-demand)`,
+            `Heat pump water heater`,
+            `Indirect (with boiler)`
+          ],
+          allowOther: true,
+          id: `hot_water_heater_type`
+        },
+        {
+          type: `radio`,
+          label: `Water heater fuel type:`,
+          choices: [
+            `Natural gas`,
+            `Electric`,
+            `Propane`,
+            `Solar with backup`
+          ],
+          allowOther: true,
+          id: `water_heater_fuel_type`
+        },
+        {
+          type: `short`,
+          label: `Water heater brand:`,
+          id: `water_heater_brand`
+        },
+        {
+          type: `short`,
+          label: `Water heater capacity (gallons or GPM):`,
+          id: `water_heater_capacity_gallons_or_gpm`
+        },
+        {
+          type: `short`,
+          label: `Water heater warranty:`,
+          id: `water_heater_warranty`
+        },
+        {
+          type: `yesno`,
+          label: `Will a recirculation pump be installed?`,
+          id: `will_a_recirculation_pump_be_installed`
+        },
+        {
+          type: `subheading`,
+          label: `Water Treatment/Filtration`,
+          helper: ``
+        },
+        {
+          type: `checkboxes`,
+          label: `Water treatment systems included (select all that apply):`,
+          choices: [
+            `Whole-house filter`,
+            `Water softener`,
+            `Reverse osmosis (kitchen)`,
+            `UV purification`,
+            `None`
+          ],
+          id: `water_treatment_systems_included_select_all_that_apply`
+        },
+        {
+          type: `short`,
+          label: `Water treatment specifications/brands:`,
+          id: `water_treatment_specifications_brands`
+        }
+      ]
+    },
+    {
+      id: `electrical_service_wiring`,
+      title: `Electrical — Service & Wiring`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Electrical Service & Panel`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Electrical service size (amps):`,
+          id: `electrical_service_size_amps`
+        },
+        {
+          type: `short`,
+          label: `Electrical panel brand:`,
+          id: `electrical_panel_brand`
+        },
+        {
+          type: `short`,
+          label: `Number of circuits:`,
+          id: `number_of_circuits`
+        },
+        {
+          type: `yesno`,
+          label: `Are subpanels included?`,
+          id: `are_subpanels_included`
+        },
+        {
+          type: `short`,
+          label: `If yes, subpanel locations:`,
+          id: `if_yes_subpanel_locations`,
+          showIf: {
+            field: `are_subpanels_included`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `subheading`,
+          label: `Wiring`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Wiring type:`,
+          choices: [
+            `Romex (NM cable)`,
+            `MC cable (metal-clad)`,
+            `BX cable (armored)`,
+            `Conduit (EMT, PVC)`
+          ],
+          allowOther: true,
+          id: `wiring_type`
+        },
+        {
+          type: `short`,
+          label: `Wiring brand:`,
+          id: `wiring_brand`
+        },
+        {
+          type: `radio`,
+          label: `Where is conduit used (if applicable)?`,
+          choices: [
+            `Exterior walls`,
+            `Wet locations`,
+            `Throughout home`,
+            `Not applicable`
+          ],
+          id: `where_is_conduit_used_if_applicable`
+        }
+      ]
+    },
+    {
+      id: `electrical_outlets_appliances_smart_home`,
+      title: `Electrical — Outlets, Appliances & Smart Home`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Outlets, Switches & Devices`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Outlet/switch brand:`,
+          id: `outlet_switch_brand`
+        },
+        {
+          type: `short`,
+          label: `Outlet/switch grade (residential, spec, commercial):`,
+          id: `outlet_switch_grade_residential_spec_commercial`
+        },
+        {
+          type: `checkboxes`,
+          label: `Special outlets included (select all that apply):`,
+          choices: [
+            `USB outlets`,
+            `GFCI outlets (all required locations)`,
+            `AFCI protection (all required circuits)`,
+            `Tamper-resistant outlets`,
+            `Weather-resistant outlets (exterior)`
+          ],
+          id: `special_outlets_included_select_all_that_apply`
+        },
+        {
+          type: `radio`,
+          label: `Is recessed lighting included?`,
+          choices: [
+            `Yes - LED`,
+            `Yes - Other type`,
+            `No`
+          ],
+          id: `is_recessed_lighting_included`
+        },
+        {
+          type: `subheading`,
+          label: `Major Appliances`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Range/cooktop type:`,
+          choices: [
+            `Gas`,
+            `Electric`,
+            `Induction`,
+            `Dual fuel`
+          ],
+          id: `range_cooktop_type`
+        },
+        {
+          type: `radio`,
+          label: `Dryer hookup type:`,
+          choices: [
+            `Gas`,
+            `Electric (240V)`,
+            `Heat pump dryer ready`,
+            `Both`
+          ],
+          id: `dryer_hookup_type`
+        },
+        {
+          type: `short`,
+          label: `EV charger circuit rough-in (describe if included):`,
+          id: `ev_charger_circuit_rough_in_describe_if_included`
+        },
+        {
+          type: `short`,
+          label: `Other appliance circuits:`,
+          id: `other_appliance_circuits`
+        },
+        {
+          type: `subheading`,
+          label: `Low-Voltage & Smart Home Wiring`,
+          helper: ``
+        },
+        {
+          type: `checkboxes`,
+          label: `Low-voltage/smart home wiring included (select all that apply):`,
+          choices: [
+            `CAT6 ethernet cabling`,
+            `Coax cable (TV/internet)`,
+            `Security system pre-wire`,
+            `Doorbell camera wiring`,
+            `Central media panel`,
+            `Whole-house audio pre-wire`,
+            `None`
+          ],
+          id: `low_voltage_smart_home_wiring_included_select_all_that_apply`
+        },
+        {
+          type: `paragraph`,
+          label: `Low-voltage specifications/locations:`,
+          id: `low_voltage_specifications_locations`
+        },
+        {
+          type: `yesno`,
+          label: `Is a whole home backup generator included?`,
+          id: `is_a_whole_home_backup_generator_included`
+        },
+        {
+          type: `short`,
+          label: `If yes, generator brand:`,
+          id: `if_yes_generator_brand`,
+          showIf: {
+            field: `is_a_whole_home_backup_generator_included`,
+            equals: `Yes`
+          }
+        }
+      ]
+    },
+    {
+      id: `shower_tub_waterproofing`,
+      title: `Shower & Tub Waterproofing`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Shower Construction`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `What are showers built from?`,
+          choices: [
+            `Cement board`,
+            `Foam tile backer board (Kerdi-Board, Wedi, etc.)`,
+            `GoBoard`
+          ],
+          allowOther: true,
+          id: `what_are_showers_built_from`
+        },
+        {
+          type: `short`,
+          label: `If cement board, what brand?`,
+          id: `if_cement_board_what_brand`
+        },
+        {
+          type: `subheading`,
+          label: `Waterproofing System`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Shower waterproofing system:`,
+          choices: [
+            `Schluter Kerdi`,
+            `RedGard liquid membrane`,
+            `Hydroban`,
+            `Wedi system`
+          ],
+          allowOther: true,
+          id: `shower_waterproofing_system`
+        },
+        {
+          type: `short`,
+          label: `Waterproofing brand/product:`,
+          id: `waterproofing_brand_product_2`
+        },
+        {
+          type: `short`,
+          label: `Floor waterproofing product:`,
+          id: `floor_waterproofing_product`
+        },
+        {
+          type: `short`,
+          label: `Will you be waterproofing the floor outside the shower?`,
+          id: `will_you_be_waterproofing_the_floor_outside_the_shower`
+        },
+        {
+          type: `subheading`,
+          label: `Shower Pan`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Shower pan construction:`,
+          choices: [
+            `Pre-sloped foam pan (Schluter, Wedi, etc.)`,
+            `Traditional mud bed`,
+            `Pre-fabricated acrylic/fiberglass base`
+          ],
+          allowOther: true,
+          id: `shower_pan_construction`
+        },
+        {
+          type: `short`,
+          label: `Shower pan brand/product:`,
+          id: `shower_pan_brand_product`
+        }
+      ]
+    },
+    {
+      id: `interior_finishes_drywall_paint`,
+      title: `Interior Finishes — Drywall & Paint`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Drywall`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Drywall thickness:`,
+          choices: [
+            `1/2 inch`,
+            `5/8 inch`
+          ],
+          allowOther: true,
+          id: `drywall_thickness`
+        },
+        {
+          type: `short`,
+          label: `Drywall brand:`,
+          id: `drywall_brand`
+        },
+        {
+          type: `short`,
+          label: `Drywall finish level (0-5):`,
+          id: `drywall_finish_level_0_5`
+        },
+        {
+          type: `radio`,
+          label: `Drywall type in wet areas (bathrooms, laundry — NOT inside shower):`,
+          choices: [
+            `Green board (moisture-resistant)`,
+            `Purple board (mold/moisture-resistant)`,
+            `Fiberglass-faced drywall (DensGlass, etc.)`,
+            `Cement board`
+          ],
+          allowOther: true,
+          id: `drywall_type_in_wet_areas_bathrooms_laundry_not_inside_showe`
+        },
+        {
+          type: `short`,
+          label: `Joint compound brand/type:`,
+          id: `joint_compound_brand_type`
+        },
+        {
+          type: `short`,
+          label: `Tape type (paper, mesh, etc.):`,
+          id: `tape_type_paper_mesh_etc`
+        },
+        {
+          type: `subheading`,
+          label: `Interior Paint`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Paint brand:`,
+          id: `paint_brand`
+        },
+        {
+          type: `short`,
+          label: `Paint product line/type:`,
+          id: `paint_product_line_type`
+        },
+        {
+          type: `short`,
+          label: `Paint finish (flat, eggshell, satin, semi-gloss):`,
+          id: `paint_finish_flat_eggshell_satin_semi_gloss`
+        },
+        {
+          type: `short`,
+          label: `Number of coats (primer + finish):`,
+          id: `number_of_coats_primer_finish`
+        },
+        {
+          type: `yesno`,
+          label: `Is low-VOC or zero-VOC paint used?`,
+          id: `is_low_voc_or_zero_voc_paint_used`
+        }
+      ]
+    },
+    {
+      id: `interior_finishes_trim_doors_cabinets`,
+      title: `Interior Finishes — Trim, Doors & Cabinets`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Interior Trim & Millwork`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Trim material:`,
+          choices: [
+            `Pine`,
+            `Poplar`,
+            `MDF (primed)`,
+            `Finger-jointed pine (primed)`,
+            `Hardwood`
+          ],
+          allowOther: true,
+          id: `trim_material`
+        },
+        {
+          type: `short`,
+          label: `If hardwood, what species?`,
+          id: `if_hardwood_what_species`
+        },
+        {
+          type: `short`,
+          label: `Baseboard height:`,
+          id: `baseboard_height`
+        },
+        {
+          type: `short`,
+          label: `Baseboard style:`,
+          id: `baseboard_style`
+        },
+        {
+          type: `short`,
+          label: `Door casing width:`,
+          id: `door_casing_width`
+        },
+        {
+          type: `short`,
+          label: `Window casing/trim style:`,
+          id: `window_casing_trim_style`
+        },
+        {
+          type: `yesno`,
+          label: `Is crown molding included?`,
+          id: `is_crown_molding_included`
+        },
+        {
+          type: `short`,
+          label: `If yes, crown molding height:`,
+          id: `if_yes_crown_molding_height`,
+          showIf: {
+            field: `is_crown_molding_included`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `subheading`,
+          label: `Interior Doors`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Interior door type:`,
+          choices: [
+            `Hollow core`,
+            `Solid core`,
+            `Wood panel doors`
+          ],
+          allowOther: true,
+          id: `interior_door_type`
+        },
+        {
+          type: `subheading`,
+          label: `Cabinets`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Cabinet construction type:`,
+          choices: [
+            `Custom`,
+            `Semi-custom`,
+            `Stock`,
+            `RTA (ready-to-assemble)`
+          ],
+          id: `cabinet_construction_type`
+        },
+        {
+          type: `short`,
+          label: `Cabinet company/brand:`,
+          id: `cabinet_company_brand`
+        },
+        {
+          type: `short`,
+          label: `Cabinet door style:`,
+          id: `cabinet_door_style`
+        },
+        {
+          type: `short`,
+          label: `Cabinet finish/color:`,
+          id: `cabinet_finish_color`
+        },
+        {
+          type: `radio`,
+          label: `Cabinet construction material:`,
+          choices: [
+            `Plywood box with hardwood face frames`,
+            `All plywood construction`,
+            `MDF`,
+            `Particleboard`
+          ],
+          allowOther: true,
+          id: `cabinet_construction_material`
+        }
+      ]
+    },
+    {
+      id: `flooring`,
+      title: `Flooring`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Flooring — Basement (if applicable)`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Basement flooring underlayment type:`,
+          id: `basement_flooring_underlayment_type`
+        },
+        {
+          type: `short`,
+          label: `Basement flooring underlayment brand:`,
+          id: `basement_flooring_underlayment_brand`
+        },
+        {
+          type: `checkboxes`,
+          label: `Primary basement flooring type (select all that apply):`,
+          choices: [
+            `Hardwood (solid)`,
+            `Engineered hardwood`,
+            `LVP/LVT`,
+            `Laminate`,
+            `Tile`,
+            `Carpet`
+          ],
+          id: `primary_basement_flooring_type_select_all_that_apply`
+        },
+        {
+          type: `subheading`,
+          label: `Flooring — Slab on Grade (if applicable)`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Slab-on-grade flooring underlayment type:`,
+          id: `slab_on_grade_flooring_underlayment_type`
+        },
+        {
+          type: `short`,
+          label: `Slab-on-grade flooring underlayment brand:`,
+          id: `slab_on_grade_flooring_underlayment_brand`
+        },
+        {
+          type: `checkboxes`,
+          label: `Primary slab-on-grade flooring type (select all that apply):`,
+          choices: [
+            `Hardwood (solid)`,
+            `Engineered hardwood`,
+            `LVP/LVT`,
+            `Laminate`,
+            `Tile`,
+            `Carpet`
+          ],
+          id: `primary_slab_on_grade_flooring_type_select_all_that_apply`
+        },
+        {
+          type: `subheading`,
+          label: `Flooring — Upper Floors`,
+          helper: ``
+        },
+        {
+          type: `short`,
+          label: `Upper floor underlayment type:`,
+          id: `upper_floor_underlayment_type`
+        },
+        {
+          type: `short`,
+          label: `Upper floor underlayment brand:`,
+          id: `upper_floor_underlayment_brand`
+        },
+        {
+          type: `checkboxes`,
+          label: `Primary upper floor flooring type (select all that apply):`,
+          choices: [
+            `Hardwood (solid)`,
+            `Engineered hardwood`,
+            `LVP/LVT`,
+            `Laminate`,
+            `Tile`,
+            `Carpet`
+          ],
+          id: `primary_upper_floor_flooring_type_select_all_that_apply`
+        }
+      ]
+    },
+    {
+      id: `closets_built_ins_exterior_finishes`,
+      title: `Closets, Built-ins & Exterior Finishes`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `Closets & Built-ins`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Closet system type:`,
+          choices: [
+            `Wire shelving`,
+            `Wood shelving`,
+            `Custom closet system`
+          ],
+          allowOther: true,
+          id: `closet_system_type`
+        },
+        {
+          type: `short`,
+          label: `Closet system brand (if applicable):`,
+          id: `closet_system_brand_if_applicable`
+        },
+        {
+          type: `short`,
+          label: `Built-ins included in bid:`,
+          id: `built_ins_included_in_bid`
+        },
+        {
+          type: `subheading`,
+          label: `Exterior Cladding/Siding`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Primary exterior cladding/siding material:`,
+          choices: [
+            `Brick`,
+            `Stone (natural)`,
+            `Stone veneer (manufactured)`,
+            `Vinyl siding`,
+            `Fiber cement (Hardie, etc.)`,
+            `Wood siding`,
+            `Metal siding`,
+            `Stucco/EIFS`
+          ],
+          allowOther: true,
+          id: `primary_exterior_cladding_siding_material`
+        },
+        {
+          type: `short`,
+          label: `Exterior cladding brand/product:`,
+          id: `exterior_cladding_brand_product`
+        },
+        {
+          type: `short`,
+          label: `Exterior cladding color/finish:`,
+          id: `exterior_cladding_color_finish`
+        }
+      ]
+    },
+    {
+      id: `site_work_cleanup`,
+      title: `Site Work & Cleanup`,
+      description: ``,
+      items: [
+        {
+          type: `yesno`,
+          label: `Is daily cleanup included?`,
+          id: `is_daily_cleanup_included`
+        },
+        {
+          type: `yesno`,
+          label: `Is final cleanup included?`,
+          id: `is_final_cleanup_included`
+        },
+        {
+          type: `yesno`,
+          label: `Is debris removal/dumpster included?`,
+          id: `is_debris_removal_dumpster_included`
+        },
+        {
+          type: `yesno`,
+          label: `Is a portable toilet included?`,
+          id: `is_a_portable_toilet_included`
+        }
+      ]
+    },
+    {
+      id: `project_timeline_notes`,
+      title: `Project Timeline & Notes`,
+      description: ``,
+      items: [
+        {
+          type: `date`,
+          label: `Estimated start date:`,
+          id: `estimated_start_date`
+        },
+        {
+          type: `date`,
+          label: `Estimated completion date:`,
+          id: `estimated_completion_date`
+        },
+        {
+          type: `short`,
+          label: `Total estimated duration:`,
+          id: `total_estimated_duration`
+        },
+        {
+          type: `paragraph`,
+          label: `Key milestones/phases:`,
+          id: `key_milestones_phases`
+        },
+        {
+          type: `paragraph`,
+          label: `Any additional specifications, special conditions, or clarifications?`,
+          id: `any_additional_specifications_special_conditions_or_clarific`
+        }
+      ]
+    }
+  ]
+};
+
+// =========================================================
+// CONFIG — paste your Apps Script Web App URL here after deploying apps_script.gs
+// =========================================================
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHIhLTaNrTbgRuxk6DWVcaj32YIF83sGAZRDp3fNDHVuZILVqbblC8HbY3x7sp_n0/exec";
+
+// =========================================================
+// STATE
+// =========================================================
+const STATE = {
+  responses: {},          // { questionId: value }
+  skipped: {},            // { sectionId: true }
+  currentSection: 0,      // index
+  draftId: null,
+  email: null,            // builder email (auto-detected from email_address field)
+  lastSavedAt: null
+};
+
+const STORAGE_KEY = 'twb_contractor_form_v1';
+
+// =========================================================
+// HELPERS
+// =========================================================
+function el(tag, attrs={}, ...children) {
+  const e = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else if (v === true) e.setAttribute(k,'');
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const c of children) {
+    if (c == null || c === false) continue;
+    if (Array.isArray(c)) c.forEach(x=>e.appendChild(typeof x === 'string' ? document.createTextNode(x) : x));
+    else e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  }
+  return e;
+}
+
+function showToast(msg, ms=2400) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), ms);
+}
+
+function flatItems() {
+  const out = [];
+  FORM_SCHEMA.sections.forEach((s, si) => {
+    s.items.forEach(it => {
+      if (it.type !== 'subheading') out.push({...it, sectionIndex: si, sectionId: s.id});
+    });
+  });
+  return out;
+}
+
+function isShown(item) {
+  if (!item.showIf) return true;
+  return STATE.responses[item.showIf.field] === item.showIf.equals;
+}
+
+function questionIsAnswered(q) {
+  const v = STATE.responses[q.id];
+  if (v == null) return false;
+  if (Array.isArray(v)) return v.length > 0;
+  return String(v).trim() !== '';
+}
+
+function sectionStatus(sIdx) {
+  if (STATE.skipped[FORM_SCHEMA.sections[sIdx].id]) return 'skipped';
+  const items = FORM_SCHEMA.sections[sIdx].items.filter(it => it.type !== 'subheading' && isShown(it));
+  if (items.length === 0) return 'empty';
+  const answered = items.filter(questionIsAnswered).length;
+  if (answered === 0) return 'empty';
+  if (answered === items.length) return 'complete';
+  return 'started';
+}
+
+function overallProgress() {
+  const all = flatItems().filter(isShown);
+  const total = all.length;
+  if (!total) return 0;
+  // Skipped sections count as "done" for the progress bar
+  let answered = 0;
+  for (const it of all) {
+    if (STATE.skipped[it.sectionId]) { answered++; continue; }
+    if (questionIsAnswered(it)) answered++;
+  }
+  return Math.round((answered / total) * 100);
+}
+
+// =========================================================
+// PERSISTENCE
+// =========================================================
+function saveLocal() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      responses: STATE.responses,
+      skipped: STATE.skipped,
+      currentSection: STATE.currentSection,
+      draftId: STATE.draftId,
+      email: STATE.email
+    }));
+    STATE.lastSavedAt = Date.now();
+    updateSaveStatus();
+  } catch(e) { console.warn('localStorage save failed', e); }
+}
+
+function loadLocal() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    Object.assign(STATE, d);
+    return true;
+  } catch(e) { return false; }
+}
+
+function updateSaveStatus() {
+  const p = document.getElementById('saveStatus');
+  if (!STATE.lastSavedAt) {
+    p.innerHTML = '<span>○</span> Not started';
+    return;
+  }
+  const ago = Math.round((Date.now()-STATE.lastSavedAt)/1000);
+  const txt = ago < 5 ? 'Saved just now' : (ago < 60 ? `Saved ${ago}s ago` : `Saved ${Math.round(ago/60)}m ago`);
+  p.innerHTML = '<span style="color:#2B5C3F">●</span> ' + txt;
+}
+setInterval(updateSaveStatus, 15000);
+
+// =========================================================
+// RENDER QUESTION
+// =========================================================
+function renderQuestion(q) {
+  if (q.type === 'subheading') {
+    return el('div', {class:'subhead'},
+      q.label,
+      q.helper ? el('div', {class:'text-sm text-twb-mute font-sans mt-1', html: escapeHtml(q.helper)}) : null
+    );
+  }
+  if (!isShown(q)) return null;
+
+  const card = el('div', {class:'question-card', 'data-qid': q.id});
+  const label = el('label', {class:'qlabel block', for:'f_'+q.id},
+    q.label,
+    q.required ? el('span',{class:'req'}, '*') : null
+  );
+  card.appendChild(label);
+  if (q.helper) card.appendChild(el('div',{class:'qhelper'}, q.helper));
+
+  const v = STATE.responses[q.id];
+
+  if (q.type === 'short') {
+    card.appendChild(el('input', {
+      id:'f_'+q.id, class:'field-input', type:'text',
+      value: v || '',
+      placeholder: 'Type your answer…',
+      oninput: e => setValue(q.id, e.target.value)
+    }));
+  } else if (q.type === 'paragraph') {
+    card.appendChild(el('textarea', {
+      id:'f_'+q.id, class:'field-input', rows:3,
+      placeholder:'Type your answer…',
+      oninput: e => setValue(q.id, e.target.value)
+    }, v || ''));
+  } else if (q.type === 'date') {
+    card.appendChild(el('input', {
+      id:'f_'+q.id, class:'field-input md:max-w-xs', type:'date',
+      value: v || '',
+      oninput: e => setValue(q.id, e.target.value)
+    }));
+  } else if (q.type === 'yesno') {
+    const wrap = el('div', {class:'flex gap-2 flex-wrap'});
+    ['Yes','No'].forEach(opt => {
+      wrap.appendChild(el('button', {
+        type:'button', class:'chip yn',
+        'aria-pressed': v === opt ? 'true' : 'false',
+        onclick: () => { setValue(q.id, v === opt ? '' : opt); }
+      }, opt));
+    });
+    card.appendChild(wrap);
+  } else if (q.type === 'radio' || q.type === 'select') {
+    // Match Google Forms behavior: when "Other" is selected, store the raw freeform
+    // text as the value (no prefix). Detect Other = value is non-empty AND not in choices.
+    const choices = q.choices || [];
+    const isOther = q.allowOther && v != null && v !== '' && !choices.includes(v);
+    const otherShown = isOther || (STATE._otherShown && STATE._otherShown[q.id]);
+    const useDropdown = q.type === 'select' || choices.length > 8;
+
+    if (useDropdown) {
+      const sel = el('select', {
+        id:'f_'+q.id, class:'field-input md:max-w-md',
+        onchange: e => {
+          if (e.target.value === '__other__') {
+            STATE._otherShown = STATE._otherShown || {};
+            STATE._otherShown[q.id] = true;
+            renderSection();
+          } else {
+            if (STATE._otherShown) delete STATE._otherShown[q.id];
+            setValue(q.id, e.target.value);
+          }
+        }
+      }, el('option',{value:''},'— Select —'));
+      choices.forEach(c => sel.appendChild(el('option',{value:c, selected: v===c ? '' : false}, c)));
+      if (q.allowOther) sel.appendChild(el('option',{value:'__other__', selected: otherShown ? '' : false},'Other…'));
+      card.appendChild(sel);
+      if (otherShown) {
+        card.appendChild(el('div', {class:'mt-2'},
+          el('input', {
+            class:'field-input', placeholder:'Specify other…',
+            value: isOther ? v : '',
+            oninput: e => setValue(q.id, e.target.value)
+          })
+        ));
+      }
+    } else {
+      const wrap = el('div', {class:'flex gap-2 flex-wrap'});
+      choices.forEach(c => {
+        wrap.appendChild(el('button', {
+          type:'button', class:'chip',
+          'aria-pressed': v === c ? 'true' : 'false',
+          onclick: () => {
+            if (STATE._otherShown) delete STATE._otherShown[q.id];
+            setValue(q.id, v === c ? '' : c);
+          }
+        }, c));
+      });
+      if (q.allowOther) {
+        wrap.appendChild(el('button', {
+          type:'button', class:'chip',
+          'aria-pressed': otherShown ? 'true' : 'false',
+          onclick: () => {
+            STATE._otherShown = STATE._otherShown || {};
+            if (otherShown) {
+              delete STATE._otherShown[q.id];
+              if (isOther) setValue(q.id, '');
+              else renderSection();
+            } else {
+              STATE._otherShown[q.id] = true;
+              setValue(q.id, '');
+              renderSection();
+              setTimeout(()=> {
+                const inp = card.querySelector('input.field-input');
+                if (inp) inp.focus();
+              }, 0);
+            }
+          }
+        }, 'Other…'));
+      }
+      card.appendChild(wrap);
+      if (otherShown) {
+        card.appendChild(el('div', {class:'mt-2'},
+          el('input', {
+            class:'field-input', placeholder:'Specify other…',
+            value: isOther ? v : '',
+            oninput: e => setValue(q.id, e.target.value)
+          })
+        ));
+      }
+    }
+  } else if (q.type === 'checkboxes') {
+    const choices = q.choices || [];
+    const cur = Array.isArray(v) ? v : [];
+    const wrap = el('div', {class:'flex gap-2 flex-wrap'});
+    choices.forEach(c => {
+      const on = cur.includes(c);
+      wrap.appendChild(el('button', {
+        type:'button', class:'chip',
+        'aria-pressed': on ? 'true' : 'false',
+        onclick: () => {
+          const arr = Array.isArray(STATE.responses[q.id]) ? [...STATE.responses[q.id]] : [];
+          const idx = arr.indexOf(c);
+          if (idx >= 0) arr.splice(idx,1); else arr.push(c);
+          setValue(q.id, arr);
+        }
+      }, c));
+    });
+    card.appendChild(wrap);
+  } else {
+    card.appendChild(el('div',{class:'text-sm text-twb-clay'}, '(Unsupported field type: '+q.type+')'));
+  }
+  return card;
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function setValue(qid, val) {
+  STATE.responses[qid] = val;
+  // Auto-detect builder email
+  if (qid === 'email_address') STATE.email = val;
+  saveLocal();
+  // Re-render section IF this field is referenced by a showIf elsewhere
+  const refs = FORM_SCHEMA.sections[STATE.currentSection].items.some(it => it.showIf && it.showIf.field === qid);
+  if (refs) renderSection();
+  updateSidebar();
+  updateProgress();
+}
+
+// =========================================================
+// RENDER SECTION
+// =========================================================
+function renderSection() {
+  const root = document.getElementById('sectionRoot');
+  root.innerHTML = '';
+  const s = FORM_SCHEMA.sections[STATE.currentSection];
+  const totalQs = s.items.filter(i=>i.type!=='subheading').length;
+  const isSkipped = !!STATE.skipped[s.id];
+
+  const header = el('div', {class:'mb-5'},
+    el('div', {class:'text-xs uppercase tracking-widest text-twb-copper font-semibold mb-1'},
+      `Section ${STATE.currentSection} of ${FORM_SCHEMA.sections.length-1}`),
+    el('h2', {class:'text-3xl mb-1'}, s.title || 'Section'),
+    s.description ? el('p',{class:'text-twb-mute'}, s.description) : null,
+    el('div', {class:'mt-2 text-sm text-twb-mute'}, `${totalQs} question${totalQs===1?'':'s'} in this section`)
+  );
+  root.appendChild(header);
+
+  if (isSkipped) {
+    root.appendChild(el('div',{class:'bg-twb-cream rounded-xl border border-dashed border-twb-sage2 p-6 text-center'},
+      el('div',{class:'text-twb-mute mb-2'}, 'You marked this section as not applicable.'),
+      el('button',{class:'btn-secondary text-sm', onclick:()=>{ delete STATE.skipped[s.id]; saveLocal(); renderSection(); updateSidebar(); updateProgress(); }},
+        'Un-skip this section')
+    ));
+  } else {
+    s.items.forEach(q => {
+      const node = renderQuestion(q);
+      if (node) root.appendChild(node);
+    });
+  }
+
+  // Show/hide submit zone on last section
+  const last = STATE.currentSection === FORM_SCHEMA.sections.length - 1;
+  document.getElementById('submitWrap').classList.toggle('hidden', !last);
+  document.getElementById('nextBtn').textContent = last ? 'Review →' : 'Next →';
+  document.getElementById('prevBtn').disabled = STATE.currentSection === 0;
+  document.getElementById('prevBtn').classList.toggle('opacity-50', STATE.currentSection === 0);
+  document.getElementById('skipBtn').classList.toggle('hidden', STATE.currentSection === 0);
+  // Skip button label
+  document.getElementById('skipBtn').textContent = isSkipped ? 'Un-skip this section' : 'Skip this section (not applicable)';
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// =========================================================
+// SIDEBAR
+// =========================================================
+function updateSidebar() {
+  const nav = document.getElementById('sectionNav');
+  nav.innerHTML = '';
+  FORM_SCHEMA.sections.forEach((s, i) => {
+    const status = sectionStatus(i);
+    const link = el('div', {
+      class:'sec-link' + (i === STATE.currentSection ? ' active' : '') + (status === 'skipped' ? ' skipped':''),
+      'data-status': status,
+      onclick: () => { STATE.currentSection = i; saveLocal(); renderSection(); updateSidebar(); }
+    },
+      el('span',{class:'sec-num'}, String(i)),
+      el('span',{class:'sec-dot'}),
+      el('span',{class:'flex-1 truncate'}, s.title || 'Section')
+    );
+    nav.appendChild(link);
+  });
+}
+
+function updateProgress() {
+  const pct = overallProgress();
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '%';
+}
+
+// =========================================================
+// NAVIGATION
+// =========================================================
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (STATE.currentSection < FORM_SCHEMA.sections.length - 1) {
+    STATE.currentSection++;
+    saveLocal();
+    renderSection(); updateSidebar(); updateProgress();
+  } else {
+    // already on last — scroll to submit
+    document.getElementById('submitWrap').scrollIntoView({behavior:'smooth'});
+  }
+});
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (STATE.currentSection > 0) {
+    STATE.currentSection--;
+    saveLocal();
+    renderSection(); updateSidebar(); updateProgress();
+  }
+});
+document.getElementById('skipBtn').addEventListener('click', () => {
+  const s = FORM_SCHEMA.sections[STATE.currentSection];
+  if (STATE.skipped[s.id]) delete STATE.skipped[s.id];
+  else STATE.skipped[s.id] = true;
+  saveLocal(); renderSection(); updateSidebar(); updateProgress();
+});
+
+// =========================================================
+// SAVE & EMAIL LINK
+// =========================================================
+async function saveAndEmailLink() {
+  if (!APPS_SCRIPT_URL) {
+    showToast('Apps Script URL not configured. Progress is saved on this device.', 4000);
+    return;
+  }
+  // Need an email to send the link to
+  let email = STATE.email || STATE.responses['email_address'] || '';
+  if (!email) {
+    email = prompt('Enter your email so we can send you a resume link:') || '';
+    if (!email) return;
+    STATE.email = email;
+    STATE.responses['email_address'] = email;
+    saveLocal();
+  }
+  showToast('Saving…');
+  try {
+    const res = await postJson({
+      action: 'save_draft',
+      draftId: STATE.draftId,
+      email,
+      payload: { responses: STATE.responses, skipped: STATE.skipped, currentSection: STATE.currentSection }
+    });
+    if (res && res.ok) {
+      STATE.draftId = res.draftId;
+      saveLocal();
+      showToast('Saved! A resume link has been emailed to ' + email, 4500);
+    } else {
+      showToast('Could not save draft. Your work is still saved on this device.', 4000);
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Network error. Your work is still saved on this device.', 4000);
+  }
+}
+document.getElementById('saveLinkBtn').addEventListener('click', saveAndEmailLink);
+document.getElementById('saveLinkBtnMobile').addEventListener('click', saveAndEmailLink);
+
+// =========================================================
+// BUILD SUBMISSION MANIFEST
+// Produces a payload the backend can format without knowing the schema.
+// =========================================================
+function buildSubmissionPayload() {
+  const sections = FORM_SCHEMA.sections.map(s => ({
+    id: s.id,
+    title: s.title,
+    skipped: !!STATE.skipped[s.id],
+    items: s.items
+      .filter(it => it.type !== 'subheading')
+      .filter(it => isShown(it))
+      .map(it => {
+        const v = STATE.responses[it.id];
+        let display = '';
+        if (v == null || v === '') display = '';
+        else if (Array.isArray(v)) display = v.join(', ');
+        else display = String(v);
+        return { id: it.id, label: it.label, type: it.type, value: v ?? '', display };
+      })
+  }));
+  // Cover info: pull a few "headline" fields for sheet/columns
+  const r = STATE.responses;
+  const cover = {
+    project_name: r.project_name || '',
+    address: r.address || '',
+    contractor_company_name: r.contractor_company_name || '',
+    contact_person: r.contact_person || '',
+    email_address: r.email_address || STATE.email || '',
+    phone_number: r.phone_number || '',
+    today_date: r.today_s_date || ''
+  };
+  return { sections, cover, responses: STATE.responses, skipped: STATE.skipped };
+}
+
+// =========================================================
+// SUBMIT
+// =========================================================
+async function submitForm() {
+  // Validate required
+  const missing = [];
+  flatItems().forEach(q => {
+    if (q.required && isShown(q) && !STATE.skipped[q.sectionId] && !questionIsAnswered(q)) {
+      missing.push(q);
+    }
+  });
+  if (missing.length) {
+    const first = missing[0];
+    STATE.currentSection = first.sectionIndex;
+    renderSection(); updateSidebar();
+    showToast(`Please complete required field: "${first.label}" (and ${missing.length-1} other${missing.length===2?'':'s'})`, 4500);
+    setTimeout(()=>{
+      const node = document.querySelector(`[data-qid="${first.id}"]`);
+      if (node) { node.scrollIntoView({behavior:'smooth', block:'center'}); node.style.borderColor = '#A8593E'; }
+    }, 300);
+    return;
+  }
+  if (!APPS_SCRIPT_URL) {
+    showToast('Apps Script URL not configured. Cannot submit yet — see deployment instructions in apps_script.gs.', 5000);
+    return;
+  }
+  showToast('Submitting…');
+  try {
+    const res = await postJson({
+      action: 'submit',
+      draftId: STATE.draftId,
+      payload: buildSubmissionPayload()
+    });
+    if (res && res.ok) {
+      // Clear local draft so a fresh visit starts clean
+      localStorage.removeItem(STORAGE_KEY);
+      // Strip ?draft from URL
+      if (location.search.includes('draft=')) {
+        history.replaceState({},'',location.pathname);
+      }
+      document.getElementById('doneOverlay').classList.remove('hidden');
+    } else {
+      showToast('Submission failed. Please try again.', 4000);
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Network error during submission.', 4000);
+  }
+}
+document.getElementById('submitBtn').addEventListener('click', submitForm);
+document.getElementById('doneClose').addEventListener('click', () => {
+  document.getElementById('doneOverlay').classList.add('hidden');
+});
+
+async function postJson(body) {
+  // Apps Script Web Apps don't support CORS preflight, so send as text/plain
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(body),
+    redirect:'follow'
+  });
+  return res.json();
+}
+
+// =========================================================
+// RESUME FROM URL
+// =========================================================
+async function maybeResumeFromUrl() {
+  const params = new URLSearchParams(location.search);
+  const draftId = params.get('draft');
+  if (!draftId || !APPS_SCRIPT_URL) return false;
+  showToast('Loading saved draft…');
+  try {
+    const res = await postJson({action:'resume_draft', draftId});
+    if (res && res.ok && res.payload) {
+      STATE.responses = res.payload.responses || {};
+      STATE.skipped = res.payload.skipped || {};
+      STATE.currentSection = res.payload.currentSection || 0;
+      STATE.draftId = draftId;
+      STATE.email = res.payload.email || STATE.email;
+      saveLocal();
+      showToast('Welcome back! Your draft was restored.', 3500);
+      return true;
+    }
+  } catch(e) { console.warn(e); }
+  return false;
+}
+
+// =========================================================
+// BOOT
+// =========================================================
+async function boot() {
+  // Build sidebar first so it's always there
+  updateSidebar();
+  updateProgress();
+
+  // Try URL resume first
+  const resumed = await maybeResumeFromUrl();
+
+  if (!resumed) {
+    const hasLocal = loadLocal();
+    if (hasLocal && Object.keys(STATE.responses).length > 0) {
+      // Returning user — show small intro with resume option
+      const intro = document.getElementById('introOverlay');
+      const resumeBtn = document.getElementById('introResume');
+      resumeBtn.classList.remove('hidden');
+      intro.classList.remove('hidden');
+      document.getElementById('introStart').textContent = 'Start over (clear progress)';
+      document.getElementById('introStart').onclick = () => {
+        if (!confirm('Clear your saved progress and start over?')) return;
+        STATE.responses = {}; STATE.skipped = {}; STATE.currentSection = 0; STATE.draftId = null;
+        saveLocal();
+        intro.classList.add('hidden');
+        renderSection(); updateSidebar(); updateProgress();
+      };
+      resumeBtn.onclick = () => {
+        intro.classList.add('hidden');
+        renderSection();
+      };
+    } else {
+      // First-time user — show full intro
+      const intro = document.getElementById('introOverlay');
+      intro.classList.remove('hidden');
+      document.getElementById('introStart').onclick = () => {
+        intro.classList.add('hidden');
+        renderSection();
+      };
+    }
+  } else {
+    renderSection();
+  }
+  updateSidebar();
+  updateProgress();
+}
+
+boot();
+</script>
+
+</body>
+</html>
