@@ -156,10 +156,11 @@
   </div>
 </div>
 
-<!-- Hide page chrome until password passes -->
+<!-- Hide page chrome until password passes. Specificity matters here: the
+     unlock rule must win, so we mirror the :not(#passwordGate) constraint. -->
 <style id="pwGateStyle">
   body > *:not(#passwordGate) { visibility: hidden; }
-  body.pw-unlocked > * { visibility: visible; }
+  body.pw-unlocked > *:not(#passwordGate) { visibility: visible; }
 </style>
 
 <!-- ============ INTRO OVERLAY ============ -->
