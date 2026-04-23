@@ -143,6 +143,25 @@
 </head>
 <body class="min-h-screen">
 
+<!-- ============ PASSWORD GATE ============ -->
+<div id="passwordGate" class="overlay no-print">
+  <div class="overlay-card text-center" style="max-width:420px">
+    <div class="text-xs uppercase tracking-widest text-twb-copper font-semibold mb-2">The Well Build</div>
+    <h1 class="text-2xl mb-3">Contractor Specifications</h1>
+    <p class="text-twb-text mb-5 text-sm">This form is for invited contractors only. Please enter the access password.</p>
+    <input id="pwInput" type="password" autocomplete="off" autofocus class="field-input mb-3 text-center" placeholder="Password">
+    <div id="pwError" class="text-sm text-twb-clay mb-3 hidden">Incorrect password — please try again.</div>
+    <button id="pwSubmit" class="btn-primary w-full">Enter form</button>
+    <p class="text-xs text-twb-mute mt-4">Don't have the password? Contact The Well Build.</p>
+  </div>
+</div>
+
+<!-- Hide page chrome until password passes -->
+<style id="pwGateStyle">
+  body > *:not(#passwordGate) { visibility: hidden; }
+  body.pw-unlocked > * { visibility: visible; }
+</style>
+
 <!-- ============ INTRO OVERLAY ============ -->
 <div id="introOverlay" class="overlay no-print hidden">
   <div class="overlay-card">
@@ -215,9 +234,14 @@
 <!-- ============ MAIN LAYOUT ============ -->
 <div class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
 
-  <!-- Sidebar -->
+  <!-- Sidebar (collapsible on mobile) -->
   <aside class="lg:sticky lg:top-[88px] lg:self-start no-print">
-    <div class="bg-white border border-twb-sage2 rounded-2xl p-3 lg:max-h-[calc(100vh-110px)] overflow-auto nice-scroll">
+    <!-- Mobile-only: tappable header that expands the sections panel -->
+    <button id="sidebarToggle" class="lg:hidden w-full bg-white border border-twb-sage2 rounded-2xl px-4 py-3 text-left flex items-center justify-between" aria-expanded="false">
+      <span class="font-semibold text-twb-green text-sm">Browse sections &amp; search</span>
+      <span id="sidebarToggleIcon" class="text-twb-mute text-xs">▼</span>
+    </button>
+    <div id="sidebarPanel" class="hidden lg:block mt-3 lg:mt-0 bg-white border border-twb-sage2 rounded-2xl p-3 lg:max-h-[calc(100vh-110px)] overflow-auto nice-scroll">
       <div class="relative px-1 pt-1 pb-2">
         <input id="sectionSearch" type="search" autocomplete="off" placeholder="Search questions…"
           class="w-full text-sm rounded-lg border border-twb-sage2 bg-twb-cream2 px-3 py-2 focus:outline-none focus:border-twb-green focus:ring-2 focus:ring-twb-sage2">
@@ -349,7 +373,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
     {
       id: `project_profile`,
       title: `Project Profile`,
-      description: `A few quick orienting questions. Your answers here let us hide sections that don't apply (you can always show them again from the sidebar).`,
+      description: `A few quick questions about the project to orient us before the detail.`,
       items: [
         {
           type: `radio`,
@@ -554,11 +578,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `subheading`,
-          label: `Site Water Conditions`,
-          helper: ``
-        },
-        {
-          type: `subheading`,
           label: `Capillary Break Under Footings`,
           helper: ``
         },
@@ -581,7 +600,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
     {
       id: `foundation_slab_edge_basement_insulation`,
       title: `Foundation — Slab Edge & Basement Insulation`,
-      description: `This entire section is N/A unless the project includes basement or slab-edge insulation. Auto-hidden if the Project Profile says no basement; click "Show all sections" to reveal.`,
+      description: ``,
       skipIf: {
         field: `profile_has_basement`,
         equals: `No`
@@ -714,11 +733,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `short`,
           label: `If fluid-applied, what brand?`,
           id: `if_fluid_applied_what_brand`
-        },
-        {
-          type: `subheading`,
-          label: `Capillary Break (between footing & foundation wall)`,
-          helper: ``
         },
         {
           type: `subheading`,
@@ -1882,12 +1896,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
           ],
           id: `additional_iaq_equipment_select_all_that_apply`
         },
-        {
-          type: `subheading`,
-          label: `Dehumidifier Detail`,
-          helper: `Active humidity control depends on location, dedicated controls, and a programmed setpoint.`
-        }
-      ]
+        ]
     },
     {
       id: `plumbing_water_supply`,
@@ -1992,12 +2001,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
           ],
           id: `water_treatment_systems_included_select_all_that_apply`
         },
-        {
-          type: `subheading`,
-          label: `Whole-Home Water Filtration`,
-          helper: `The Well Build strongly recommends whole-home water filtration. We can scope and install if not already planned.`
-        }
-      ]
+        ]
     },
     {
       id: `electrical_service_wiring`,
@@ -2051,11 +2055,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
       title: `Major Appliances & Low-Voltage`,
       description: ``,
       items: [
-        {
-          type: `subheading`,
-          label: `Outlets, Switches & Devices`,
-          helper: ``
-        },
         {
           type: `subheading`,
           label: `Major Appliances`,
@@ -2509,6 +2508,52 @@ This document and its contents are the exclusive property of The Well Build (TM)
     }
   ]
 };
+
+// =========================================================
+// PASSWORD GATE — change PW_HASH (and the password sent to builders) any time.
+// To change: in Terminal run `echo -n "newpassword" | shasum -a 256` and paste the hash.
+// Note: this is a soft gate (client-side only) — anyone who views source can bypass.
+// Sufficient to prevent casual sharing & search engines.
+// =========================================================
+const PW_HASH = "4ffecd11eac6fb35380290f2031a1f10bb15cc4c865e96159c49bf64c641211b"; // sha256("buildbetter")
+const PW_STORAGE_KEY = "twb_pw_ok_v1";
+
+async function sha256Hex(str) {
+  const buf = new TextEncoder().encode(str);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function unlockPage() {
+  document.body.classList.add('pw-unlocked');
+  const gate = document.getElementById('passwordGate');
+  if (gate) gate.style.display = 'none';
+}
+
+(async function passwordGate() {
+  if (localStorage.getItem(PW_STORAGE_KEY) === '1') {
+    unlockPage();
+    return;
+  }
+  const input = document.getElementById('pwInput');
+  const submit = document.getElementById('pwSubmit');
+  const err = document.getElementById('pwError');
+  const tryPw = async () => {
+    const v = (input.value || '').trim();
+    if (!v) return;
+    const h = await sha256Hex(v);
+    if (h === PW_HASH) {
+      localStorage.setItem(PW_STORAGE_KEY, '1');
+      unlockPage();
+    } else {
+      err.classList.remove('hidden');
+      input.select();
+    }
+  };
+  submit.addEventListener('click', tryPw);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') tryPw(); });
+  input.focus();
+})();
 
 // =========================================================
 // CONFIG — paste your Apps Script Web App URL here after deploying apps_script.gs
@@ -3087,7 +3132,12 @@ function renderSection() {
     }
   }
 
-  window.scrollTo({top:0, behavior:'smooth'});
+  // Only scroll to top when the user has just navigated to a different section,
+  // NOT on every in-section re-render (which fires on chip clicks etc).
+  if (STATE._lastRenderedSection !== STATE.currentSection) {
+    window.scrollTo({top:0, behavior:'smooth'});
+    STATE._lastRenderedSection = STATE.currentSection;
+  }
 }
 
 // =========================================================
@@ -3248,6 +3298,36 @@ function jumpToQuestion(sectionIndex, qid) {
     if (!results) return;
     if (e.target.closest('#sectionSearch') || e.target.closest('#searchResults')) return;
     results.classList.add('hidden');
+  });
+})();
+
+// Mobile sidebar toggle
+(function wireSidebarToggle() {
+  const btn = document.getElementById('sidebarToggle');
+  const panel = document.getElementById('sidebarPanel');
+  const icon = document.getElementById('sidebarToggleIcon');
+  if (!btn || !panel) return;
+  btn.addEventListener('click', () => {
+    const isHidden = panel.classList.contains('hidden');
+    if (isHidden) {
+      panel.classList.remove('hidden');
+      btn.setAttribute('aria-expanded', 'true');
+      icon.textContent = '▲';
+    } else {
+      panel.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      icon.textContent = '▼';
+    }
+  });
+  // Auto-collapse the panel on mobile after picking a section
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth >= 1024) return;  // lg breakpoint
+    const link = e.target.closest('.sec-link');
+    if (link) {
+      panel.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      if (icon) icon.textContent = '▼';
+    }
   });
 })();
 
