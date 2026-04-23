@@ -184,7 +184,7 @@
       <ol class="list-decimal pl-5 space-y-1 text-twb-text">
         <li>The Well Build team reviews your specs (typically within 2 business days).</li>
         <li>You'll receive a follow-up with any clarifying questions.</li>
-        <li>Once reviewed, we will schedule a follow up call.</li>
+        <li>Once approved, your roadmap and quality guidelines are issued.</li>
       </ol>
     </div>
     <button id="doneClose" class="btn-secondary">Close</button>
@@ -218,6 +218,11 @@
   <!-- Sidebar -->
   <aside class="lg:sticky lg:top-[88px] lg:self-start no-print">
     <div class="bg-white border border-twb-sage2 rounded-2xl p-3 lg:max-h-[calc(100vh-110px)] overflow-auto nice-scroll">
+      <div class="relative px-1 pt-1 pb-2">
+        <input id="sectionSearch" type="search" autocomplete="off" placeholder="Search questions…"
+          class="w-full text-sm rounded-lg border border-twb-sage2 bg-twb-cream2 px-3 py-2 focus:outline-none focus:border-twb-green focus:ring-2 focus:ring-twb-sage2">
+        <div id="searchResults" class="hidden absolute left-0 right-0 top-full mt-1 mx-1 bg-white border border-twb-sage2 rounded-lg shadow-lg max-h-80 overflow-auto z-30"></div>
+      </div>
       <div class="text-xs uppercase tracking-wider text-twb-mute font-semibold px-2 pt-1 pb-2">Sections</div>
       <nav id="sectionNav" class="space-y-0.5"></nav>
     </div>
@@ -256,8 +261,8 @@
 
 <!-- ============ SCHEMA ============ -->
 <script>
-// Auto-generated from the live Google Form on 2026-04-19
-// Source: https://docs.google.com/forms/d/e/1FAIpQLSdwICEBLPYSTdBTVVPf5j_eeWqSbYWFOQrbM51EdeDbwNsJHA/viewform
+// Auto-generated v2 (Rachel's edits applied) on 2026-04-22
+// Source: parsed Google Form + Rachel's review of TWB_Form_Review_Copy v2edits.pdf
 // Edit this object to add/remove/edit questions. Question types: short, paragraph, radio, select, checkboxes, yesno, date, subheading.
 const FORM_SCHEMA = {
   title: `The Well Build - Contractor Specifications Form`,
@@ -342,6 +347,67 @@ This document and its contents are the exclusive property of The Well Build (TM)
       ]
     },
     {
+      id: `project_profile`,
+      title: `Project Profile`,
+      description: `A few quick orienting questions. Your answers here let us hide sections that don't apply (you can always show them again from the sidebar).`,
+      items: [
+        {
+          type: `radio`,
+          label: `What is the primary foundation type?`,
+          choices: [
+            `Slab on grade`,
+            `Crawl space`,
+            `Stem wall`,
+            `Basement`,
+            `Pier and beam`
+          ],
+          allowOther: true,
+          id: `profile_foundation`
+        },
+        {
+          type: `yesno`,
+          label: `Does the home include a basement?`,
+          id: `profile_has_basement`
+        },
+        {
+          type: `paragraph`,
+          label: `Additional notes about the foundation or basement (if any):`,
+          id: `profile_foundation_notes`
+        },
+        {
+          type: `radio`,
+          label: `Does the home include a detached or attached garage?`,
+          choices: [
+            `Attached`,
+            `Detached`
+          ],
+          allowOther: true,
+          id: `profile_has_garage`
+        },
+        {
+          type: `radio`,
+          label: `Roof shape`,
+          choices: [
+            `Pitched only`,
+            `Flat / low-slope only`,
+            `Mixed (pitched + flat)`
+          ],
+          id: `profile_roof_shape`
+        },
+        {
+          type: `radio`,
+          label: `Number of stories`,
+          choices: [
+            `1`,
+            `1.5`,
+            `2`,
+            `3+`
+          ],
+          id: `profile_stories`
+        }
+      ]
+    },
+    {
       id: `foundation`,
       title: `Foundation`,
       description: ``,
@@ -376,11 +442,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `What is the concrete PSI rating?`,
-          id: `what_is_the_concrete_psi_rating`
-        },
-        {
-          type: `short`,
           label: `What is the concrete slump?`,
           id: `what_is_the_concrete_slump`
         },
@@ -396,14 +457,14 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `what_concrete_reinforcement_will_be_used_select_all_that_app`
         },
         {
-          type: `short`,
-          label: `Reinforcement specifications:`,
-          id: `reinforcement_specifications`
+          type: `paragraph`,
+          label: `Concrete specs: Do you add admixtures, fly ash, or curing compounds? If so, which?`,
+          id: `concrete_supplier`
         },
         {
-          type: `short`,
-          label: `Concrete supplier:`,
-          id: `concrete_supplier`
+          type: `yesno`,
+          label: `During a winter pour, do you cover concrete with blankets to keep moisture in and assist with the cure?`,
+          id: `concrete_winter_blanket`
         }
       ]
     },
@@ -463,7 +524,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `If yes, insulation type:`,
+          label: `If yes, insulation type (foam board, gravel, rock wool comfort boards, spray foam):`,
           id: `if_yes_insulation_type`,
           showIf: {
             field: `will_under_slab_insulation_be_installed`,
@@ -484,13 +545,47 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `yesno`,
           label: `Will you be installing a perforated pipe below slab for radon?`,
           id: `will_you_be_installing_a_perforated_pipe_below_slab_for_rado`
+        },
+        {
+          type: `yesno`,
+          label: `Is this home built on a site with a high water table?`,
+          helper: `If yes, we'll review capillary break and waterproofing carefully.`,
+          id: `high_water_table`
+        },
+        {
+          type: `subheading`,
+          label: `Site Water Conditions`,
+          helper: ``
+        },
+        {
+          type: `subheading`,
+          label: `Capillary Break Under Footings`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Is a capillary break installed UNDER the footings?`,
+          id: `under_footing_capillary_break`
+        },
+        {
+          type: `short`,
+          label: `If yes, what is used (e.g., membrane, fluid-applied)?`,
+          showIf: {
+            field: `under_footing_capillary_break`,
+            equals: `Yes`
+          },
+          id: `under_footing_break_type`
         }
       ]
     },
     {
       id: `foundation_slab_edge_basement_insulation`,
       title: `Foundation — Slab Edge & Basement Insulation`,
-      description: ``,
+      description: `This entire section is N/A unless the project includes basement or slab-edge insulation. Auto-hidden if the Project Profile says no basement; click "Show all sections" to reveal.`,
+      skipIf: {
+        field: `profile_has_basement`,
+        equals: `No`
+      },
       items: [
         {
           type: `subheading`,
@@ -529,12 +624,12 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Basement insulation on exterior walls or interior walls:`,
+          label: `Will the basement have exterior insulation? If so, what type and R-value?`,
           id: `basement_insulation_on_exterior_walls_or_interior_walls`
         },
         {
           type: `short`,
-          label: `Basement insulation type:`,
+          label: `For interior basement walls: what insulation type? (spray foam, foam boards, comfort boards, batts)`,
           id: `basement_insulation_type`
         },
         {
@@ -563,7 +658,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `radio`,
           label: `What type of foundation waterproofing/dampproofing is used?`,
           choices: [
-            `Dampproofing (spray/brush-on)`,
             `Membrane waterproofing`,
             `Liquid-applied waterproofing`
           ],
@@ -572,7 +666,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Waterproofing brand/product:`,
+          label: `Waterproofing brand/product and warranty:`,
           id: `waterproofing_brand_product`
         },
         {
@@ -593,6 +687,12 @@ This document and its contents are the exclusive property of The Well Build (TM)
             field: `will_a_dimple_mat_drainage_board_be_installed`,
             equals: `Yes`
           }
+        },
+        {
+          type: `short`,
+          label: `What backfill material will be used?`,
+          helper: `e.g., washed gravel, sand, native soil`,
+          id: `backfill_material`
         },
         {
           type: `subheading`,
@@ -621,21 +721,23 @@ This document and its contents are the exclusive property of The Well Build (TM)
           helper: ``
         },
         {
-          type: `radio`,
-          label: `Capillary break type between footing and foundation wall:`,
-          choices: [
-            `Fluid-applied`,
-            `Sill seal foam`,
-            `Polyethylene sheet`,
-            `None`
-          ],
-          allowOther: true,
-          id: `capillary_break_type_between_footing_and_foundation_wall`
+          type: `subheading`,
+          label: `Stem Wall Waterproofing`,
+          helper: `For projects with stem-wall foundations (no full basement), waterproofing the exterior of the stem wall is often skipped — but is critical when soil conditions warrant.`
+        },
+        {
+          type: `yesno`,
+          label: `If foundation is a stem wall only, will it be waterproofed? How?`,
+          id: `stem_wall_waterproof`
         },
         {
           type: `short`,
-          label: `If fluid-applied, what brand?`,
-          id: `if_fluid_applied_what_brand_2`
+          label: `If yes, brand/product used:`,
+          showIf: {
+            field: `stem_wall_waterproof`,
+            equals: `Yes`
+          },
+          id: `stem_wall_waterproof_brand`
         }
       ]
     },
@@ -691,11 +793,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `None`
           ],
           id: `foundation_drain_system_type_select_all_that_apply`
-        },
-        {
-          type: `paragraph`,
-          label: `Drain system specifications:`,
-          id: `drain_system_specifications`
         },
         {
           type: `short`,
@@ -758,6 +855,25 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `short`,
           label: `Other engineered lumber:`,
           id: `other_engineered_lumber`
+        },
+        {
+          type: `subheading`,
+          label: `Material Storage & Mold Prevention`,
+          helper: `Lumber moisture content and on-site exposure are leading causes of trapped moisture and downstream mold issues.`
+        },
+        {
+          type: `yesno`,
+          label: `Do you have a written SOP for protecting lumber and materials on-site (delivery, coverage, elevation, mold sensitivity protocol)?`,
+          id: `material_storage_sop`
+        },
+        {
+          type: `paragraph`,
+          label: `If so, briefly describe the SOP:`,
+          showIf: {
+            field: `material_storage_sop`,
+            equals: `Yes`
+          },
+          id: `material_storage_sop_detail`
         }
       ]
     },
@@ -793,19 +909,9 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `subfloor_brand`
         },
         {
-          type: `short`,
-          label: `Subfloor grade:`,
-          id: `subfloor_grade`
-        },
-        {
           type: `yesno`,
           label: `Will subfloor be glued and screwed down?`,
           id: `will_subfloor_be_glued_and_screwed_down`
-        },
-        {
-          type: `short`,
-          label: `Adhesive/glue used:`,
-          id: `adhesive_glue_used`
         },
         {
           type: `paragraph`,
@@ -837,16 +943,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Joist size:`,
-          id: `joist_size`
-        },
-        {
-          type: `short`,
-          label: `Joist spacing:`,
-          id: `joist_spacing`
-        },
-        {
-          type: `short`,
           label: `Brand (if engineered):`,
           id: `brand_if_engineered`
         },
@@ -869,6 +965,11 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `short`,
           label: `Exterior wall stud spacing (on center):`,
           id: `exterior_wall_stud_spacing_on_center`
+        },
+        {
+          type: `yesno`,
+          label: `Are California corners (advanced framing corners) being used on exterior walls?`,
+          id: `california_corners`
         },
         {
           type: `subheading`,
@@ -909,13 +1010,22 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Specifications/heel height:`,
+          label: `Roof rafter / truss size and heel height (e.g., 2x10, 2x12, raised heel ___ inches):`,
           id: `specifications_heel_height`
         },
         {
-          type: `short`,
-          label: `Truss manufacturer:`,
-          id: `truss_manufacturer`
+          type: `yesno`,
+          label: `Does the roof have soffits?`,
+          id: `roof_has_soffits`
+        },
+        {
+          type: `radio`,
+          label: `Is the plan to vent or not vent the attic?`,
+          choices: [
+            `Vented`,
+            `Unvented`
+          ],
+          id: `attic_vent_plan`
         }
       ]
     },
@@ -961,25 +1071,23 @@ This document and its contents are the exclusive property of The Well Build (TM)
           label: `WRB application method:`,
           choices: [
             `Self-adhered`,
+            `Liquid-applied`,
             `Mechanically fastened`
           ],
           id: `wrb_application_method`
         },
         {
-          type: `radio`,
-          label: `WRB type:`,
-          choices: [
-            `Tyvek`,
-            `Typar`,
-            `Henry Blueskin VP100`,
-            `Zip System (integrated with sheathing)`
-          ],
-          allowOther: true,
-          id: `wrb_type`
+          type: `short`,
+          label: `If mechanically fastened, are staples used (or cap nails / alternative)?`,
+          showIf: {
+            field: `wrb_application_method`,
+            equals: `Mechanically fastened`
+          },
+          id: `wrb_fastener_type`
         },
         {
           type: `short`,
-          label: `WRB product name/model:`,
+          label: `WRB or house wrap product name/model:`,
           id: `wrb_product_name_model`
         },
         {
@@ -989,7 +1097,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `yesno`,
-          label: `Will a rainscreen system be installed?`,
+          label: `Will a rainscreen system or drainage gap be installed?`,
           id: `will_a_rainscreen_system_be_installed`
         },
         {
@@ -998,14 +1106,30 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `rainscreen_type_brand`
         },
         {
-          type: `short`,
-          label: `Rainscreen gap spacing:`,
-          id: `rainscreen_gap_spacing`
+          type: `subheading`,
+          label: `Exterior Cladding / Siding`,
+          helper: ``
+        },
+        {
+          type: `radio`,
+          label: `Primary exterior cladding/siding material:`,
+          choices: [
+            `Brick`,
+            `Stone (natural)`,
+            `Stone veneer (manufactured)`,
+            `Vinyl siding`,
+            `Fiber cement (Hardie, etc.)`,
+            `Wood siding`,
+            `Metal siding`,
+            `Stucco/EIFS`
+          ],
+          allowOther: true,
+          id: `primary_exterior_cladding_siding_material`
         },
         {
           type: `short`,
-          label: `Rainscreen material:`,
-          id: `rainscreen_material`
+          label: `Exterior cladding brand/product:`,
+          id: `exterior_cladding_brand_product`
         }
       ]
     },
@@ -1015,48 +1139,124 @@ This document and its contents are the exclusive property of The Well Build (TM)
       description: ``,
       items: [
         {
+          type: `subheading`,
+          label: `Exterior Wall R-Value`,
+          helper: ``
+        },
+        {
           type: `short`,
-          label: `Code-required R-values for exterior walls in your area:`,
-          id: `code_required_r_values_for_exterior_walls_in_your_area`
+          label: `What is the total R-value for exterior walls?`,
+          id: `exterior_walls_total_r_value`
+        },
+        {
+          type: `subheading`,
+          label: `Exterior Continuous Insulation (CI)`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Are you using exterior continuous insulation?`,
+          id: `exterior_ci_used`
         },
         {
           type: `checkboxes`,
-          label: `Exterior wall insulation type (select all that apply):`,
+          label: `If yes, exterior CI type (select all that apply):`,
           choices: [
-            `Fiberglass batts`,
-            `Rockwool/Mineral wool batts`,
-            `Sheep's wool`,
-            `Dense-pack cellulose`,
-            `Spray foam - Open cell`,
-            `Spray foam - Closed cell`,
-            `Flash and Batt`,
-            `Exterior insulation (EIFS, mineral wool board, foam board)`
+            `Foam boards`,
+            `Mineral wool board`,
+            `Wood fiber`
           ],
+          showIf: {
+            field: `exterior_ci_used`,
+            equals: `Yes`
+          },
           id: `exterior_wall_insulation_type_select_all_that_apply`
         },
         {
           type: `short`,
-          label: `Exterior wall insulation brand:`,
+          label: `Exterior CI brand:`,
+          showIf: {
+            field: `exterior_ci_used`,
+            equals: `Yes`
+          },
           id: `exterior_wall_insulation_brand`
         },
         {
           type: `short`,
-          label: `Exterior wall insulation R-Value:`,
+          label: `Exterior CI R-Value:`,
+          showIf: {
+            field: `exterior_ci_used`,
+            equals: `Yes`
+          },
           id: `exterior_wall_insulation_r_value`
         },
         {
-          type: `yesno`,
-          label: `Is Rockwool/mineral wool an upcharge?`,
-          id: `is_rockwool_mineral_wool_an_upcharge`
+          type: `subheading`,
+          label: `Interior Wall Bay Insulation`,
+          helper: `What goes in the stud bays — type and R-value.`
+        },
+        {
+          type: `short`,
+          label: `Interior bay insulation R-value:`,
+          id: `interior_bay_r_value`
+        },
+        {
+          type: `checkboxes`,
+          label: `Interior bay insulation type (select all that apply):`,
+          choices: [
+            `Blown-in fiberglass`,
+            `Blown-in cellulose`,
+            `Batts — fiberglass`,
+            `Batts — rockwool`,
+            `Batts — wool`,
+            `Spray foam — open cell`,
+            `Spray foam — closed cell`,
+            `Flash and batt`
+          ],
+          id: `interior_bay_insulation_type`
+        },
+        {
+          type: `short`,
+          label: `Interior bay insulation brand:`,
+          id: `interior_bay_insulation_brand`
+        },
+        {
+          type: `subheading`,
+          label: `Interior Air Barrier`,
+          helper: ``
         },
         {
           type: `yesno`,
-          label: `Are you installing an interior air barrier?`,
+          label: `Are you installing an interior air barrier or poly?`,
           id: `are_you_installing_an_interior_air_barrier`
         },
         {
+          type: `checkboxes`,
+          label: `If yes, what type? (select all that apply)`,
+          choices: [
+            `Smart vapor retarder (e.g., Intello Plus)`,
+            `Polyethylene sheet`,
+            `Drywall as air barrier (airtight drywall approach)`,
+            `Aerobarrier`
+          ],
+          showIf: {
+            field: `are_you_installing_an_interior_air_barrier`,
+            equals: `Yes`
+          },
+          id: `interior_air_barrier_type`
+        },
+        {
+          type: `short`,
+          label: `Brand / product name (if applicable):`,
+          showIf: {
+            field: `are_you_installing_an_interior_air_barrier`,
+            equals: `Yes`
+          },
+          id: `interior_air_barrier_brand`
+        },
+        {
           type: `paragraph`,
-          label: `If so, please list the brand and specifications.`,
+          label: `Additional notes (if any):`,
           id: `if_so_please_list_the_brand_and_specifications`
         }
       ]
@@ -1101,7 +1301,9 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Blown fiberglass`,
             `Blown cellulose`,
             `Batt insulation`,
-            `Spray foam`
+            `Spray foam — open cell`,
+            `Spray foam — closed cell`,
+            `Flash and batt`
           ],
           allowOther: true,
           id: `ceiling_attic_insulation_type`
@@ -1115,6 +1317,11 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `short`,
           label: `Ceiling/attic insulation R-Value:`,
           id: `ceiling_attic_insulation_r_value`
+        },
+        {
+          type: `yesno`,
+          label: `Will the attic have both soffit and ridge vents?`,
+          id: `attic_soffit_ridge_vents`
         },
         {
           type: `subheading`,
@@ -1200,11 +1407,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `None - Unvented roof assembly`
           ],
           id: `roof_ventilation_type_select_all_that_apply`
-        },
-        {
-          type: `short`,
-          label: `Net free ventilation area:`,
-          id: `net_free_ventilation_area`
         }
       ]
     },
@@ -1242,11 +1444,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `roofing_product_line`
         },
         {
-          type: `short`,
-          label: `Roofing color:`,
-          id: `roofing_color`
-        },
-        {
           type: `subheading`,
           label: `Underlayment`,
           helper: ``
@@ -1273,25 +1470,54 @@ This document and its contents are the exclusive property of The Well Build (TM)
           helper: ``
         },
         {
-          type: `radio`,
-          label: `Gutter material:`,
-          choices: [
-            `Aluminum`,
-            `Copper`,
-            `Galvanized steel`
-          ],
-          allowOther: true,
-          id: `gutter_material`
-        },
-        {
           type: `short`,
           label: `Gutter size:`,
           id: `gutter_size`
         },
         {
+          type: `short`,
+          label: `Downspout size:`,
+          id: `downspout_size`
+        },
+        {
+          type: `subheading`,
+          label: `Flat / Low-Slope Roof Insulation`,
+          helper: `Only relevant if the project includes any flat or low-slope roof areas.`
+        },
+        {
           type: `yesno`,
-          label: `Are gutter guards included?`,
-          id: `are_gutter_guards_included`
+          label: `If project includes flat / low-slope roof, will above-deck (continuous) insulation be installed?`,
+          showIf: {
+            field: `profile_roof_shape`,
+            notEquals: `Pitched only`
+          },
+          id: `flat_roof_above_deck_ci`
+        },
+        {
+          type: `short`,
+          label: `Above-deck insulation type and R-value:`,
+          showIf: {
+            field: `flat_roof_above_deck_ci`,
+            equals: `Yes`
+          },
+          id: `flat_roof_above_deck_ci_type`
+        },
+        {
+          type: `radio`,
+          label: `Roof membrane type (low-slope roofs):`,
+          choices: [
+            `EPDM`,
+            `TPO`,
+            `PVC`,
+            `Modified bitumen`,
+            `Built-up roof`
+          ],
+          allowOther: true,
+          showIf: {
+            field: `profile_roof_shape`,
+            notEquals: `Pitched only`
+          },
+          id: `low_slope_roof_membrane`
         }
       ]
     },
@@ -1351,21 +1577,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Triple-pane`
           ],
           id: `glass_type`
-        },
-        {
-          type: `short`,
-          label: `Window U-Factor:`,
-          id: `window_u_factor`
-        },
-        {
-          type: `short`,
-          label: `SHGC (Solar Heat Gain Coefficient):`,
-          id: `shgc_solar_heat_gain_coefficient`
-        },
-        {
-          type: `short`,
-          label: `Window warranty:`,
-          id: `window_warranty`
         }
       ]
     },
@@ -1385,16 +1596,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `flashing_tape_brand`
         },
         {
-          type: `short`,
-          label: `Sealant/caulk brand:`,
-          id: `sealant_caulk_brand`
-        },
-        {
-          type: `yesno`,
-          label: `Installation per manufacturer specifications?`,
-          id: `installation_per_manufacturer_specifications`
-        },
-        {
           type: `yesno`,
           label: `Rigid head flashing included?`,
           id: `rigid_head_flashing_included`
@@ -1410,11 +1611,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           helper: ``
         },
         {
-          type: `short`,
-          label: `Exterior door brand:`,
-          id: `exterior_door_brand`
-        },
-        {
           type: `radio`,
           label: `Exterior door material:`,
           choices: [
@@ -1428,61 +1624,44 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Exterior door U-factor:`,
-          id: `exterior_door_u_factor`
-        },
-        {
-          type: `short`,
           label: `Threshold type:`,
           id: `threshold_type`
-        },
-        {
-          type: `short`,
-          label: `Weatherstripping type:`,
-          id: `weatherstripping_type`
         }
       ]
     },
     {
       id: `garage_doors`,
-      title: `Garage Doors`,
+      title: `Garage`,
       description: ``,
       items: [
-        {
-          type: `short`,
-          label: `Garage door brand:`,
-          id: `garage_door_brand`
-        },
         {
           type: `yesno`,
           label: `Are the garage doors insulated?`,
           id: `are_the_garage_doors_insulated`
         },
         {
-          type: `short`,
-          label: `If insulated, what is the R-value?`,
-          id: `if_insulated_what_is_the_r_value`
+          type: `yesno`,
+          label: `Will the garage be conditioned?`,
+          id: `garage_conditioned`
         },
         {
-          type: `radio`,
-          label: `Garage door material:`,
-          choices: [
-            `Steel`,
-            `Wood`,
-            `Aluminum/glass`
-          ],
-          allowOther: true,
-          id: `garage_door_material`
+          type: `yesno`,
+          label: `Is there living space over the garage?`,
+          id: `garage_living_space_above`
         },
         {
-          type: `short`,
-          label: `Garage door opener brand:`,
-          id: `garage_door_opener_brand`
+          type: `paragraph`,
+          label: `If yes, describe insulation and air barrier between the garage and the room above.`,
+          showIf: {
+            field: `garage_living_space_above`,
+            equals: `Yes`
+          },
+          id: `garage_living_space_assembly`
         },
         {
-          type: `short`,
-          label: `Number of garage doors:`,
-          id: `number_of_garage_doors`
+          type: `yesno`,
+          label: `Is a vapor barrier installed under the garage slab?`,
+          id: `garage_slab_vapor_barrier`
         }
       ]
     },
@@ -1491,11 +1670,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
       title: `HVAC — System Design`,
       description: ``,
       items: [
-        {
-          type: `yesno`,
-          label: `Is the system based on mechanical specs provided?`,
-          id: `is_the_system_based_on_mechanical_specs_provided`
-        },
         {
           type: `yesno`,
           label: `Was a Manual J load calculation performed or will it be done?`,
@@ -1522,9 +1696,51 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `is_a_blower_door_test_required_by_code`
         },
         {
+          type: `short`,
+          label: `Target ACH50 for blower door (e.g., "3.0", "below 2.0"):`,
+          showIf: {
+            field: `is_a_blower_door_test_required_by_code`,
+            equals: `Yes`
+          },
+          id: `blower_door_target_ach50`
+        },
+        {
           type: `yesno`,
-          label: `Will temporary heating/cooling and dehumidification be used during construction?`,
+          label: `Will temporary heating/cooling and dehumidification (or installed units) be run during construction?`,
           id: `will_temporary_heating_cooling_and_dehumidification_be_used_`
+        },
+        {
+          type: `radio`,
+          label: `If yes, type of temporary heat:`,
+          choices: [
+            `Direct-fired propane`,
+            `Indirect-fired (vented)`,
+            `Packaged units`,
+            `Electric`,
+            `Heat pump`,
+            `None`
+          ],
+          allowOther: true,
+          showIf: {
+            field: `will_temporary_heating_cooling_and_dehumidification_be_used_`,
+            equals: `Yes`
+          },
+          id: `construction_temp_heat_type`
+        },
+        {
+          type: `radio`,
+          label: `If yes, type of construction-phase dehumidification:`,
+          choices: [
+            `Portable`,
+            `Whole-home dehum installed early`,
+            `None`
+          ],
+          allowOther: true,
+          showIf: {
+            field: `will_temporary_heating_cooling_and_dehumidification_be_used_`,
+            equals: `Yes`
+          },
+          id: `construction_temp_dehum_type`
         }
       ]
     },
@@ -1542,7 +1758,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Heat pump (ground source/geothermal)`,
             `Mini-split/Multi-split`,
             `Radiant floor heating`,
-            `Boiler with radiators`,
             `VRF/VRV system`
           ],
           allowOther: true,
@@ -1554,9 +1769,14 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `hvac_manufacturer`
         },
         {
-          type: `short`,
-          label: `HVAC model/series:`,
-          id: `hvac_model_series`
+          type: `radio`,
+          label: `HVAC stages:`,
+          id: `hvac_model_series`,
+          choices: [
+            `Single-stage`,
+            `Two-stage`,
+            `Variable speed (inverter)`
+          ]
         },
         {
           type: `short`,
@@ -1565,23 +1785,8 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `HSPF rating (heating):`,
-          id: `hspf_rating_heating`
-        },
-        {
-          type: `short`,
-          label: `Tonnage/BTU:`,
-          id: `tonnage_btu`
-        },
-        {
-          type: `short`,
           label: `Number of zones:`,
           id: `number_of_zones`
-        },
-        {
-          type: `short`,
-          label: `HVAC warranty:`,
-          id: `hvac_warranty`
         }
       ]
     },
@@ -1633,14 +1838,10 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `duct_insulation_r_value`
         },
         {
-          type: `short`,
-          label: `Brand/type of duct tape (if used):`,
-          id: `brand_type_of_duct_tape_if_used`
-        },
-        {
           type: `yesno`,
           label: `Will a duct blast test be performed?`,
-          id: `will_a_duct_blast_test_be_performed`
+          id: `will_a_duct_blast_test_be_performed`,
+          helper: `Required if any ducts run through unconditioned space.`
         },
         {
           type: `subheading`,
@@ -1661,15 +1862,10 @@ This document and its contents are the exclusive property of The Well Build (TM)
           label: `Filter type included:`,
           choices: [
             `1" disposable`,
-            `4" media filter`,
-            `HEPA bypass`
+            `4" media filter`
           ],
-          id: `filter_type_included`
-        },
-        {
-          type: `short`,
-          label: `If 4" media filter, what brand?`,
-          id: `if_4_media_filter_what_brand`
+          id: `filter_type_included`,
+          allowOther: true
         },
         {
           type: `checkboxes`,
@@ -1679,6 +1875,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Basement dehumidifier`,
             `Humidifier`,
             `ERV/HRV (energy/heat recovery ventilator)`,
+            `Positive pressure ventilation`,
             `UV light`,
             `Make-up air`,
             `None`
@@ -1686,19 +1883,9 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `additional_iaq_equipment_select_all_that_apply`
         },
         {
-          type: `short`,
-          label: `IAQ equipment specifications/brands:`,
-          id: `iaq_equipment_specifications_brands`
-        },
-        {
-          type: `short`,
-          label: `Bathroom exhaust fan type:`,
-          id: `bathroom_exhaust_fan_type`
-        },
-        {
-          type: `short`,
-          label: `Kitchen range hood CFM rating:`,
-          id: `kitchen_range_hood_cfm_rating`
+          type: `subheading`,
+          label: `Dehumidifier Detail`,
+          helper: `Active humidity control depends on location, dedicated controls, and a programmed setpoint.`
         }
       ]
     },
@@ -1716,10 +1903,10 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `radio`,
           label: `Water supply piping type:`,
           choices: [
-            `PEX`,
+            `PEX-A`,
+            `PEX-B`,
             `Copper (Type L, M, K)`,
-            `CPVC`,
-            `PEX-AL-PEX`
+            `CPVC`
           ],
           allowOther: true,
           id: `water_supply_piping_type`
@@ -1728,11 +1915,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `short`,
           label: `Water supply piping brand:`,
           id: `water_supply_piping_brand`
-        },
-        {
-          type: `short`,
-          label: `Piping connection method:`,
-          id: `piping_connection_method`
         },
         {
           type: `yesno`,
@@ -1754,16 +1936,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           ],
           allowOther: true,
           id: `dwv_piping_type`
-        },
-        {
-          type: `short`,
-          label: `DWV piping brand:`,
-          id: `dwv_piping_brand`
-        },
-        {
-          type: `short`,
-          label: `Fitting types (solvent weld, mechanical, etc.):`,
-          id: `fitting_types_solvent_weld_mechanical_etc`
         }
       ]
     },
@@ -1782,9 +1954,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
           label: `Hot water heater type:`,
           choices: [
             `Tank water heater`,
-            `Tankless (on-demand)`,
-            `Heat pump water heater`,
-            `Indirect (with boiler)`
+            `Tankless (on-demand)`
           ],
           allowOther: true,
           id: `hot_water_heater_type`
@@ -1795,26 +1965,10 @@ This document and its contents are the exclusive property of The Well Build (TM)
           choices: [
             `Natural gas`,
             `Electric`,
-            `Propane`,
-            `Solar with backup`
+            `Propane`
           ],
           allowOther: true,
           id: `water_heater_fuel_type`
-        },
-        {
-          type: `short`,
-          label: `Water heater brand:`,
-          id: `water_heater_brand`
-        },
-        {
-          type: `short`,
-          label: `Water heater capacity (gallons or GPM):`,
-          id: `water_heater_capacity_gallons_or_gpm`
-        },
-        {
-          type: `short`,
-          label: `Water heater warranty:`,
-          id: `water_heater_warranty`
         },
         {
           type: `yesno`,
@@ -1839,9 +1993,9 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `water_treatment_systems_included_select_all_that_apply`
         },
         {
-          type: `short`,
-          label: `Water treatment specifications/brands:`,
-          id: `water_treatment_specifications_brands`
+          type: `subheading`,
+          label: `Whole-Home Water Filtration`,
+          helper: `The Well Build strongly recommends whole-home water filtration. We can scope and install if not already planned.`
         }
       ]
     },
@@ -1857,18 +2011,8 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Electrical service size (amps):`,
-          id: `electrical_service_size_amps`
-        },
-        {
-          type: `short`,
           label: `Electrical panel brand:`,
           id: `electrical_panel_brand`
-        },
-        {
-          type: `short`,
-          label: `Number of circuits:`,
-          id: `number_of_circuits`
         },
         {
           type: `yesno`,
@@ -1895,71 +2039,22 @@ This document and its contents are the exclusive property of The Well Build (TM)
           choices: [
             `Romex (NM cable)`,
             `MC cable (metal-clad)`,
-            `BX cable (armored)`,
-            `Conduit (EMT, PVC)`
+            `Mixed`
           ],
           allowOther: true,
           id: `wiring_type`
-        },
-        {
-          type: `short`,
-          label: `Wiring brand:`,
-          id: `wiring_brand`
-        },
-        {
-          type: `radio`,
-          label: `Where is conduit used (if applicable)?`,
-          choices: [
-            `Exterior walls`,
-            `Wet locations`,
-            `Throughout home`,
-            `Not applicable`
-          ],
-          id: `where_is_conduit_used_if_applicable`
         }
       ]
     },
     {
       id: `electrical_outlets_appliances_smart_home`,
-      title: `Electrical — Outlets, Appliances & Smart Home`,
+      title: `Major Appliances & Low-Voltage`,
       description: ``,
       items: [
         {
           type: `subheading`,
           label: `Outlets, Switches & Devices`,
           helper: ``
-        },
-        {
-          type: `short`,
-          label: `Outlet/switch brand:`,
-          id: `outlet_switch_brand`
-        },
-        {
-          type: `short`,
-          label: `Outlet/switch grade (residential, spec, commercial):`,
-          id: `outlet_switch_grade_residential_spec_commercial`
-        },
-        {
-          type: `checkboxes`,
-          label: `Special outlets included (select all that apply):`,
-          choices: [
-            `USB outlets`,
-            `GFCI outlets (all required locations)`,
-            `AFCI protection (all required circuits)`,
-            `Tamper-resistant outlets`,
-            `Weather-resistant outlets (exterior)`
-          ],
-          id: `special_outlets_included_select_all_that_apply`
-        },
-        {
-          type: `radio`,
-          label: `Is recessed lighting included?`,
-          choices: [
-            `Yes - LED`,
-            `Yes - Other type`,
-            `No`
-          ],
-          id: `is_recessed_lighting_included`
         },
         {
           type: `subheading`,
@@ -1989,8 +2084,24 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `dryer_hookup_type`
         },
         {
+          type: `yesno`,
+          label: `Will a heat pump (ventless) dryer be installed?`,
+          helper: `Heat pump dryers are the only common dryer type that doesn't require an exterior vent.`,
+          id: `heat_pump_dryer_installed`
+        },
+        {
+          type: `yesno`,
+          label: `Will a built-in coffee maker be installed?`,
+          id: `built_in_coffee_maker`
+        },
+        {
+          type: `yesno`,
+          label: `Will a separate ice maker be installed?`,
+          id: `separate_ice_maker`
+        },
+        {
           type: `short`,
-          label: `EV charger circuit rough-in (describe if included):`,
+          label: `EV charger circuit (describe if included):`,
           id: `ev_charger_circuit_rough_in_describe_if_included`
         },
         {
@@ -2008,19 +2119,12 @@ This document and its contents are the exclusive property of The Well Build (TM)
           label: `Low-voltage/smart home wiring included (select all that apply):`,
           choices: [
             `CAT6 ethernet cabling`,
-            `Coax cable (TV/internet)`,
+            `Pre-wire for TVs`,
+            `Pre-wire where computers will be used`,
             `Security system pre-wire`,
-            `Doorbell camera wiring`,
-            `Central media panel`,
-            `Whole-house audio pre-wire`,
-            `None`
+            `Doorbell camera wiring`
           ],
           id: `low_voltage_smart_home_wiring_included_select_all_that_apply`
-        },
-        {
-          type: `paragraph`,
-          label: `Low-voltage specifications/locations:`,
-          id: `low_voltage_specifications_locations`
         },
         {
           type: `yesno`,
@@ -2029,12 +2133,17 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `If yes, generator brand:`,
-          id: `if_yes_generator_brand`,
+          label: `Generator location (must be a code-required distance from the home due to CO):`,
           showIf: {
             field: `is_a_whole_home_backup_generator_included`,
             equals: `Yes`
-          }
+          },
+          id: `generator_location`
+        },
+        {
+          type: `yesno`,
+          label: `Is a whole-home surge protector included?`,
+          id: `whole_home_surge_protector`
         }
       ]
     },
@@ -2043,6 +2152,21 @@ This document and its contents are the exclusive property of The Well Build (TM)
       title: `Shower & Tub Waterproofing`,
       description: ``,
       items: [
+        {
+          type: `subheading`,
+          label: `Bathroom Comfort & Drying`,
+          helper: ``
+        },
+        {
+          type: `yesno`,
+          label: `Will radiant heat be installed in any bathrooms?`,
+          id: `bathroom_radiant_heat`
+        },
+        {
+          type: `yesno`,
+          label: `Will radiant heat be installed in any showers (or AirManda / similar shower-drying system)?`,
+          id: `shower_radiant_or_drying`
+        },
         {
           type: `subheading`,
           label: `Shower Construction`,
@@ -2058,11 +2182,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           ],
           allowOther: true,
           id: `what_are_showers_built_from`
-        },
-        {
-          type: `short`,
-          label: `If cement board, what brand?`,
-          id: `if_cement_board_what_brand`
         },
         {
           type: `subheading`,
@@ -2088,12 +2207,7 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Floor waterproofing product:`,
-          id: `floor_waterproofing_product`
-        },
-        {
-          type: `short`,
-          label: `Will you be waterproofing the floor outside the shower?`,
+          label: `Will you waterproof the floor outside the shower? If so, with what?`,
           id: `will_you_be_waterproofing_the_floor_outside_the_shower`
         },
         {
@@ -2107,7 +2221,8 @@ This document and its contents are the exclusive property of The Well Build (TM)
           choices: [
             `Pre-sloped foam pan (Schluter, Wedi, etc.)`,
             `Traditional mud bed`,
-            `Pre-fabricated acrylic/fiberglass base`
+            `Pre-fabricated acrylic/fiberglass base`,
+            `Vinyl`
           ],
           allowOther: true,
           id: `shower_pan_construction`
@@ -2130,18 +2245,8 @@ This document and its contents are the exclusive property of The Well Build (TM)
           helper: ``
         },
         {
-          type: `radio`,
-          label: `Drywall thickness:`,
-          choices: [
-            `1/2 inch`,
-            `5/8 inch`
-          ],
-          allowOther: true,
-          id: `drywall_thickness`
-        },
-        {
           type: `short`,
-          label: `Drywall brand:`,
+          label: `Drywall — natural or synthetic? (and brand)`,
           id: `drywall_brand`
         },
         {
@@ -2167,11 +2272,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `joint_compound_brand_type`
         },
         {
-          type: `short`,
-          label: `Tape type (paper, mesh, etc.):`,
-          id: `tape_type_paper_mesh_etc`
-        },
-        {
           type: `subheading`,
           label: `Interior Paint`,
           helper: ``
@@ -2187,18 +2287,8 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `paint_product_line_type`
         },
         {
-          type: `short`,
-          label: `Paint finish (flat, eggshell, satin, semi-gloss):`,
-          id: `paint_finish_flat_eggshell_satin_semi_gloss`
-        },
-        {
-          type: `short`,
-          label: `Number of coats (primer + finish):`,
-          id: `number_of_coats_primer_finish`
-        },
-        {
           type: `yesno`,
-          label: `Is low-VOC or zero-VOC paint used?`,
+          label: `Is low-VOC or zero-VOC primer AND paint included?`,
           id: `is_low_voc_or_zero_voc_paint_used`
         }
       ]
@@ -2220,50 +2310,23 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Pine`,
             `Poplar`,
             `MDF (primed)`,
-            `Finger-jointed pine (primed)`,
             `Hardwood`
           ],
           allowOther: true,
           id: `trim_material`
         },
         {
-          type: `short`,
-          label: `If hardwood, what species?`,
-          id: `if_hardwood_what_species`
-        },
-        {
-          type: `short`,
-          label: `Baseboard height:`,
-          id: `baseboard_height`
-        },
-        {
-          type: `short`,
-          label: `Baseboard style:`,
-          id: `baseboard_style`
-        },
-        {
-          type: `short`,
-          label: `Door casing width:`,
-          id: `door_casing_width`
-        },
-        {
-          type: `short`,
-          label: `Window casing/trim style:`,
-          id: `window_casing_trim_style`
-        },
-        {
-          type: `yesno`,
-          label: `Is crown molding included?`,
-          id: `is_crown_molding_included`
-        },
-        {
-          type: `short`,
-          label: `If yes, crown molding height:`,
-          id: `if_yes_crown_molding_height`,
-          showIf: {
-            field: `is_crown_molding_included`,
-            equals: `Yes`
-          }
+          type: `radio`,
+          label: `Trim material for basements, bathrooms, and other moisture-prone areas:`,
+          choices: [
+            `Pine`,
+            `Poplar`,
+            `MDF (primed)`,
+            `Hardwood`,
+            `AZEK / PVC trim`
+          ],
+          allowOther: true,
+          id: `trim_material_wet_areas`
         },
         {
           type: `subheading`,
@@ -2298,26 +2361,11 @@ This document and its contents are the exclusive property of The Well Build (TM)
           id: `cabinet_construction_type`
         },
         {
-          type: `short`,
-          label: `Cabinet company/brand:`,
-          id: `cabinet_company_brand`
-        },
-        {
-          type: `short`,
-          label: `Cabinet door style:`,
-          id: `cabinet_door_style`
-        },
-        {
-          type: `short`,
-          label: `Cabinet finish/color:`,
-          id: `cabinet_finish_color`
-        },
-        {
           type: `radio`,
-          label: `Cabinet construction material:`,
+          label: `Cabinet box construction material:`,
           choices: [
-            `Plywood box with hardwood face frames`,
-            `All plywood construction`,
+            `Plywood box`,
+            `Melamine`,
             `MDF`,
             `Particleboard`
           ],
@@ -2338,13 +2386,8 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Basement flooring underlayment type:`,
+          label: `Basement flooring underlayment type AND brand (can be liquid or sheet):`,
           id: `basement_flooring_underlayment_type`
-        },
-        {
-          type: `short`,
-          label: `Basement flooring underlayment brand:`,
-          id: `basement_flooring_underlayment_brand`
         },
         {
           type: `checkboxes`,
@@ -2366,12 +2409,12 @@ This document and its contents are the exclusive property of The Well Build (TM)
         },
         {
           type: `short`,
-          label: `Slab-on-grade flooring underlayment type:`,
+          label: `Slab-on-grade flooring underlayment (or liquid-applied) type:`,
           id: `slab_on_grade_flooring_underlayment_type`
         },
         {
           type: `short`,
-          label: `Slab-on-grade flooring underlayment brand:`,
+          label: `Slab-on-grade flooring underlayment (or liquid-applied) brand:`,
           id: `slab_on_grade_flooring_underlayment_brand`
         },
         {
@@ -2381,7 +2424,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Hardwood (solid)`,
             `Engineered hardwood`,
             `LVP/LVT`,
-            `Laminate`,
             `Tile`,
             `Carpet`
           ],
@@ -2409,75 +2451,10 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Hardwood (solid)`,
             `Engineered hardwood`,
             `LVP/LVT`,
-            `Laminate`,
             `Tile`,
             `Carpet`
           ],
           id: `primary_upper_floor_flooring_type_select_all_that_apply`
-        }
-      ]
-    },
-    {
-      id: `closets_built_ins_exterior_finishes`,
-      title: `Closets, Built-ins & Exterior Finishes`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Closets & Built-ins`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Closet system type:`,
-          choices: [
-            `Wire shelving`,
-            `Wood shelving`,
-            `Custom closet system`
-          ],
-          allowOther: true,
-          id: `closet_system_type`
-        },
-        {
-          type: `short`,
-          label: `Closet system brand (if applicable):`,
-          id: `closet_system_brand_if_applicable`
-        },
-        {
-          type: `short`,
-          label: `Built-ins included in bid:`,
-          id: `built_ins_included_in_bid`
-        },
-        {
-          type: `subheading`,
-          label: `Exterior Cladding/Siding`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Primary exterior cladding/siding material:`,
-          choices: [
-            `Brick`,
-            `Stone (natural)`,
-            `Stone veneer (manufactured)`,
-            `Vinyl siding`,
-            `Fiber cement (Hardie, etc.)`,
-            `Wood siding`,
-            `Metal siding`,
-            `Stucco/EIFS`
-          ],
-          allowOther: true,
-          id: `primary_exterior_cladding_siding_material`
-        },
-        {
-          type: `short`,
-          label: `Exterior cladding brand/product:`,
-          id: `exterior_cladding_brand_product`
-        },
-        {
-          type: `short`,
-          label: `Exterior cladding color/finish:`,
-          id: `exterior_cladding_color_finish`
         }
       ]
     },
@@ -2487,24 +2464,19 @@ This document and its contents are the exclusive property of The Well Build (TM)
       description: ``,
       items: [
         {
-          type: `yesno`,
-          label: `Is daily cleanup included?`,
-          id: `is_daily_cleanup_included`
+          type: `short`,
+          label: `How often is the site cleaned up during construction?`,
+          id: `site_cleanup_frequency`
         },
         {
           type: `yesno`,
-          label: `Is final cleanup included?`,
-          id: `is_final_cleanup_included`
+          label: `Are walls vacuumed before insulation is installed?`,
+          id: `walls_vacuumed_before_insulation`
         },
         {
           type: `yesno`,
-          label: `Is debris removal/dumpster included?`,
-          id: `is_debris_removal_dumpster_included`
-        },
-        {
-          type: `yesno`,
-          label: `Is a portable toilet included?`,
-          id: `is_a_portable_toilet_included`
+          label: `Is wall sheathing checked for moisture before insulation is installed?`,
+          id: `sheathing_moisture_checked_before_insulation`
         }
       ]
     },
@@ -2522,11 +2494,6 @@ This document and its contents are the exclusive property of The Well Build (TM)
           type: `date`,
           label: `Estimated completion date:`,
           id: `estimated_completion_date`
-        },
-        {
-          type: `short`,
-          label: `Total estimated duration:`,
-          id: `total_estimated_duration`
         },
         {
           type: `paragraph`,
@@ -2549,6 +2516,15 @@ This document and its contents are the exclusive property of The Well Build (TM)
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHIhLTaNrTbgRuxk6DWVcaj32YIF83sGAZRDp3fNDHVuZILVqbblC8HbY3x7sp_n0/exec";
 
 // =========================================================
+// Optional: Google Places Autocomplete for the Address field
+// Get a key at https://console.cloud.google.com → enable "Places API (New)"
+// Restrict the key by HTTP referrer to your domains (builderform.thewellbuild.com,
+// glmalsin-source.github.io, localhost) so it can't be abused.
+// Leave blank to skip — browser-saved address autofill still works.
+// =========================================================
+const GOOGLE_PLACES_API_KEY = "";
+
+// =========================================================
 // STATE
 // =========================================================
 const STATE = {
@@ -2561,6 +2537,14 @@ const STATE = {
 };
 
 const STORAGE_KEY = 'twb_contractor_form_v1';
+
+// Project Profile questions that also appear in later sections.
+// When a profile answer is set/changed, the mirrored field(s) in later sections are auto-filled.
+// Manual edits in the later section still "win" unless the profile is later changed.
+const PROFILE_MIRRORS = {
+  // Profile foundation type → Section Foundation's detailed foundation-type question
+  profile_foundation: ['what_type_of_foundation_will_be_used']
+};
 
 // =========================================================
 // HELPERS
@@ -2602,7 +2586,21 @@ function flatItems() {
 
 function isShown(item) {
   if (!item.showIf) return true;
-  return STATE.responses[item.showIf.field] === item.showIf.equals;
+  const v = STATE.responses[item.showIf.field];
+  if (item.showIf.equals !== undefined) return v === item.showIf.equals;
+  if (item.showIf.notEquals !== undefined) return v !== item.showIf.notEquals && v != null && v !== '';
+  return true;
+}
+
+// A section is auto-hidden when its skipIf rule matches the user's profile answers.
+// User can override with the "Show all sections" toggle.
+function isSectionAutoHidden(section) {
+  if (STATE.showAllSections) return false;
+  if (!section.skipIf) return false;
+  const v = STATE.responses[section.skipIf.field];
+  if (section.skipIf.equals !== undefined) return v === section.skipIf.equals;
+  if (section.skipIf.notEquals !== undefined) return v !== section.skipIf.notEquals && v != null && v !== '';
+  return false;
 }
 
 function questionIsAnswered(q) {
@@ -2623,7 +2621,10 @@ function sectionStatus(sIdx) {
 }
 
 function overallProgress() {
-  const all = flatItems().filter(isShown);
+  const all = flatItems().filter(isShown).filter(it => {
+    const sec = FORM_SCHEMA.sections[it.sectionIndex];
+    return !isSectionAutoHidden(sec);
+  });
   const total = all.length;
   if (!total) return 0;
   // Skipped sections count as "done" for the progress bar
@@ -2645,7 +2646,8 @@ function saveLocal() {
       skipped: STATE.skipped,
       currentSection: STATE.currentSection,
       draftId: STATE.draftId,
-      email: STATE.email
+      email: STATE.email,
+      showAllSections: !!STATE.showAllSections
     }));
     STATE.lastSavedAt = Date.now();
     updateSaveStatus();
@@ -2675,6 +2677,160 @@ function updateSaveStatus() {
 setInterval(updateSaveStatus, 15000);
 
 // =========================================================
+// ADDRESS AUTOCOMPLETE
+// Zero-config default: Photon (OpenStreetMap, no API key required).
+// If GOOGLE_PLACES_API_KEY is set, Google Places is used instead (higher quality suggestions).
+// =========================================================
+let _placesScriptLoaded = false;
+let _placesLoading = false;
+function loadGoogleMapsScript() {
+  if (!GOOGLE_PLACES_API_KEY || _placesScriptLoaded || _placesLoading) return;
+  _placesLoading = true;
+  const s = document.createElement('script');
+  s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_PLACES_API_KEY)}&libraries=places&loading=async&v=weekly`;
+  s.async = true; s.defer = true;
+  s.onload = () => { _placesScriptLoaded = true; attachGooglePlaces(); };
+  s.onerror = () => { console.warn('Google Maps script failed to load'); _placesLoading = false; };
+  document.head.appendChild(s);
+}
+function attachGooglePlaces() {
+  if (!_placesScriptLoaded || !window.google || !google.maps || !google.maps.places) return;
+  const input = document.getElementById('f_address');
+  if (!input || input.dataset.placesAttached === '1') return;
+  try {
+    const ac = new google.maps.places.Autocomplete(input, {
+      types: ['address'],
+      componentRestrictions: { country: ['us', 'ca'] },
+      fields: ['formatted_address']
+    });
+    ac.addListener('place_changed', () => {
+      const place = ac.getPlace();
+      const v = (place && place.formatted_address) || input.value;
+      setValue('address', v);
+      input.value = v;
+    });
+    input.dataset.placesAttached = '1';
+  } catch (e) {
+    console.warn('Places autocomplete attach failed', e);
+  }
+}
+
+// --- Photon fallback (OpenStreetMap, no key) -------------
+let _photonTimer = null;
+let _photonActiveIndex = -1;
+function attachPhotonAutocomplete() {
+  const input = document.getElementById('f_address');
+  if (!input || input.dataset.photonAttached === '1') return;
+  input.dataset.photonAttached = '1';
+  input.setAttribute('autocomplete', 'off');  // disable browser autofill which fights the dropdown
+  // Dropdown element
+  const dropdown = document.createElement('div');
+  dropdown.id = 'address-dropdown';
+  dropdown.className = 'hidden';
+  dropdown.style.cssText = [
+    'position:absolute','background:#FEFDFB','border:1px solid #C5D8CC','border-radius:10px',
+    'box-shadow:0 10px 30px rgba(30,68,48,.12)','z-index:40','margin-top:4px',
+    'max-height:280px','overflow-y:auto','font-size:14px'
+  ].join(';');
+  // Insert dropdown positioned relative to the input's parent (the question card)
+  input.parentElement.style.position = 'relative';
+  input.parentElement.appendChild(dropdown);
+
+  function closeDropdown() {
+    dropdown.classList.add('hidden');
+    dropdown.innerHTML = '';
+    _photonActiveIndex = -1;
+  }
+
+  function renderResults(items) {
+    dropdown.innerHTML = '';
+    _photonActiveIndex = -1;
+    if (!items.length) { closeDropdown(); return; }
+    const rect = input.getBoundingClientRect();
+    const parentRect = input.parentElement.getBoundingClientRect();
+    dropdown.style.left = (rect.left - parentRect.left) + 'px';
+    dropdown.style.top = (rect.bottom - parentRect.top) + 'px';
+    dropdown.style.width = rect.width + 'px';
+    items.forEach((it, idx) => {
+      const row = document.createElement('div');
+      row.className = 'photon-row';
+      row.style.cssText = 'padding:10px 14px;cursor:pointer;border-bottom:1px solid #F1F0EB;line-height:1.35';
+      const primary = document.createElement('div');
+      primary.textContent = it.primary;
+      primary.style.cssText = 'color:#2A2A2A;font-weight:500';
+      const secondary = document.createElement('div');
+      secondary.textContent = it.secondary;
+      secondary.style.cssText = 'color:#6B6B6B;font-size:12px;margin-top:2px';
+      row.appendChild(primary);
+      row.appendChild(secondary);
+      row.onmouseenter = () => { _photonActiveIndex = idx; highlight(); };
+      row.onmousedown = (e) => {
+        e.preventDefault();
+        input.value = it.full;
+        setValue('address', it.full);
+        closeDropdown();
+      };
+      dropdown.appendChild(row);
+    });
+    dropdown.classList.remove('hidden');
+  }
+
+  function highlight() {
+    Array.from(dropdown.children).forEach((c, i) => {
+      c.style.background = i === _photonActiveIndex ? '#F1F6F2' : 'transparent';
+    });
+  }
+
+  async function fetchSuggestions(q) {
+    if (!q || q.length < 3) { closeDropdown(); return; }
+    try {
+      // Photon is an open-source geocoder (OpenStreetMap-based) — no key, CORS-enabled.
+      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6&lang=en&osm_tag=place&osm_tag=!tourism`;
+      // Fall back to broader search if that returns nothing:
+      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6&lang=en`);
+      if (!res.ok) throw new Error('bad status');
+      const j = await res.json();
+      const items = (j.features || []).map(f => {
+        const p = f.properties || {};
+        // Build primary/secondary display
+        const street = [p.housenumber, p.street].filter(Boolean).join(' ');
+        const line1 = street || p.name || '';
+        const locality = [p.city, p.state, p.country, p.postcode].filter(Boolean).join(', ');
+        const primary = line1 || (p.name || '');
+        const secondary = locality || (p.country || '');
+        const full = [line1 || p.name, locality].filter(Boolean).join(', ');
+        return { primary, secondary, full };
+      }).filter(x => x.primary);
+      renderResults(items);
+    } catch (e) {
+      // Silent fail — user just sees no suggestions
+      closeDropdown();
+    }
+  }
+
+  input.addEventListener('input', (e) => {
+    const q = e.target.value;
+    clearTimeout(_photonTimer);
+    _photonTimer = setTimeout(() => fetchSuggestions(q), 220);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    const count = dropdown.children.length;
+    if (dropdown.classList.contains('hidden') || !count) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); _photonActiveIndex = (_photonActiveIndex + 1) % count; highlight(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); _photonActiveIndex = (_photonActiveIndex - 1 + count) % count; highlight(); }
+    else if (e.key === 'Enter' && _photonActiveIndex >= 0) {
+      e.preventDefault();
+      dropdown.children[_photonActiveIndex].dispatchEvent(new MouseEvent('mousedown'));
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  input.addEventListener('blur', () => setTimeout(closeDropdown, 150));
+}
+
+// =========================================================
 // RENDER QUESTION
 // =========================================================
 function renderQuestion(q) {
@@ -2697,10 +2853,19 @@ function renderQuestion(q) {
   const v = STATE.responses[q.id];
 
   if (q.type === 'short') {
+    // Determine HTML5 autocomplete + input type from question id (best-guess)
+    let inputType = q.inputType || 'text';
+    let autocomplete = q.autocomplete || 'off';
+    if (q.id === 'email_address') { inputType = 'email'; autocomplete = 'email'; }
+    else if (q.id === 'phone_number') { inputType = 'tel'; autocomplete = 'tel'; }
+    else if (q.id === 'address') { autocomplete = 'street-address'; }
+    else if (q.id === 'contact_person') { autocomplete = 'name'; }
+    else if (q.id === 'contractor_company_name') { autocomplete = 'organization'; }
     card.appendChild(el('input', {
-      id:'f_'+q.id, class:'field-input', type:'text',
+      id:'f_'+q.id, class:'field-input', type: inputType,
       value: v || '',
       placeholder: 'Type your answer…',
+      autocomplete: autocomplete,
       oninput: e => setValue(q.id, e.target.value)
     }));
   } else if (q.type === 'paragraph') {
@@ -2834,12 +2999,39 @@ function setValue(qid, val) {
   STATE.responses[qid] = val;
   // Auto-detect builder email
   if (qid === 'email_address') STATE.email = val;
+  // Mirror Project Profile answers into matching later-section questions
+  if (PROFILE_MIRRORS[qid]) {
+    for (const targetId of PROFILE_MIRRORS[qid]) {
+      STATE.responses[targetId] = val;
+    }
+  }
   saveLocal();
-  // Re-render section IF this field is referenced by a showIf elsewhere
-  const refs = FORM_SCHEMA.sections[STATE.currentSection].items.some(it => it.showIf && it.showIf.field === qid);
-  if (refs) renderSection();
+  // Re-render section if:
+  //   (a) this field is referenced by a showIf in the current section, OR
+  //   (b) this field is a chip-style field (radio/yesno/checkboxes) in the current section,
+  //       so the pressed-state visuals update immediately.
+  //   (c) this field has mirrored targets rendered in the current section
+  const currentSection = FORM_SCHEMA.sections[STATE.currentSection];
+  const refs = currentSection.items.some(it => it.showIf && it.showIf.field === qid);
+  const changed = currentSection.items.find(it => it.id === qid);
+  const isChip = changed && (changed.type === 'yesno' || changed.type === 'radio' || changed.type === 'checkboxes');
+  const mirrorTargetsHere = (PROFILE_MIRRORS[qid] || []).some(tid => currentSection.items.some(it => it.id === tid));
+  if (refs || isChip || mirrorTargetsHere) renderSection();
   updateSidebar();
   updateProgress();
+}
+
+// Apply all profile mirrors to current responses (called on boot after load)
+function applyProfileMirrors() {
+  for (const [source, targets] of Object.entries(PROFILE_MIRRORS)) {
+    const v = STATE.responses[source];
+    if (v == null || v === '') continue;
+    for (const t of targets) {
+      if (STATE.responses[t] == null || STATE.responses[t] === '') {
+        STATE.responses[t] = v;
+      }
+    }
+  }
 }
 
 // =========================================================
@@ -2884,6 +3076,17 @@ function renderSection() {
   // Skip button label
   document.getElementById('skipBtn').textContent = isSkipped ? 'Un-skip this section' : 'Skip this section (not applicable)';
 
+  // If the address field is on screen, attach autocomplete.
+  // Prefer Google Places if an API key is set; otherwise use Photon (OSM, no key).
+  if (document.getElementById('f_address')) {
+    if (GOOGLE_PLACES_API_KEY) {
+      if (!_placesScriptLoaded) loadGoogleMapsScript();
+      else attachGooglePlaces();
+    } else {
+      attachPhotonAutocomplete();
+    }
+  }
+
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -2893,7 +3096,10 @@ function renderSection() {
 function updateSidebar() {
   const nav = document.getElementById('sectionNav');
   nav.innerHTML = '';
+  let hiddenCount = 0;
   FORM_SCHEMA.sections.forEach((s, i) => {
+    const autoHidden = isSectionAutoHidden(s);
+    if (autoHidden) { hiddenCount++; return; }
     const status = sectionStatus(i);
     const link = el('div', {
       class:'sec-link' + (i === STATE.currentSection ? ' active' : '') + (status === 'skipped' ? ' skipped':''),
@@ -2906,7 +3112,144 @@ function updateSidebar() {
     );
     nav.appendChild(link);
   });
+  // Show all sections toggle
+  if (hiddenCount > 0 || STATE.showAllSections) {
+    const toggle = el('div', {
+      class:'sec-link mt-2 pt-2 border-t border-twb-sage2 text-xs text-twb-mute',
+      style:'cursor:pointer',
+      onclick: () => {
+        STATE.showAllSections = !STATE.showAllSections;
+        saveLocal(); updateSidebar(); updateProgress();
+      }
+    },
+      el('span', {class:'flex-1'},
+        STATE.showAllSections
+          ? '↑ Hide non-applicable sections'
+          : `↓ Show all sections (${hiddenCount} hidden)`
+      )
+    );
+    nav.appendChild(toggle);
+  }
 }
+
+// =========================================================
+// SEARCH across all questions
+// =========================================================
+let _searchIndex = null;
+function buildSearchIndex() {
+  const idx = [];
+  FORM_SCHEMA.sections.forEach((s, si) => {
+    s.items.forEach(it => {
+      if (it.type === 'subheading') return;
+      idx.push({
+        sectionIndex: si,
+        sectionTitle: s.title,
+        id: it.id,
+        label: it.label,
+        labelLower: (it.label || '').toLowerCase(),
+        helperLower: (it.helper || '').toLowerCase(),
+        choicesLower: (Array.isArray(it.choices) ? it.choices.join(' ') : '').toLowerCase(),
+        sectionTitleLower: (s.title || '').toLowerCase()
+      });
+    });
+  });
+  _searchIndex = idx;
+}
+
+function performSearch(query) {
+  if (!_searchIndex) buildSearchIndex();
+  const q = (query || '').trim().toLowerCase();
+  const results = document.getElementById('searchResults');
+  if (!q) { results.classList.add('hidden'); results.innerHTML = ''; return; }
+  const tokens = q.split(/\s+/).filter(Boolean);
+  // Score each entry: label matches = 10, helper = 5, choices = 3, sectionTitle = 1. Require all tokens to hit somewhere.
+  const scored = _searchIndex.map(entry => {
+    let total = 0;
+    for (const t of tokens) {
+      const inLabel = entry.labelLower.includes(t);
+      const inHelper = entry.helperLower.includes(t);
+      const inChoices = entry.choicesLower.includes(t);
+      const inSection = entry.sectionTitleLower.includes(t);
+      if (!inLabel && !inHelper && !inChoices && !inSection) return null;  // token missed
+      total += (inLabel ? 10 : 0) + (inHelper ? 5 : 0) + (inChoices ? 3 : 0) + (inSection ? 1 : 0);
+    }
+    return { entry, score: total };
+  }).filter(Boolean);
+  scored.sort((a,b) => b.score - a.score);
+  const hits = scored.slice(0, 30).map(x => x.entry);
+  results.innerHTML = '';
+  if (!hits.length) {
+    const empty = el('div', {class:'px-3 py-3 text-sm text-twb-mute'}, 'No questions match.');
+    results.appendChild(empty);
+    results.classList.remove('hidden');
+    return;
+  }
+  hits.forEach(h => {
+    const row = el('div', {
+      class: 'px-3 py-2 text-sm hover:bg-twb-cream cursor-pointer border-b border-[#F1F0EB] last:border-0',
+      onmousedown: (e) => {
+        e.preventDefault();
+        jumpToQuestion(h.sectionIndex, h.id);
+      }
+    });
+    const title = el('div', {class:'text-twb-ink font-medium leading-snug'}, h.label);
+    title.style.color = '#2A2A2A';
+    const sub = el('div', {class:'text-xs text-twb-mute mt-0.5'}, h.sectionTitle);
+    row.appendChild(title);
+    row.appendChild(sub);
+    results.appendChild(row);
+  });
+  results.classList.remove('hidden');
+}
+
+function jumpToQuestion(sectionIndex, qid) {
+  // If the target section is currently auto-hidden, flip showAllSections on
+  const sec = FORM_SCHEMA.sections[sectionIndex];
+  if (isSectionAutoHidden(sec)) STATE.showAllSections = true;
+  STATE.currentSection = sectionIndex;
+  saveLocal();
+  renderSection(); updateSidebar(); updateProgress();
+  // Close the search dropdown and clear the input
+  const results = document.getElementById('searchResults');
+  results.classList.add('hidden'); results.innerHTML = '';
+  const searchInput = document.getElementById('sectionSearch');
+  if (searchInput) searchInput.value = '';
+  setTimeout(() => {
+    const node = document.querySelector(`[data-qid="${qid}"]`);
+    if (node) {
+      node.scrollIntoView({behavior:'smooth', block:'center'});
+      // Briefly highlight
+      node.style.transition = 'border-color .4s, box-shadow .4s';
+      const origBorder = node.style.borderColor;
+      node.style.borderColor = '#B07D4A';
+      node.style.boxShadow = '0 0 0 3px rgba(176,125,74,.15)';
+      setTimeout(() => {
+        node.style.borderColor = origBorder;
+        node.style.boxShadow = '';
+      }, 1400);
+      // Focus any input inside
+      const input = node.querySelector('input, textarea, select');
+      if (input) input.focus({preventScroll:true});
+    }
+  }, 120);
+}
+
+(function wireSearch() {
+  const s = document.getElementById('sectionSearch');
+  if (!s) return;
+  s.addEventListener('input', e => performSearch(e.target.value));
+  s.addEventListener('focus', () => { if (s.value) performSearch(s.value); });
+  s.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { s.value = ''; performSearch(''); s.blur(); }
+  });
+  // Close dropdown when clicking outside
+  document.addEventListener('mousedown', (e) => {
+    const results = document.getElementById('searchResults');
+    if (!results) return;
+    if (e.target.closest('#sectionSearch') || e.target.closest('#searchResults')) return;
+    results.classList.add('hidden');
+  });
+})();
 
 function updateProgress() {
   const pct = overallProgress();
@@ -2917,19 +3260,31 @@ function updateProgress() {
 // =========================================================
 // NAVIGATION
 // =========================================================
+// Find the next/prev section that isn't auto-hidden.
+function nextVisibleSection(from, dir) {
+  let i = from + dir;
+  while (i >= 0 && i < FORM_SCHEMA.sections.length) {
+    if (!isSectionAutoHidden(FORM_SCHEMA.sections[i])) return i;
+    i += dir;
+  }
+  return -1;
+}
+
 document.getElementById('nextBtn').addEventListener('click', () => {
-  if (STATE.currentSection < FORM_SCHEMA.sections.length - 1) {
-    STATE.currentSection++;
+  const next = nextVisibleSection(STATE.currentSection, +1);
+  if (next >= 0) {
+    STATE.currentSection = next;
     saveLocal();
     renderSection(); updateSidebar(); updateProgress();
   } else {
-    // already on last — scroll to submit
+    // already on last visible — scroll to submit
     document.getElementById('submitWrap').scrollIntoView({behavior:'smooth'});
   }
 });
 document.getElementById('prevBtn').addEventListener('click', () => {
-  if (STATE.currentSection > 0) {
-    STATE.currentSection--;
+  const prev = nextVisibleSection(STATE.currentSection, -1);
+  if (prev >= 0) {
+    STATE.currentSection = prev;
     saveLocal();
     renderSection(); updateSidebar(); updateProgress();
   }
@@ -2986,22 +3341,26 @@ document.getElementById('saveLinkBtnMobile').addEventListener('click', saveAndEm
 // Produces a payload the backend can format without knowing the schema.
 // =========================================================
 function buildSubmissionPayload() {
-  const sections = FORM_SCHEMA.sections.map(s => ({
-    id: s.id,
-    title: s.title,
-    skipped: !!STATE.skipped[s.id],
-    items: s.items
-      .filter(it => it.type !== 'subheading')
-      .filter(it => isShown(it))
-      .map(it => {
-        const v = STATE.responses[it.id];
-        let display = '';
-        if (v == null || v === '') display = '';
-        else if (Array.isArray(v)) display = v.join(', ');
-        else display = String(v);
-        return { id: it.id, label: it.label, type: it.type, value: v ?? '', display };
-      })
-  }));
+  const sections = FORM_SCHEMA.sections.map(s => {
+    const autoHidden = isSectionAutoHidden(s);
+    return {
+      id: s.id,
+      title: s.title,
+      skipped: !!STATE.skipped[s.id] || autoHidden,
+      autoHidden: autoHidden,
+      items: autoHidden ? [] : s.items
+        .filter(it => it.type !== 'subheading')
+        .filter(it => isShown(it))
+        .map(it => {
+          const v = STATE.responses[it.id];
+          let display = '';
+          if (v == null || v === '') display = '';
+          else if (Array.isArray(v)) display = v.join(', ');
+          else display = String(v);
+          return { id: it.id, label: it.label, type: it.type, value: v ?? '', display };
+        })
+    };
+  });
   // Cover info: pull a few "headline" fields for sheet/columns
   const r = STATE.responses;
   const cover = {
@@ -3023,7 +3382,8 @@ async function submitForm() {
   // Validate required
   const missing = [];
   flatItems().forEach(q => {
-    if (q.required && isShown(q) && !STATE.skipped[q.sectionId] && !questionIsAnswered(q)) {
+    const sec = FORM_SCHEMA.sections[q.sectionIndex];
+    if (q.required && isShown(q) && !STATE.skipped[q.sectionId] && !isSectionAutoHidden(sec) && !questionIsAnswered(q)) {
       missing.push(q);
     }
   });
@@ -3148,6 +3508,8 @@ async function boot() {
   } else {
     renderSection();
   }
+  // Ensure profile answers are mirrored into any later-section duplicates
+  applyProfileMirrors();
   updateSidebar();
   updateProgress();
 }
