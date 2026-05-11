@@ -1199,13 +1199,39 @@ This document is the exclusive property of The Well Build Standard LLC, DBA The 
               id: `rainscreen_detail`,
               label: `If yes — type and brand`,
               type: `short`,
-              placeholder: `e.g., 1x4 furring strips, Benjamin Obdyke Slicker, Cor-A-Vent`
+              placeholder: `e.g., 1x4 furring strips, Benjamin Obdyke Slicker, Cor-A-Vent`,
+              showIfSibling: { field: `rainscreen`, equals: `Yes` }
             }
           ]
         },
         {
           type: `subheading`,
-          label: `4E · Penetration & Air Sealing`,
+          label: `4E · Decorative Finish on Above-Grade Concrete`,
+          helper: ``
+        },
+        {
+          id: `decorative_concrete_finish`,
+          type: `checkboxes`,
+          label: `Will any decorative finish be applied to exposed concrete above grade? (select all that apply)`,
+          required: true,
+          choices: [
+            `Brick veneer`,
+            `Stucco`,
+            `Stone`,
+            `Other (describe below)`,
+            `None`
+          ]
+        },
+        {
+          id: `decorative_concrete_finish_other`,
+          type: `short`,
+          label: `If Other — please describe`,
+          showIf: { field: `decorative_concrete_finish`, contains: `Other (describe below)` },
+          placeholder: `e.g., painted concrete, exposed aggregate, board-form texture`
+        },
+        {
+          type: `subheading`,
+          label: `4F · Penetration & Air Sealing`,
           helper: ``
         },
         {
@@ -2664,8 +2690,20 @@ function flatItems() {
 function isShown(item) {
   if (!item.showIf) return true;
   const v = STATE.responses[item.showIf.field];
-  if (item.showIf.equals !== undefined) return v === item.showIf.equals;
+  // equals: exact match (also matches if v is array containing the value, for checkbox parents)
+  if (item.showIf.equals !== undefined) {
+    if (Array.isArray(v)) return v.includes(item.showIf.equals);
+    return v === item.showIf.equals;
+  }
+  // contains: parent value (typically array from checkboxes) must include the given choice
+  if (item.showIf.contains !== undefined) {
+    if (Array.isArray(v)) return v.includes(item.showIf.contains);
+    return v === item.showIf.contains;
+  }
+  // notEquals: value must be set AND not equal to X
   if (item.showIf.notEquals !== undefined) return v !== item.showIf.notEquals && v != null && v !== '';
+  // notEqualsOrEmpty: value is empty OR not equal to X (used for "show unless they explicitly picked X")
+  if (item.showIf.notEqualsOrEmpty !== undefined) return v == null || v === '' || v !== item.showIf.notEqualsOrEmpty;
   return true;
 }
 
@@ -3090,6 +3128,82 @@ function renderQuestion(q) {
       }, c));
     });
     card.appendChild(wrap);
+  } else if (q.type === 'cladding_repeater') {
+    // Per-cladding follow-up: renders one block per item selected in the parent checkboxes question
+    // (cladding_types). Storage shape: STATE.responses[q.id] = { 'Brick': {brand:'X', rainscreen:'Yes', rainscreen_detail:'Y'}, ... }
+    const parentId = q.parentId || 'cladding_types';
+    const parentVal = STATE.responses[parentId];
+    const selectedTypes = Array.isArray(parentVal) ? parentVal : [];
+    const fields = q.fields || [];
+    const data = (typeof STATE.responses[q.id] === 'object' && STATE.responses[q.id] && !Array.isArray(STATE.responses[q.id]))
+      ? {...STATE.responses[q.id]} : {};
+
+    if (selectedTypes.length === 0) {
+      card.appendChild(el('div', {class:'text-sm text-twb-mute italic'},
+        'Select cladding types in the previous question to fill out this section.'));
+      return card;
+    }
+
+    const updateFieldValue = (claddingType, fieldId, val) => {
+      const cur = (typeof STATE.responses[q.id] === 'object' && STATE.responses[q.id] && !Array.isArray(STATE.responses[q.id]))
+        ? {...STATE.responses[q.id]} : {};
+      if (!cur[claddingType]) cur[claddingType] = {};
+      cur[claddingType][fieldId] = val;
+      STATE.responses[q.id] = cur;
+      saveLocal();
+    };
+
+    selectedTypes.forEach(claddingType => {
+      const block = el('div', {class:'border border-twb-sage2 bg-twb-cream2 rounded-lg p-3 mb-3 space-y-3'});
+      block.appendChild(el('div', {class:'text-sm font-bold text-twb-green'}, claddingType));
+      const rowData = data[claddingType] || {};
+
+      fields.forEach(f => {
+        const fieldVal = rowData[f.id] || '';
+        const wrap = el('div', {});
+        wrap.appendChild(el('label', {class:'block text-xs text-twb-text font-medium mb-1'}, f.label));
+        if (f.type === 'short') {
+          wrap.appendChild(el('input', {
+            class:'field-input', type:'text',
+            value: fieldVal,
+            placeholder: f.placeholder || '',
+            oninput: e => updateFieldValue(claddingType, f.id, e.target.value)
+          }));
+        } else if (f.type === 'yesno') {
+          const ynWrap = el('div', {class:'flex gap-2 flex-wrap'});
+          ['Yes','No'].forEach(opt => {
+            ynWrap.appendChild(el('button', {
+              type:'button', class:'chip yn',
+              'aria-pressed': fieldVal === opt ? 'true' : 'false',
+              onclick: () => {
+                updateFieldValue(claddingType, f.id, fieldVal === opt ? '' : opt);
+                renderSection();  // re-render to update chip + show conditional follow-up
+              }
+            }, opt));
+          });
+          if (f.allowDontKnow) {
+            const dkLabel = "I don't know — I'll confirm with my sub";
+            ynWrap.appendChild(el('button', {
+              type:'button', class:'chip',
+              'aria-pressed': fieldVal === dkLabel ? 'true' : 'false',
+              onclick: () => {
+                updateFieldValue(claddingType, f.id, fieldVal === dkLabel ? '' : dkLabel);
+                renderSection();
+              }
+            }, dkLabel));
+          }
+          wrap.appendChild(ynWrap);
+        }
+        // Conditional showIf within the cladding block (e.g., "If yes — type/brand")
+        if (f.showIfSibling) {
+          const sib = rowData[f.showIfSibling.field];
+          if (sib !== f.showIfSibling.equals) return;  // skip rendering this field
+        }
+        block.appendChild(wrap);
+      });
+
+      card.appendChild(block);
+    });
   } else {
     card.appendChild(el('div',{class:'text-sm text-twb-clay'}, '(Unsupported field type: '+q.type+')'));
   }
@@ -3493,6 +3607,18 @@ function buildSubmissionPayload() {
           const v = STATE.responses[it.id];
           let display = '';
           if (v == null || v === '') display = '';
+          else if (it.type === 'cladding_repeater' && typeof v === 'object' && !Array.isArray(v)) {
+            // Format per-cladding follow-up: one line per cladding type
+            const fields = it.fields || [];
+            const lines = Object.keys(v).map(cType => {
+              const row = v[cType] || {};
+              const parts = fields
+                .map(f => row[f.id] ? `${f.label.replace(/[—:].*$/,'').trim()}: ${row[f.id]}` : null)
+                .filter(Boolean);
+              return `${cType} → ${parts.join(' · ')}`;
+            });
+            display = lines.join('\n');
+          }
           else if (Array.isArray(v)) display = v.join(', ');
           else display = String(v);
           return { id: it.id, label: it.label, type: it.type, value: v ?? '', display };
