@@ -286,14 +286,14 @@
 
 <!-- ============ SCHEMA ============ -->
 <script>
-// Auto-generated v2 (Rachel's edits applied) on 2026-04-22
-// Source: parsed Google Form + Rachel's review of TWB_Form_Review_Copy v2edits.pdf
-// Edit this object to add/remove/edit questions. Question types: short, paragraph, radio, select, checkboxes, yesno, date, subheading.
+// Auto-generated v5 (Rachel's TWB_Contractor_Specifications_Form_v5.pdf — final spec) on 2026-05-11
+// Question types: short, paragraph, radio, select, checkboxes, yesno, date, subheading, repeater, cladding_repeater.
+// Special fields: allowDontKnow (bool), newInV5 (bool), devNote (string), helper (string), placeholder (string).
 const FORM_SCHEMA = {
-  title: `The Well Build - Contractor Specifications Form`,
-  description: `Please complete all applicable sections. Check boxes for selected options and fill in product names, brands, and specifications. Use "Other" fields where standard options don't apply.
+  title: `The Well Build — Contractor Specifications`,
+  description: `Complete all applicable sections. Check boxes for selected options and fill in product names, brands, and specifications. Use 'Other' where standard options don't apply. 'I don't know' options are provided where builders may need to confirm with a subcontractor.
 
-This document and its contents are the exclusive property of The Well Build (TM). It is intended solely for the use of the authorized recipient. Any reproduction, redistribution, or unauthorized use of this material — in whole or in part — without prior written consent is strictly prohibited and may result in legal action.`,
+This document is the exclusive property of The Well Build Standard LLC, DBA The Well Build™.`,
   sections: [
     {
       id: `project_info`,
@@ -301,32 +301,55 @@ This document and its contents are the exclusive property of The Well Build (TM)
       description: ``,
       items: [
         {
-          type: `subheading`,
-          label: `Project Information`,
-          helper: ``
-        },
-        {
+          id: `project_name`,
           type: `short`,
           label: `Project Name`,
           required: true,
-          id: `project_name`
+          placeholder: `Project or residence name`
         },
         {
+          id: `address`,
           type: `short`,
-          label: `Address`,
+          label: `Project Address`,
           required: true,
-          id: `address`
+          placeholder: `Full street address including city, state, and zip`
         },
         {
+          id: `contractor_company_name`,
           type: `short`,
           label: `Contractor Company Name`,
-          required: true,
-          id: `contractor_company_name`
+          required: true
         },
         {
+          id: `contact_person`,
+          type: `short`,
+          label: `Contact Person`,
+          required: true
+        },
+        {
+          id: `phone_number`,
+          type: `short`,
+          label: `Phone Number`,
+          required: true
+        },
+        {
+          id: `email_address`,
+          type: `short`,
+          label: `Email Address`,
+          required: true
+        },
+        {
+          id: `architect_of_record`,
+          type: `short`,
+          label: `Architect of Record`,
+          placeholder: `Name / firm — optional`
+        },
+        {
+          id: `iecc_climate_zone`,
           type: `radio`,
           label: `IECC Climate Zone`,
           required: true,
+          devNote: `Drives logic throughout the form (climate-zone-dependent recommendations).`,
           choices: [
             `Zone 1`,
             `Zone 2`,
@@ -335,100 +358,93 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Zone 5`,
             `Zone 6`,
             `Zone 7`,
-            `Zone 8`
-          ],
-          id: `iecc_climate_zone`
+            `Zone 8`,
+            `I don't know`
+          ]
         },
         {
-          type: `short`,
-          label: `Architect of Record`,
-          required: true,
-          id: `architect_of_record`
-        },
-        {
-          type: `short`,
-          label: `Contact Person`,
-          required: true,
-          id: `contact_person`
-        },
-        {
-          type: `short`,
-          label: `Phone Number`,
-          required: true,
-          id: `phone_number`
-        },
-        {
-          type: `short`,
-          label: `Email Address`,
-          required: true,
-          id: `email_address`
-        },
-        {
+          id: `estimated_start_date`,
           type: `date`,
-          label: `Today's Date`,
+          label: `Estimated Start Date`
+        },
+        {
+          id: `estimated_completion_date`,
+          type: `date`,
+          label: `Estimated Completion Date`
+        },
+        {
+          id: `project_type`,
+          type: `radio`,
+          label: `Project Type`,
           required: true,
-          id: `today_s_date`
+          choices: [
+            `New construction`,
+            `Addition`,
+            `Full gut renovation`,
+            `Partial renovation`,
+            `Other (describe in notes)`
+          ]
         }
       ]
     },
     {
       id: `project_profile`,
       title: `Project Profile`,
-      description: `A few quick questions about the project to orient us before the detail.`,
+      description: `These answers drive conditional logic throughout the form. Entire sections will show or hide based on your selections here.`,
       items: [
         {
+          id: `profile_foundation`,
           type: `radio`,
-          label: `What is the primary foundation type?`,
+          label: `Primary foundation type`,
+          required: true,
+          devNote: `Drives foundation sections + basement logic. If 'Basement (full)' or 'Basement (partial)' is selected, profile_has_basement is set to true automatically.`,
           choices: [
             `Slab on grade`,
             `Crawl space`,
             `Stem wall`,
-            `Basement`,
-            `Pier and beam`
-          ],
-          allowOther: true,
-          id: `profile_foundation`
+            `Basement (full)`,
+            `Basement (partial)`,
+            `Walk-out basement`,
+            `Pier and beam`,
+            `Other (describe in notes)`
+          ]
         },
         {
-          type: `yesno`,
-          label: `Does the home include a basement?`,
-          id: `profile_has_basement`
-        },
-        {
-          type: `paragraph`,
-          label: `Additional notes about the foundation or basement (if any):`,
-          id: `profile_foundation_notes`
-        },
-        {
+          id: `profile_has_garage`,
           type: `radio`,
-          label: `Does the home include a detached or attached garage?`,
+          label: `Does the home include a garage?`,
+          required: true,
+          devNote: `Drives Garage section visibility.`,
           choices: [
             `Attached`,
-            `Detached`
-          ],
-          allowOther: true,
-          id: `profile_has_garage`
+            `Detached`,
+            `Both`,
+            `No garage`
+          ]
         },
         {
+          id: `profile_roof_shape`,
           type: `radio`,
           label: `Roof shape`,
+          required: true,
+          devNote: `Drives flat / low-slope roof questions.`,
           choices: [
             `Pitched only`,
             `Flat / low-slope only`,
-            `Mixed (pitched + flat)`
-          ],
-          id: `profile_roof_shape`
+            `Mixed (pitched + flat/low-slope)`
+          ]
         },
         {
+          id: `profile_stories`,
           type: `radio`,
           label: `Number of stories`,
+          required: true,
           choices: [
             `1`,
             `1.5`,
             `2`,
             `3+`
-          ],
-          id: `profile_stories`
+          ]
         }
       ]
     },
@@ -439,608 +455,603 @@ This document and its contents are the exclusive property of The Well Build (TM)
       items: [
         {
           type: `subheading`,
-          label: `Foundation Type`,
+          label: `2A · Concrete`,
           helper: ``
         },
         {
-          type: `radio`,
-          label: `What type of foundation will be used?`,
-          choices: [
-            `Slab on grade`,
-            `Crawl space`,
-            `Full basement`,
-            `Partial basement`,
-            `Pier and beam`
-          ],
-          allowOther: true,
-          id: `what_type_of_foundation_will_be_used`
-        },
-        {
-          type: `short`,
-          label: `How high do you pour foundation walls above grade?`,
-          id: `how_high_do_you_pour_foundation_walls_above_grade`
-        },
-        {
-          type: `subheading`,
-          label: `Concrete`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `What is the concrete slump?`,
-          id: `what_is_the_concrete_slump`
-        },
-        {
+          id: `concrete_reinforcement`,
           type: `checkboxes`,
-          label: `What concrete reinforcement will be used? (Select all that apply)`,
+          label: `Concrete reinforcement (select all that apply)`,
+          required: true,
           choices: [
             `Rebar`,
             `Wire mesh`,
             `Fiber reinforcement`,
-            `Post-tensioning`
+            `Post-tensioning`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `concrete_winter_blanket`,
+          type: `radio`,
+          label: `During a winter pour, do you cover concrete with blankets to retain moisture during cure?`,
+          required: true,
+          choices: [
+            `Yes`,
+            `No`,
+            `N/A — not building in winter conditions`
+          ]
+        },
+        {
+          id: `foundation_wall_height_above_grade`,
+          type: `short`,
+          label: `How high are foundation walls poured above finished grade?`,
+          required: true,
+          helper: `The minimum recommended is 6–8 inches. More is better for keeping bulk water away from wood framing.`,
+          placeholder: `e.g., 8 inches above grade`,
+          allowDontKnow: true
+        },
+        {
+          id: `grade_slope_away`,
+          type: `short`,
+          label: `What is the proposed finish grade slope away from the foundation?`,
+          required: true,
+          helper: `The IRC requires a minimum 6-inch drop within the first 10 feet from the foundation. This is one of the most common bulk water management failures.`,
+          placeholder: `e.g., 6 inches drop over first 10 feet`,
+          newInV5: true
+        },
+        {
+          id: `gutter_discharge`,
+          type: `radio`,
+          label: `Where do gutters and downspouts discharge?`,
+          required: true,
+          helper: `Downspouts that terminate at grade next to the foundation are a leading cause of water intrusion and basement moisture problems.`,
+          choices: [
+            `Underground piped to daylight / storm drain`,
+            `Underground piped to dry well`,
+            `Surface splash blocks (minimum — not preferred)`,
+            `French drain at grade`,
+            `I don't know — I'll confirm with my sub`
           ],
-          id: `what_concrete_reinforcement_will_be_used_select_all_that_app`
-        },
-        {
-          type: `paragraph`,
-          label: `Concrete specs: Do you add admixtures, fly ash, or curing compounds? If so, which?`,
-          id: `concrete_supplier`
-        },
-        {
-          type: `yesno`,
-          label: `During a winter pour, do you cover concrete with blankets to keep moisture in and assist with the cure?`,
-          id: `concrete_winter_blanket`
-        }
-      ]
-    },
-    {
-      id: `foundation_vapor_barrier_gravel_insulation`,
-      title: `Foundation — Vapor Barrier, Gravel & Insulation`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Vapor Barrier (under concrete slab)`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Vapor barrier mil thickness:`,
-          id: `vapor_barrier_mil_thickness`
-        },
-        {
-          type: `short`,
-          label: `Vapor barrier brand/product:`,
-          id: `vapor_barrier_brand_product`
+          newInV5: true
         },
         {
           type: `subheading`,
-          label: `Crushed Stone/Gravel Base Under Slab`,
+          label: `2B · Vapor Barrier & Under-Slab Assembly`,
           helper: ``
         },
         {
+          id: `vapor_barrier`,
+          type: `short`,
+          label: `Vapor barrier under slab — mil thickness and brand`,
+          required: true,
+          placeholder: `e.g., 15 mil Stego Wrap`,
+          allowDontKnow: true
+        },
+        {
+          id: `gravel_base`,
           type: `yesno`,
           label: `Will a crushed stone/gravel base be installed under the slab?`,
-          id: `will_a_crushed_stone_gravel_base_be_installed_under_the_slab`
+          required: true,
+          allowDontKnow: true
         },
         {
+          id: `gravel_base_detail`,
           type: `short`,
-          label: `If yes, what is the depth?`,
-          id: `if_yes_what_is_the_depth`,
+          label: `If yes — depth and material type`,
+          placeholder: `e.g., 4 inches, clean crushed stone`,
           showIf: {
-            field: `will_a_crushed_stone_gravel_base_be_installed_under_the_slab`,
+            field: `gravel_base`,
             equals: `Yes`
           }
         },
         {
-          type: `short`,
-          label: `Crushed stone/gravel material type:`,
-          id: `crushed_stone_gravel_material_type`
-        },
-        {
-          type: `subheading`,
-          label: `Under-Slab Insulation`,
-          helper: ``
-        },
-        {
+          id: `under_slab_insulation`,
           type: `yesno`,
           label: `Will under-slab insulation be installed?`,
-          id: `will_under_slab_insulation_be_installed`
+          required: true,
+          allowDontKnow: true
         },
         {
+          id: `under_slab_insulation_detail`,
           type: `short`,
-          label: `If yes, insulation type (foam board, gravel, rock wool comfort boards, spray foam):`,
-          id: `if_yes_insulation_type`,
+          label: `If yes — type, brand, R-value`,
+          placeholder: `e.g., EPS, Insulfoam, R-10`,
           showIf: {
-            field: `will_under_slab_insulation_be_installed`,
+            field: `under_slab_insulation`,
             equals: `Yes`
           }
         },
         {
-          type: `short`,
-          label: `Under-slab insulation brand:`,
-          id: `under_slab_insulation_brand`
-        },
-        {
-          type: `short`,
-          label: `Under-slab insulation R-Value:`,
-          id: `under_slab_insulation_r_value`
-        },
-        {
+          id: `radon_pipe_under_slab`,
           type: `yesno`,
-          label: `Will you be installing a perforated pipe below slab for radon?`,
-          id: `will_you_be_installing_a_perforated_pipe_below_slab_for_rado`
+          label: `Will a perforated pipe be installed below slab for radon mitigation?`,
+          required: true,
+          allowDontKnow: true
         },
         {
+          id: `capillary_break_under_footing`,
           type: `yesno`,
-          label: `Is this home built on a site with a high water table?`,
-          helper: `If yes, we'll review capillary break and waterproofing carefully.`,
-          id: `high_water_table`
+          label: `Is a capillary break installed between footings and foundation walls?`,
+          required: true,
+          allowDontKnow: true
         },
         {
-          type: `subheading`,
-          label: `Capillary Break Under Footings`,
-          helper: ``
-        },
-        {
-          type: `yesno`,
-          label: `Is a capillary break installed UNDER the footings?`,
-          id: `under_footing_capillary_break`
-        },
-        {
+          id: `capillary_break_under_footing_type`,
           type: `short`,
-          label: `If yes, what is used (e.g., membrane, fluid-applied)?`,
+          label: `If yes — material/product`,
+          placeholder: `e.g., fluid-applied DRYLOK`,
           showIf: {
-            field: `under_footing_capillary_break`,
+            field: `capillary_break_under_footing`,
             equals: `Yes`
-          },
-          id: `under_footing_break_type`
-        }
-      ]
-    },
-    {
-      id: `foundation_slab_edge_basement_insulation`,
-      title: `Foundation — Slab Edge & Basement Insulation`,
-      description: ``,
-      skipIf: {
-        field: `profile_has_basement`,
-        equals: `No`
-      },
-      items: [
-        {
-          type: `subheading`,
-          label: `Slab Edge Insulation`,
-          helper: ``
+          }
         },
         {
-          type: `short`,
-          label: `Code-required R-values for slab edge insulation in your area:`,
-          id: `code_required_r_values_for_slab_edge_insulation_in_your_area`
-        },
-        {
-          type: `short`,
-          label: `Slab edge insulation location (inside or outside):`,
-          id: `slab_edge_insulation_location_inside_or_outside`
-        },
-        {
-          type: `short`,
-          label: `Slab edge insulation type/brand:`,
-          id: `slab_edge_insulation_type_brand`
-        },
-        {
-          type: `short`,
-          label: `Slab edge insulation R-Value:`,
-          id: `slab_edge_insulation_r_value`
-        },
-        {
-          type: `subheading`,
-          label: `Basement Insulation`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Code-required R-values for basement insulation in your area:`,
-          id: `code_required_r_values_for_basement_insulation_in_your_area`
-        },
-        {
-          type: `short`,
-          label: `Will the basement have exterior insulation? If so, what type and R-value?`,
-          id: `basement_insulation_on_exterior_walls_or_interior_walls`
-        },
-        {
-          type: `short`,
-          label: `For interior basement walls: what insulation type? (spray foam, foam boards, comfort boards, batts)`,
-          id: `basement_insulation_type`
-        },
-        {
-          type: `short`,
-          label: `Basement insulation brand:`,
-          id: `basement_insulation_brand`
-        },
-        {
-          type: `short`,
-          label: `Basement insulation R-Value:`,
-          id: `basement_insulation_r_value`
-        }
-      ]
-    },
-    {
-      id: `foundation_waterproofing_drainage`,
-      title: `Foundation — Waterproofing & Drainage`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Foundation Waterproofing/Dampproofing`,
-          helper: ``
-        },
-        {
+          id: `high_water_table`,
           type: `radio`,
-          label: `What type of foundation waterproofing/dampproofing is used?`,
+          label: `Is this home built on a site with a high water table?`,
+          required: true,
+          choices: [
+            `Yes`,
+            `No`,
+            `Unknown`
+          ]
+        },
+        {
+          type: `subheading`,
+          label: `2C · Slab Edge & Basement Exterior Wall Insulation`,
+          helper: ``
+        },
+        {
+          id: `slab_edge_insulation_included`,
+          type: `yesno`,
+          label: `Will slab edge insulation be included?`,
+          required: true,
+          allowDontKnow: true
+        },
+        {
+          id: `slab_edge_insulation_location`,
+          type: `radio`,
+          label: `If yes — location`,
+          choices: [
+            `Inside (interior side of foundation)`,
+            `Outside (exterior side of foundation)`
+          ],
+          showIf: {
+            field: `slab_edge_insulation_included`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `slab_edge_insulation_detail`,
+          type: `short`,
+          label: `Slab edge insulation — type, brand, R-value`,
+          placeholder: `e.g., 2-inch XPS, Owens Corning, R-10`,
+          showIf: {
+            field: `slab_edge_insulation_included`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `basement_exterior_insulation`,
+          type: `yesno`,
+          label: `Will the basement walls have exterior insulation?`,
+          required: true,
+          devNote: `Only shown if profile_has_basement = true.`
+        },
+        {
+          id: `basement_exterior_insulation_detail`,
+          type: `short`,
+          label: `If yes — type and R-value`,
+          placeholder: `e.g., Rockwool Drainboard, R-10`,
+          showIf: {
+            field: `basement_exterior_insulation`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `subheading`,
+          label: `2D · Foundation Waterproofing & Drainage`,
+          helper: ``
+        },
+        {
+          id: `foundation_waterproofing`,
+          type: `radio`,
+          label: `Foundation waterproofing/dampproofing type`,
+          required: true,
           choices: [
             `Membrane waterproofing`,
-            `Liquid-applied waterproofing`
-          ],
-          allowOther: true,
-          id: `what_type_of_foundation_waterproofing_dampproofing_is_used`
+            `Liquid-applied waterproofing`,
+            `Dampproofing only`,
+            `None`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
         },
         {
+          id: `foundation_waterproofing_brand`,
           type: `short`,
-          label: `Waterproofing brand/product and warranty:`,
-          id: `waterproofing_brand_product`
+          label: `Brand, product, and warranty length`,
+          placeholder: `Brand / product / warranty length`
         },
         {
-          type: `subheading`,
-          label: `Dimple Mat/Drainage Board`,
-          helper: ``
-        },
-        {
+          id: `dimple_mat`,
           type: `yesno`,
-          label: `Will a dimple mat/drainage board be installed?`,
-          id: `will_a_dimple_mat_drainage_board_be_installed`
+          label: `Will a dimple mat / drainage board be installed on the exterior of the foundation?`,
+          required: true,
+          allowDontKnow: true
         },
         {
+          id: `dimple_mat_brand`,
           type: `short`,
-          label: `If yes, dimple mat brand:`,
-          id: `if_yes_dimple_mat_brand`,
+          label: `If yes — dimple mat brand`,
+          placeholder: `e.g., Delta-MS, Cosella-Dorken`,
           showIf: {
-            field: `will_a_dimple_mat_drainage_board_be_installed`,
+            field: `dimple_mat`,
             equals: `Yes`
           }
         },
         {
+          id: `backfill_material`,
           type: `short`,
-          label: `What backfill material will be used?`,
-          helper: `e.g., washed gravel, sand, native soil`,
-          id: `backfill_material`
+          label: `Backfill material`,
+          required: true,
+          placeholder: `e.g., washed gravel, sand, native soil`,
+          allowDontKnow: true
         },
         {
-          type: `subheading`,
-          label: `Capillary Break (between framing & foundation)`,
-          helper: ``
-        },
-        {
+          id: `sill_capillary_break`,
           type: `radio`,
-          label: `Capillary break type between framing and foundation:`,
+          label: `Capillary break between sill plate and foundation`,
+          required: true,
           choices: [
             `Fluid-applied`,
             `Sill seal foam`,
-            `Polyethylene sheet`
-          ],
-          allowOther: true,
-          id: `capillary_break_type_between_framing_and_foundation`
+            `Polyethylene sheet`,
+            `None`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
         },
         {
+          id: `sill_capillary_break_brand`,
           type: `short`,
-          label: `If fluid-applied, what brand?`,
-          id: `if_fluid_applied_what_brand`
+          label: `If fluid-applied — brand / product`,
+          showIf: {
+            field: `sill_capillary_break`,
+            equals: `Fluid-applied`
+          }
         },
         {
-          type: `subheading`,
-          label: `Stem Wall Waterproofing`,
-          helper: `For projects with stem-wall foundations (no full basement), waterproofing the exterior of the stem wall is often skipped — but is critical when soil conditions warrant.`
+          id: `stem_wall_waterproof`,
+          type: `radio`,
+          label: `If foundation is a stem wall — will the exterior be waterproofed?`,
+          required: true,
+          devNote: `Only shown if profile_foundation = Stem wall.`,
+          choices: [
+            `Yes`,
+            `No`,
+            `N/A`
+          ]
         },
         {
-          type: `yesno`,
-          label: `If foundation is a stem wall only, will it be waterproofed? How?`,
-          id: `stem_wall_waterproof`
-        },
-        {
+          id: `stem_wall_waterproof_brand`,
           type: `short`,
-          label: `If yes, brand/product used:`,
+          label: `If yes — product used`,
           showIf: {
             field: `stem_wall_waterproof`,
-            equals: `Yes`
-          },
-          id: `stem_wall_waterproof_brand`
-        }
-      ]
-    },
-    {
-      id: `foundation_termite_protection_drain_system`,
-      title: `Foundation — Termite Protection & Drain System`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Termite Protection`,
-          helper: ``
-        },
-        {
-          type: `yesno`,
-          label: `Is a termite shield installed between foundation and framing?`,
-          id: `is_a_termite_shield_installed_between_foundation_and_framing`
-        },
-        {
-          type: `short`,
-          label: `If yes, termite shield material:`,
-          id: `if_yes_termite_shield_material`,
-          showIf: {
-            field: `is_a_termite_shield_installed_between_foundation_and_framing`,
             equals: `Yes`
           }
         },
         {
-          type: `radio`,
-          label: `Termite treatment method:`,
-          choices: [
-            `Soil treatment`,
-            `Borate treatment of lumber`,
-            `Physical barrier`,
-            `None`
-          ],
-          allowOther: true,
-          id: `termite_treatment_method`
-        },
-        {
           type: `subheading`,
-          label: `Foundation Drain System`,
+          label: `2E · Foundation Drain System & Termite`,
           helper: ``
         },
         {
+          id: `foundation_drain_system`,
           type: `checkboxes`,
-          label: `Foundation drain system type (select all that apply):`,
+          label: `Foundation drain system (select all that apply)`,
+          required: true,
           choices: [
             `Perforated drain pipe`,
             `Exterior drain tile`,
             `Interior drain tile`,
             `Sump pump system`,
-            `None`
-          ],
-          id: `foundation_drain_system_type_select_all_that_apply`
+            `None`,
+            `I don't know — I'll confirm with my sub`
+          ]
         },
         {
-          type: `short`,
-          label: `Where does foundation drainage discharge to?`,
-          id: `where_does_foundation_drainage_discharge_to`
-        },
-        {
-          type: `short`,
-          label: `Where do gutters drain to?`,
-          id: `where_do_gutters_drain_to`
-        }
-      ]
-    },
-    {
-      id: `framing_lumber`,
-      title: `Framing — Lumber`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Lumber`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Lumber grade:`,
-          id: `lumber_grade`
-        },
-        {
-          type: `short`,
-          label: `Lumber species:`,
-          id: `lumber_species`
-        },
-        {
-          type: `short`,
-          label: `Moisture content spec:`,
-          id: `moisture_content_spec`
-        },
-        {
-          type: `yesno`,
-          label: `Is the lumber kiln dried?`,
-          id: `is_the_lumber_kiln_dried`
-        },
-        {
-          type: `subheading`,
-          label: `Engineered Lumber`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `LVLs — Brand/Spec:`,
-          id: `lvls_brand_spec`
-        },
-        {
-          type: `short`,
-          label: `I-Joists — Brand/Spec:`,
-          id: `i_joists_brand_spec`
-        },
-        {
-          type: `short`,
-          label: `Other engineered lumber:`,
-          id: `other_engineered_lumber`
-        },
-        {
-          type: `subheading`,
-          label: `Material Storage & Mold Prevention`,
-          helper: `Lumber moisture content and on-site exposure are leading causes of trapped moisture and downstream mold issues.`
-        },
-        {
-          type: `yesno`,
-          label: `Do you have a written SOP for protecting lumber and materials on-site (delivery, coverage, elevation, mold sensitivity protocol)?`,
-          id: `material_storage_sop`
-        },
-        {
-          type: `paragraph`,
-          label: `If so, briefly describe the SOP:`,
-          showIf: {
-            field: `material_storage_sop`,
-            equals: `Yes`
-          },
-          id: `material_storage_sop_detail`
-        }
-      ]
-    },
-    {
-      id: `framing_subfloor`,
-      title: `Framing — Subfloor`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Subfloor`,
-          helper: ``
-        },
-        {
+          id: `termite_treatment`,
           type: `radio`,
-          label: `Subfloor type:`,
+          label: `Termite treatment method`,
+          required: true,
+          choices: [
+            `Soil treatment (chemical)`,
+            `Borate treatment of lumber`,
+            `Physical barrier (Termimesh, etc.)`,
+            `None`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `termite_shield`,
+          type: `yesno`,
+          label: `Is a termite shield installed between foundation and framing?`,
+          required: true
+        },
+        {
+          id: `termite_shield_material`,
+          type: `short`,
+          label: `If yes — material`,
+          showIf: {
+            field: `termite_shield`,
+            equals: `Yes`
+          }
+        }
+      ]
+    },
+    {
+      id: `framing_structural`,
+      title: `Framing & Structural`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `3A · Lumber & Storage`,
+          helper: ``
+        },
+        {
+          id: `lumber_kiln_dried`,
+          type: `yesno`,
+          label: `Is lumber kiln dried?`,
+          required: true,
+          allowDontKnow: true
+        },
+        {
+          id: `lumber_moisture_content`,
+          type: `short`,
+          label: `What is the specified moisture content for framing lumber at time of installation?`,
+          required: true,
+          helper: `Lumber above 19% MC at installation significantly increases mold risk before the home is dried in. 15% or less is preferred.`,
+          placeholder: `e.g., 19% or less (standard) or 15% or less (preferred)`,
+          allowDontKnow: true,
+          newInV5: true
+        },
+        {
+          id: `engineered_lumber_types`,
+          type: `checkboxes`,
+          label: `Engineered lumber products used (select all that apply)`,
+          required: true,
+          choices: [
+            `LVLs`,
+            `I-Joists`,
+            `Open-web trusses`,
+            `Glulam beams`,
+            `PSL (Parallam)`,
+            `None`
+          ]
+        },
+        {
+          id: `lvl_brand`,
+          type: `short`,
+          label: `If LVLs — brand / spec`,
+          showIf: {
+            field: `engineered_lumber_types`,
+            contains: `LVLs`
+          }
+        },
+        {
+          id: `i_joist_brand`,
+          type: `short`,
+          label: `If I-Joists — brand / spec`,
+          showIf: {
+            field: `engineered_lumber_types`,
+            contains: `I-Joists`
+          }
+        },
+        {
+          id: `i_joist_naf`,
+          type: `radio`,
+          label: `If I-Joists are used — can you source a NAF (no added formaldehyde) version?`,
+          required: true,
+          helper: `Most I-joists use formaldehyde-based adhesives. NAF versions are available from some manufacturers and are strongly preferred for indoor air quality.`,
+          choices: [
+            `Yes — will spec NAF version`,
+            `No — NAF not available from our supplier`,
+            `I don't know — I'll confirm with my sub`
+          ],
+          showIf: {
+            field: `engineered_lumber_types`,
+            contains: `I-Joists`
+          },
+          newInV5: true
+        },
+        {
+          id: `material_storage_sop`,
+          type: `yesno`,
+          label: `Do you have a plan for protecting lumber and materials on-site from moisture and mold?`,
+          required: true
+        },
+        {
+          type: `subheading`,
+          label: `3B · Subfloor`,
+          helper: ``
+        },
+        {
+          id: `subfloor_type`,
+          type: `radio`,
+          label: `Subfloor material`,
+          required: true,
           choices: [
             `Plywood`,
             `OSB`,
-            `AdvanTech`
-          ],
-          allowOther: true,
-          id: `subfloor_type`
+            `AdvanTech`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `subfloor_detail`,
           type: `short`,
-          label: `Subfloor thickness:`,
-          id: `subfloor_thickness`
+          label: `Subfloor brand and thickness`,
+          placeholder: `e.g., AdvanTech, 3/4 inch`
         },
         {
-          type: `short`,
-          label: `Subfloor brand:`,
-          id: `subfloor_brand`
+          id: `subfloor_glued_screwed`,
+          type: `radio`,
+          label: `Will subfloor be glued AND screwed?`,
+          required: true,
+          choices: [
+            `Yes — glued and screwed`,
+            `No — screwed only`,
+            `No — nailed only`
+          ]
         },
         {
+          id: `subfloor_wet_protocol`,
           type: `yesno`,
-          label: `Will subfloor be glued and screwed down?`,
-          id: `will_subfloor_be_glued_and_screwed_down`
+          label: `If the subfloor gets wet during construction, do you take steps to remove the moisture before closing up?`,
+          required: true
         },
-        {
-          type: `paragraph`,
-          label: `How will moisture be removed from the subfloor and how often if it gets wet?`,
-          id: `how_will_moisture_be_removed_from_the_subfloor_and_how_often`
-        }
-      ]
-    },
-    {
-      id: `framing_floor_wall_roof`,
-      title: `Framing — Floor, Wall & Roof`,
-      description: ``,
-      items: [
         {
           type: `subheading`,
-          label: `Floor Framing`,
+          label: `3C · Wall Framing`,
           helper: ``
         },
         {
+          id: `exterior_wall_framing`,
+          type: `short`,
+          label: `Exterior wall stud size and spacing`,
+          required: true,
+          placeholder: `e.g., 2x6, 16 inch OC`
+        },
+        {
+          id: `california_corners`,
+          type: `yesno`,
+          label: `Are California corners or similar advanced framing corners used on exterior walls?`,
+          required: true,
+          allowDontKnow: true
+        },
+        {
+          id: `interior_wall_framing`,
+          type: `short`,
+          label: `Interior wall stud size and spacing`,
+          required: true,
+          placeholder: `e.g., 2x4, 16 inch OC`
+        },
+        {
+          type: `subheading`,
+          label: `3D · Floor, Attic & Roof Framing`,
+          helper: ``
+        },
+        {
+          id: `floor_framing_type`,
           type: `radio`,
-          label: `Floor framing type:`,
+          label: `Floor framing type`,
+          required: true,
           choices: [
             `Dimensional lumber`,
             `I-Joists`,
-            `Open-web trusses`
-          ],
-          allowOther: true,
-          id: `floor_framing_type`
+            `Open-web trusses`,
+            `Other (describe in notes)`
+          ]
         },
         {
-          type: `short`,
-          label: `Brand (if engineered):`,
-          id: `brand_if_engineered`
-        },
-        {
-          type: `subheading`,
-          label: `Wall Framing — Exterior Walls`,
-          helper: ``
-        },
-        {
+          id: `roof_framing_type`,
           type: `radio`,
-          label: `Exterior wall stud size:`,
-          choices: [
-            `2x4`,
-            `2x6`
-          ],
-          allowOther: true,
-          id: `exterior_wall_stud_size`
-        },
-        {
-          type: `short`,
-          label: `Exterior wall stud spacing (on center):`,
-          id: `exterior_wall_stud_spacing_on_center`
-        },
-        {
-          type: `yesno`,
-          label: `Are California corners (advanced framing corners) being used on exterior walls?`,
-          id: `california_corners`
-        },
-        {
-          type: `subheading`,
-          label: `Wall Framing — Interior Walls`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Interior wall stud size:`,
-          choices: [
-            `2x4`,
-            `2x6`
-          ],
-          allowOther: true,
-          id: `interior_wall_stud_size`
-        },
-        {
-          type: `short`,
-          label: `Interior wall stud spacing (16" OC, 24" OC, etc.):`,
-          id: `interior_wall_stud_spacing_16_oc_24_oc_etc`
-        },
-        {
-          type: `subheading`,
-          label: `Attic/Roof Framing`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Attic/roof framing type:`,
+          label: `Attic/roof framing type`,
+          required: true,
           choices: [
             `Conventional trusses`,
-            `Raised-heel/energy trusses`,
-            `Stick framing`,
-            `Scissor trusses`
-          ],
-          allowOther: true,
-          id: `attic_roof_framing_type`
+            `Raised-heel / energy trusses (preferred)`,
+            `Stick framing (rafters)`,
+            `Scissor trusses`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `truss_heel_height`,
           type: `short`,
-          label: `Roof rafter / truss size and heel height (e.g., 2x10, 2x12, raised heel ___ inches):`,
-          id: `specifications_heel_height`
+          label: `Roof rafter/truss size and heel height`,
+          required: true,
+          placeholder: `e.g., 2x10 rafters or raised-heel truss, 12-inch heel`,
+          allowDontKnow: true
         },
         {
+          id: `roof_soffits`,
           type: `yesno`,
           label: `Does the roof have soffits?`,
-          id: `roof_has_soffits`
+          required: true
         },
         {
+          id: `attic_vent_plan`,
           type: `radio`,
-          label: `Is the plan to vent or not vent the attic?`,
+          label: `Attic ventilation plan`,
+          required: true,
+          devNote: `Drives insulation and ventilation questions.`,
           choices: [
-            `Vented`,
-            `Unvented`
-          ],
-          id: `attic_vent_plan`
+            `Vented attic`,
+            `Unvented (conditioned) attic`,
+            `Mixed`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `soffit_ridge_vents`,
+          type: `yesno`,
+          label: `Will the attic have both soffit AND ridge vents?`,
+          required: true,
+          devNote: `Only shown if attic_vent_plan = Vented attic.`,
+          showIf: {
+            field: `attic_vent_plan`,
+            equals: `Vented attic`
+          }
+        },
+        {
+          id: `attic_vent_alternative`,
+          type: `short`,
+          label: `If no — describe alternative ventilation approach`,
+          showIf: {
+            field: `soffit_ridge_vents`,
+            equals: `No`
+          }
+        },
+        {
+          id: `cathedral_ceilings`,
+          type: `yesno`,
+          label: `Are there any cathedral ceilings?`,
+          required: true
+        },
+        {
+          id: `attic_access`,
+          type: `yesno`,
+          label: `Will an attic pull-down stair or access hatch be included?`,
+          required: true
+        },
+        {
+          id: `attic_access_detail`,
+          type: `short`,
+          label: `If yes — how is the hatch insulated and air-sealed?`,
+          placeholder: `e.g., insulated cover, foam gasket, Battic Door`,
+          showIf: {
+            field: `attic_access`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `vent_baffles`,
+          type: `yesno`,
+          label: `If attic is vented — will vent baffles (rafter channels) be installed at every rafter bay to maintain the airflow path from soffit to ridge?`,
+          required: true,
+          helper: `Without baffles, insulation blocks the soffit opening and the ventilation system does not function — even if ridge and soffit vents are present.`,
+          showIf: {
+            field: `attic_vent_plan`,
+            equals: `Vented attic`
+          },
+          allowDontKnow: true,
+          newInV5: true
         }
       ]
     },
@@ -1051,83 +1062,109 @@ This document and its contents are the exclusive property of The Well Build (TM)
       items: [
         {
           type: `subheading`,
-          label: `Wall Sheathing`,
+          label: `4A · Wall Sheathing`,
           helper: ``
         },
         {
+          id: `wall_sheathing`,
           type: `radio`,
-          label: `Wall sheathing type:`,
+          label: `Wall sheathing type`,
+          required: true,
           choices: [
             `Plywood`,
             `OSB`,
-            `Zip System`,
-            `Huber Zip System R-Sheathing`
-          ],
-          allowOther: true,
-          id: `wall_sheathing_type`
+            `Zip System (standard)`,
+            `Zip System R-Sheathing (insulated)`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `wall_sheathing_detail`,
           type: `short`,
-          label: `Wall sheathing thickness:`,
-          id: `wall_sheathing_thickness`
-        },
-        {
-          type: `short`,
-          label: `Wall sheathing grade/rating:`,
-          id: `wall_sheathing_grade_rating`
+          label: `Wall sheathing thickness and grade`,
+          placeholder: `e.g., 7/16 inch, Exposure 1`
         },
         {
           type: `subheading`,
-          label: `Weather Resistive Barrier (WRB)`,
-          helper: ``
+          label: `4B · Weather Resistive Barrier (WRB)`,
+          helper: `Only applies if NOT using Zip System — Zip System with taped seams serves as the WRB.`
         },
         {
+          id: `wrb_method`,
           type: `radio`,
-          label: `WRB application method:`,
+          label: `WRB application method`,
+          required: true,
           choices: [
-            `Self-adhered`,
+            `Self-adhered membrane`,
             `Liquid-applied`,
-            `Mechanically fastened`
-          ],
-          id: `wrb_application_method`
+            `Mechanically fastened (housewrap)`,
+            `N/A — Zip System used`
+          ]
         },
         {
+          id: `wrb_product`,
           type: `short`,
-          label: `If mechanically fastened, are staples used (or cap nails / alternative)?`,
+          label: `WRB product name/model`,
+          placeholder: `e.g., Henry Blueskin, Typar, Benjamin Obdyke HydroGap`
+        },
+        {
+          id: `wrb_fastener`,
+          type: `short`,
+          label: `If mechanically fastened — staples, cap nails, or other?`,
           showIf: {
-            field: `wrb_application_method`,
-            equals: `Mechanically fastened`
-          },
-          id: `wrb_fastener_type`
-        },
-        {
-          type: `short`,
-          label: `WRB or house wrap product name/model:`,
-          id: `wrb_product_name_model`
+            field: `wrb_method`,
+            equals: `Mechanically fastened (housewrap)`
+          }
         },
         {
           type: `subheading`,
-          label: `Rainscreen System`,
+          label: `4C · Continuous Exterior Insulation (CI)`,
           helper: ``
         },
         {
+          id: `exterior_ci_used`,
           type: `yesno`,
-          label: `Will a rainscreen system or drainage gap be installed?`,
-          id: `will_a_rainscreen_system_be_installed`
+          label: `Will the home have continuous exterior insulation (CI) on the walls?`,
+          required: true
         },
         {
+          id: `exterior_ci_type`,
+          type: `radio`,
+          label: `If yes — insulation type`,
+          choices: [
+            `EPS (expanded polystyrene)`,
+            `XPS (extruded polystyrene)`,
+            `Polyisocyanurate (polyiso)`,
+            `Rockwool Comfortboard (mineral wool)`,
+            `Wood fiber board`,
+            `Other (describe in notes)`
+          ],
+          showIf: {
+            field: `exterior_ci_used`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `exterior_ci_thickness`,
           type: `short`,
-          label: `Rainscreen type/brand:`,
-          id: `rainscreen_type_brand`
+          label: `Thickness and R-value`,
+          placeholder: `e.g., 2 inches, R-10`,
+          showIf: {
+            field: `exterior_ci_used`,
+            equals: `Yes`
+          }
         },
         {
           type: `subheading`,
-          label: `Exterior Cladding / Siding`,
+          label: `4D · Exterior Cladding / Siding`,
           helper: ``
         },
         {
-          type: `radio`,
-          label: `Primary exterior cladding/siding material:`,
+          id: `cladding_types`,
+          type: `checkboxes`,
+          label: `Exterior cladding/siding types (select all that apply)`,
+          required: true,
+          devNote: `Drives logic: one follow-up block (brand + rainscreen) per cladding type selected.`,
           choices: [
             `Brick`,
             `Stone (natural)`,
@@ -1136,1374 +1173,1368 @@ This document and its contents are the exclusive property of The Well Build (TM)
             `Fiber cement (Hardie, etc.)`,
             `Wood siding`,
             `Metal siding`,
-            `Stucco/EIFS`
-          ],
-          allowOther: true,
-          id: `primary_exterior_cladding_siding_material`
+            `Stucco (traditional 3-coat)`,
+            `EIFS / synthetic stucco`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `cladding_per_selection`,
+          type: `cladding_repeater`,
+          label: `For each cladding type selected above — brand, rainscreen Y/N, and if yes type/brand`,
+          devNote: `Repeats once per cladding selected.`,
+          fields: [
+            {
+              id: `brand`,
+              label: `Brand / product line`,
+              type: `short`
+            },
+            {
+              id: `rainscreen`,
+              label: `Will a rainscreen / drainage gap be installed behind it?`,
+              type: `yesno`,
+              allowDontKnow: true
+            },
+            {
+              id: `rainscreen_detail`,
+              label: `If yes — type and brand`,
+              type: `short`,
+              placeholder: `e.g., 1x4 furring strips, Benjamin Obdyke Slicker, Cor-A-Vent`
+            }
+          ]
+        },
+        {
+          type: `subheading`,
+          label: `4E · Penetration & Air Sealing`,
+          helper: ``
+        },
+        {
+          id: `penetration_sealing`,
+          type: `checkboxes`,
+          label: `How are penetrations through the building envelope air-sealed? (select all that apply)`,
+          required: true,
+          choices: [
+            `Spray foam at all penetrations`,
+            `Pre-formed pipe boots`,
+            `Mastic`,
+            `Flashing tape`,
+            `Fire-rated caulk where required`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `penetration_sealing_products`,
           type: `short`,
-          label: `Exterior cladding brand/product:`,
-          id: `exterior_cladding_brand_product`
+          label: `Products / brands used`,
+          placeholder: `Products / brands`
         }
       ]
     },
     {
-      id: `insulation_exterior_walls`,
-      title: `Insulation — Exterior Walls`,
+      id: `insulation`,
+      title: `Insulation`,
       description: ``,
       items: [
         {
           type: `subheading`,
-          label: `Exterior Wall R-Value`,
-          helper: ``
+          label: `5A · Exterior Foundation Walls (Interior Side below grade)`,
+          helper: `Only shown if profile_foundation = Basement (full), Basement (partial), Crawl space, or Stem wall.`
         },
         {
-          type: `short`,
-          label: `What is the total R-value for exterior walls?`,
-          id: `exterior_walls_total_r_value`
-        },
-        {
-          type: `subheading`,
-          label: `Exterior Continuous Insulation (CI)`,
-          helper: ``
-        },
-        {
-          type: `yesno`,
-          label: `Are you using exterior continuous insulation?`,
-          id: `exterior_ci_used`
-        },
-        {
-          type: `checkboxes`,
-          label: `If yes, exterior CI type (select all that apply):`,
+          id: `foundation_interior_insulation_type`,
+          type: `radio`,
+          label: `What insulation will be used on the interior side of the foundation walls?`,
+          required: true,
           choices: [
-            `Foam boards`,
-            `Mineral wool board`,
-            `Wood fiber`
-          ],
-          showIf: {
-            field: `exterior_ci_used`,
-            equals: `Yes`
-          },
-          id: `exterior_wall_insulation_type_select_all_that_apply`
+            `Rigid foam board — EPS`,
+            `Rigid foam board — XPS`,
+            `Rigid foam board — polyisocyanurate (polyiso)`,
+            `Closed-cell spray foam`,
+            `Mineral wool / Rockwool`,
+            `Other (describe in notes)`,
+            `Fiberglass`
+          ]
         },
         {
+          id: `foundation_interior_insulation_detail`,
           type: `short`,
-          label: `Exterior CI brand:`,
-          showIf: {
-            field: `exterior_ci_used`,
-            equals: `Yes`
-          },
-          id: `exterior_wall_insulation_brand`
-        },
-        {
-          type: `short`,
-          label: `Exterior CI R-Value:`,
-          showIf: {
-            field: `exterior_ci_used`,
-            equals: `Yes`
-          },
-          id: `exterior_wall_insulation_r_value`
+          label: `Brand, thickness, and R-value`,
+          placeholder: `e.g., InSoFast EX 2.0, R-8 or 2-inch EPS, R-8`
         },
         {
           type: `subheading`,
-          label: `Interior Wall Bay Insulation`,
-          helper: `What goes in the stud bays — type and R-value.`
+          label: `5B · Exterior Walls (Above Grade)`,
+          helper: ``
         },
         {
+          id: `wall_total_r_value`,
           type: `short`,
-          label: `Interior bay insulation R-value:`,
-          id: `interior_bay_r_value`
+          label: `Total assembled R-value for exterior walls`,
+          required: true,
+          placeholder: `e.g., R-21 total (R-15 cavity + R-6 CI)`,
+          allowDontKnow: true
         },
         {
+          id: `interior_bay_insulation`,
           type: `checkboxes`,
-          label: `Interior bay insulation type (select all that apply):`,
+          label: `Interior stud bay insulation — type(s)`,
+          required: true,
           choices: [
             `Blown-in fiberglass`,
             `Blown-in cellulose`,
             `Batts — fiberglass`,
-            `Batts — rockwool`,
-            `Batts — wool`,
+            `Batts — Mineral wool / Rockwool`,
+            `Batts — sheep’s wool`,
             `Spray foam — open cell`,
             `Spray foam — closed cell`,
-            `Flash and batt`
-          ],
-          id: `interior_bay_insulation_type`
+            `Flash and batt`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `interior_bay_brand_r`,
           type: `short`,
-          label: `Interior bay insulation brand:`,
-          id: `interior_bay_insulation_brand`
+          label: `Brand(s) and R-value`,
+          placeholder: `Brand and R-value`
         },
         {
-          type: `subheading`,
-          label: `Interior Air Barrier`,
-          helper: ``
-        },
-        {
-          type: `yesno`,
-          label: `Are you installing an interior air barrier or poly?`,
-          id: `are_you_installing_an_interior_air_barrier`
-        },
-        {
+          id: `interior_air_barrier`,
           type: `checkboxes`,
-          label: `If yes, what type? (select all that apply)`,
+          label: `Interior air barrier or vapor retarder — what is used?`,
+          required: true,
           choices: [
-            `Smart vapor retarder (e.g., Intello Plus)`,
+            `Smart vapor retarder (e.g., Intello Plus, MemBrain)`,
             `Polyethylene sheet`,
-            `Drywall as air barrier (airtight drywall approach)`,
-            `Aerobarrier`
-          ],
-          showIf: {
-            field: `are_you_installing_an_interior_air_barrier`,
-            equals: `Yes`
-          },
-          id: `interior_air_barrier_type`
+            `Airtight drywall approach (ADA)`,
+            `AeroBarrier`,
+            `None`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
         },
         {
+          id: `interior_air_barrier_brand`,
           type: `short`,
-          label: `Brand / product name (if applicable):`,
-          showIf: {
-            field: `are_you_installing_an_interior_air_barrier`,
-            equals: `Yes`
-          },
-          id: `interior_air_barrier_brand`
+          label: `Brand and product name`,
+          placeholder: `Brand / product`
         },
-        {
-          type: `paragraph`,
-          label: `Additional notes (if any):`,
-          id: `if_so_please_list_the_brand_and_specifications`
-        }
-      ]
-    },
-    {
-      id: `insulation_ceiling_attic_floor`,
-      title: `Insulation — Ceiling/Attic & Floor`,
-      description: ``,
-      items: [
         {
           type: `subheading`,
-          label: `Ceiling/Attic Insulation`,
+          label: `5C · Ceiling / Attic Insulation`,
           helper: ``
         },
         {
-          type: `short`,
-          label: `Code-required R-values for ceiling/attic in your area:`,
-          id: `code_required_r_values_for_ceiling_attic_in_your_area`
-        },
-        {
+          id: `attic_insulation_location`,
           type: `radio`,
-          label: `Is the roof vented or unvented?`,
+          label: `Insulation location — attic floor or roof deck?`,
+          required: true,
           choices: [
-            `Vented`,
-            `Unvented`
-          ],
-          id: `is_the_roof_vented_or_unvented`
+            `Attic floor (vented attic)`,
+            `Roof deck / rafters (unvented or cathedral ceiling)`,
+            `Both`
+          ]
         },
         {
+          id: `attic_insulation_type`,
           type: `radio`,
-          label: `Is insulation on the attic floor or roof deck?`,
-          choices: [
-            `Attic floor`,
-            `Roof deck (cathedral ceiling)`
-          ],
-          id: `is_insulation_on_the_attic_floor_or_roof_deck`
-        },
-        {
-          type: `radio`,
-          label: `Ceiling/attic insulation type:`,
+          label: `Ceiling/attic insulation type`,
+          required: true,
           choices: [
             `Blown fiberglass`,
             `Blown cellulose`,
             `Batt insulation`,
             `Spray foam — open cell`,
             `Spray foam — closed cell`,
-            `Flash and batt`
-          ],
-          allowOther: true,
-          id: `ceiling_attic_insulation_type`
+            `Flash and batt`,
+            `Rigid board (above deck)`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
         },
         {
+          id: `attic_insulation_brand_r`,
           type: `short`,
-          label: `Ceiling/attic insulation brand:`,
-          id: `ceiling_attic_insulation_brand`
+          label: `Brand and R-value`,
+          placeholder: `e.g., blown cellulose, GreenFiber, R-60`
         },
         {
+          id: `sound_insulation`,
           type: `short`,
-          label: `Ceiling/attic insulation R-Value:`,
-          id: `ceiling_attic_insulation_r_value`
-        },
-        {
-          type: `yesno`,
-          label: `Will the attic have both soffit and ridge vents?`,
-          id: `attic_soffit_ridge_vents`
+          label: `Interior wall insulation for sound control — what is typically included?`,
+          required: true,
+          placeholder: `e.g., Rockwool Safe’n’Sound in party walls and bathroom walls`
         },
         {
           type: `subheading`,
-          label: `Floor Insulation Between Living Areas`,
+          label: `5D · Floor Insulation`,
           helper: ``
         },
         {
+          id: `floor_insulation`,
           type: `short`,
-          label: `Which areas have floor insulation (if applicable)?`,
-          id: `which_areas_have_floor_insulation_if_applicable`
-        },
-        {
-          type: `short`,
-          label: `Floor insulation type:`,
-          id: `floor_insulation_type`
-        },
-        {
-          type: `short`,
-          label: `Floor insulation brand:`,
-          id: `floor_insulation_brand`
-        },
-        {
-          type: `short`,
-          label: `Floor insulation R-Value:`,
-          id: `floor_insulation_r_value`
-        },
-        {
-          type: `subheading`,
-          label: `Interior Wall Insulation for Sound Control`,
-          helper: ``
-        },
-        {
-          type: `paragraph`,
-          label: `What insulation is typically included for interior wall sound control?`,
-          id: `what_insulation_is_typically_included_for_interior_wall_soun`
+          label: `Between-floor insulation — type, brand, R-value (or N/A)`,
+          required: true,
+          placeholder: `Location, type, brand, R-value — or N/A`
         }
       ]
     },
     {
-      id: `roofing_sheathing_ventilation`,
-      title: `Roofing — Sheathing & Ventilation`,
+      id: `roofing`,
+      title: `Roofing`,
       description: ``,
       items: [
         {
           type: `subheading`,
-          label: `Roof Sheathing`,
+          label: `6A · Sheathing`,
           helper: ``
         },
         {
+          id: `roof_sheathing`,
           type: `radio`,
-          label: `Roof sheathing type:`,
+          label: `Roof sheathing type`,
+          required: true,
           choices: [
             `Plywood`,
             `OSB`,
-            `Zip System`
-          ],
-          allowOther: true,
-          id: `roof_sheathing_type`
+            `Zip System`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `roof_sheathing_detail`,
           type: `short`,
-          label: `Roof sheathing thickness:`,
-          id: `roof_sheathing_thickness`
-        },
-        {
-          type: `short`,
-          label: `Roof sheathing grade:`,
-          id: `roof_sheathing_grade`
+          label: `Thickness`,
+          placeholder: `e.g., 1/2 inch CDX plywood`
         },
         {
           type: `subheading`,
-          label: `Roof Ventilation`,
+          label: `6B · Roofing Material & Underlayment`,
           helper: ``
         },
         {
-          type: `checkboxes`,
-          label: `Roof ventilation type (select all that apply):`,
-          choices: [
-            `Ridge vent`,
-            `Soffit vents`,
-            `Gable vents`,
-            `Power attic fan`,
-            `None - Unvented roof assembly`
-          ],
-          id: `roof_ventilation_type_select_all_that_apply`
-        }
-      ]
-    },
-    {
-      id: `roofing_material_underlayment_gutters`,
-      title: `Roofing — Material, Underlayment & Gutters`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Roofing Material`,
-          helper: ``
-        },
-        {
+          id: `roofing_material`,
           type: `radio`,
-          label: `Roofing material type:`,
+          label: `Roofing material type`,
+          required: true,
           choices: [
             `Asphalt shingles`,
             `Cedar shake`,
             `Metal roofing`,
             `Tile`,
-            `Slate`
-          ],
-          allowOther: true,
-          id: `roofing_material_type`
+            `Slate`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `roofing_brand_product`,
           type: `short`,
-          label: `Roofing brand:`,
-          id: `roofing_brand`
+          label: `Brand and product line`,
+          placeholder: `e.g., GAF Timberline HDZ, Lifetime series`
         },
         {
-          type: `short`,
-          label: `Roofing product line:`,
-          id: `roofing_product_line`
-        },
-        {
-          type: `subheading`,
-          label: `Underlayment`,
-          helper: ``
-        },
-        {
+          id: `underlayment`,
           type: `radio`,
-          label: `Underlayment type:`,
+          label: `Underlayment type`,
+          required: true,
           choices: [
-            `Felt paper (#15, #30)`,
+            `Felt paper (#15 or #30)`,
             `Synthetic underlayment`,
-            `Self-adhering membrane (ice/water shield)`
-          ],
-          allowOther: true,
-          id: `underlayment_type`
+            `Self-adhering membrane (ice + water shield)`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `underlayment_brand`,
           type: `short`,
-          label: `Underlayment brand/product:`,
-          id: `underlayment_brand_product`
+          label: `If synthetic — brand and product`,
+          showIf: {
+            field: `underlayment`,
+            equals: `Synthetic underlayment`
+          }
         },
         {
-          type: `subheading`,
-          label: `Gutters & Downspouts`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Gutter size:`,
-          id: `gutter_size`
-        },
-        {
-          type: `short`,
-          label: `Downspout size:`,
-          id: `downspout_size`
-        },
-        {
-          type: `subheading`,
-          label: `Flat / Low-Slope Roof Insulation`,
-          helper: `Only relevant if the project includes any flat or low-slope roof areas.`
-        },
-        {
+          id: `ice_water_shield_coverage`,
           type: `yesno`,
-          label: `If project includes flat / low-slope roof, will above-deck (continuous) insulation be installed?`,
+          label: `Is ice + water shield applied at all eaves, valleys, and penetrations?`,
+          required: true
+        },
+        {
+          id: `ice_water_shield_detail`,
+          type: `short`,
+          label: `If no — describe coverage locations`,
+          showIf: {
+            field: `ice_water_shield_coverage`,
+            equals: `No`
+          }
+        },
+        {
+          id: `kickout_flashing`,
+          type: `yesno`,
+          label: `Is kickout flashing installed at every location where a sloped roof meets a wall?`,
+          required: true,
+          helper: `Kickout flashing is required wherever a sloped roof terminates at a sidewall. Missing kickout flashing is one of the most common bulk water intrusion failures in residential construction.`,
+          allowDontKnow: true
+        },
+        {
+          type: `subheading`,
+          label: `6C · Flat / Low-Slope Roof`,
+          helper: `Only shown if profile_roof_shape is not Pitched only.`
+        },
+        {
+          id: `has_flat_roof`,
+          type: `yesno`,
+          label: `Is there a flat or low-slope roof on this project?`,
+          required: true,
+          devNote: `Drives membrane and CI questions below.`,
           showIf: {
             field: `profile_roof_shape`,
-            notEquals: `Pitched only`
-          },
-          id: `flat_roof_above_deck_ci`
+            notEqualsOrEmpty: `Pitched only`
+          }
         },
         {
-          type: `short`,
-          label: `Above-deck insulation type and R-value:`,
-          showIf: {
-            field: `flat_roof_above_deck_ci`,
-            equals: `Yes`
-          },
-          id: `flat_roof_above_deck_ci_type`
-        },
-        {
+          id: `flat_roof_membrane`,
           type: `radio`,
-          label: `Roof membrane type (low-slope roofs):`,
+          label: `Flat/low-slope roof membrane type`,
+          required: true,
           choices: [
             `EPDM`,
             `TPO`,
             `PVC`,
             `Modified bitumen`,
-            `Built-up roof`
+            `Built-up roof (BUR)`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
           ],
-          allowOther: true,
           showIf: {
-            field: `profile_roof_shape`,
-            notEquals: `Pitched only`
-          },
-          id: `low_slope_roof_membrane`
-        }
-      ]
-    },
-    {
-      id: `windows`,
-      title: `Windows`,
-      description: ``,
-      items: [
-        {
-          type: `short`,
-          label: `Window manufacturer:`,
-          id: `window_manufacturer`
-        },
-        {
-          type: `short`,
-          label: `Window product line/series:`,
-          id: `window_product_line_series`
-        },
-        {
-          type: `radio`,
-          label: `Window frame material:`,
-          choices: [
-            `Vinyl`,
-            `Aluminum-clad wood`,
-            `Fiberglass`,
-            `Wood`,
-            `Aluminum`
-          ],
-          allowOther: true,
-          id: `window_frame_material`
-        },
-        {
-          type: `radio`,
-          label: `Window frame type:`,
-          choices: [
-            `Flange (nail fin)`,
-            `Flangeless`,
-            `Block frame`
-          ],
-          id: `window_frame_type`
-        },
-        {
-          type: `radio`,
-          label: `Window installation method:`,
-          choices: [
-            `Nail fin`,
-            `Retrofit/insert`
-          ],
-          allowOther: true,
-          id: `window_installation_method`
-        },
-        {
-          type: `radio`,
-          label: `Glass type:`,
-          choices: [
-            `Double-pane`,
-            `Triple-pane`
-          ],
-          id: `glass_type`
-        }
-      ]
-    },
-    {
-      id: `window_flashing_doors`,
-      title: `Window Flashing & Doors`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Window Flashing & Air Sealing`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Flashing tape brand:`,
-          id: `flashing_tape_brand`
-        },
-        {
-          type: `yesno`,
-          label: `Rigid head flashing included?`,
-          id: `rigid_head_flashing_included`
-        },
-        {
-          type: `yesno`,
-          label: `Drip cap included?`,
-          id: `drip_cap_included`
-        },
-        {
-          type: `subheading`,
-          label: `Exterior Doors`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Exterior door material:`,
-          choices: [
-            `Wood`,
-            `Fiberglass`,
-            `Steel`,
-            `Composite`
-          ],
-          allowOther: true,
-          id: `exterior_door_material`
-        },
-        {
-          type: `short`,
-          label: `Threshold type:`,
-          id: `threshold_type`
-        }
-      ]
-    },
-    {
-      id: `garage_doors`,
-      title: `Garage`,
-      description: ``,
-      items: [
-        {
-          type: `yesno`,
-          label: `Are the garage doors insulated?`,
-          id: `are_the_garage_doors_insulated`
-        },
-        {
-          type: `yesno`,
-          label: `Will the garage be conditioned?`,
-          id: `garage_conditioned`
-        },
-        {
-          type: `yesno`,
-          label: `Is there living space over the garage?`,
-          id: `garage_living_space_above`
-        },
-        {
-          type: `paragraph`,
-          label: `If yes, describe insulation and air barrier between the garage and the room above.`,
-          showIf: {
-            field: `garage_living_space_above`,
+            field: `has_flat_roof`,
             equals: `Yes`
-          },
-          id: `garage_living_space_assembly`
+          }
         },
         {
+          id: `flat_roof_above_deck_ci`,
           type: `yesno`,
-          label: `Is a vapor barrier installed under the garage slab?`,
-          id: `garage_slab_vapor_barrier`
-        }
-      ]
-    },
-    {
-      id: `hvac_system_design`,
-      title: `HVAC — System Design`,
-      description: ``,
-      items: [
-        {
-          type: `yesno`,
-          label: `Was a Manual J load calculation performed or will it be done?`,
-          id: `was_a_manual_j_load_calculation_performed_or_will_it_be_done`
-        },
-        {
-          type: `checkboxes`,
-          label: `Were the following also performed? (Select all that apply)`,
-          choices: [
-            `Manual D`,
-            `Manual S`,
-            `Manual T`
-          ],
-          id: `were_the_following_also_performed_select_all_that_apply`
-        },
-        {
-          type: `yesno`,
-          label: `Are mechanical plans going to be performed by a mechanical engineer?`,
-          id: `are_mechanical_plans_going_to_be_performed_by_a_mechanical_e`
-        },
-        {
-          type: `yesno`,
-          label: `Is a blower door test required by code?`,
-          id: `is_a_blower_door_test_required_by_code`
-        },
-        {
-          type: `short`,
-          label: `Target ACH50 for blower door (e.g., "3.0", "below 2.0"):`,
+          label: `Will above-deck (continuous) insulation be installed on the flat/low-slope roof?`,
+          required: true,
+          allowDontKnow: true,
           showIf: {
-            field: `is_a_blower_door_test_required_by_code`,
+            field: `has_flat_roof`,
             equals: `Yes`
-          },
-          id: `blower_door_target_ach50`
+          }
         },
         {
-          type: `yesno`,
-          label: `Will temporary heating/cooling and dehumidification (or installed units) be run during construction?`,
-          id: `will_temporary_heating_cooling_and_dehumidification_be_used_`
-        },
-        {
-          type: `radio`,
-          label: `If yes, type of temporary heat:`,
-          choices: [
-            `Direct-fired propane`,
-            `Indirect-fired (vented)`,
-            `Packaged units`,
-            `Electric`,
-            `Heat pump`,
-            `None`
-          ],
-          allowOther: true,
+          id: `flat_roof_ci_detail`,
+          type: `short`,
+          label: `If yes — type and R-value`,
+          placeholder: `e.g., polyisocyanurate, R-25`,
           showIf: {
-            field: `will_temporary_heating_cooling_and_dehumidification_be_used_`,
-            equals: `Yes`
-          },
-          id: `construction_temp_heat_type`
-        },
-        {
-          type: `radio`,
-          label: `If yes, type of construction-phase dehumidification:`,
-          choices: [
-            `Portable`,
-            `Whole-home dehum installed early`,
-            `None`
-          ],
-          allowOther: true,
-          showIf: {
-            field: `will_temporary_heating_cooling_and_dehumidification_be_used_`,
-            equals: `Yes`
-          },
-          id: `construction_temp_dehum_type`
-        }
-      ]
-    },
-    {
-      id: `hvac_equipment`,
-      title: `HVAC — Equipment`,
-      description: ``,
-      items: [
-        {
-          type: `radio`,
-          label: `HVAC system type:`,
-          choices: [
-            `Central forced air`,
-            `Heat pump (air source)`,
-            `Heat pump (ground source/geothermal)`,
-            `Mini-split/Multi-split`,
-            `Radiant floor heating`,
-            `VRF/VRV system`
-          ],
-          allowOther: true,
-          id: `hvac_system_type`
-        },
-        {
-          type: `short`,
-          label: `HVAC manufacturer:`,
-          id: `hvac_manufacturer`
-        },
-        {
-          type: `radio`,
-          label: `HVAC stages:`,
-          id: `hvac_model_series`,
-          choices: [
-            `Single-stage`,
-            `Two-stage`,
-            `Variable speed (inverter)`
-          ]
-        },
-        {
-          type: `short`,
-          label: `SEER rating (cooling):`,
-          id: `seer_rating_cooling`
-        },
-        {
-          type: `short`,
-          label: `Number of zones:`,
-          id: `number_of_zones`
-        }
-      ]
-    },
-    {
-      id: `hvac_ductwork_iaq`,
-      title: `HVAC — Ductwork & IAQ`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Ductwork`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Ductwork material:`,
-          choices: [
-            `Sheet metal`,
-            `Flex duct`,
-            `Combination`
-          ],
-          allowOther: true,
-          id: `ductwork_material`
-        },
-        {
-          type: `radio`,
-          label: `Where are ducts located?`,
-          choices: [
-            `Conditioned space (within building envelope)`,
-            `Unconditioned space (attic, crawl, etc.)`,
-            `Combination`
-          ],
-          id: `where_are_ducts_located`
-        },
-        {
-          type: `radio`,
-          label: `Duct sealing method:`,
-          choices: [
-            `Mastic`,
-            `Aeroseal`,
-            `Mastic and mesh`
-          ],
-          allowOther: true,
-          id: `duct_sealing_method`
-        },
-        {
-          type: `short`,
-          label: `Duct insulation R-value:`,
-          id: `duct_insulation_r_value`
-        },
-        {
-          type: `yesno`,
-          label: `Will a duct blast test be performed?`,
-          id: `will_a_duct_blast_test_be_performed`,
-          helper: `Required if any ducts run through unconditioned space.`
-        },
-        {
-          type: `subheading`,
-          label: `Filtration & Indoor Air Quality`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Where will filters be located?`,
-          choices: [
-            `At returns`,
-            `At HVAC unit`
-          ],
-          id: `where_will_filters_be_located`
-        },
-        {
-          type: `radio`,
-          label: `Filter type included:`,
-          choices: [
-            `1" disposable`,
-            `4" media filter`
-          ],
-          id: `filter_type_included`,
-          allowOther: true
-        },
-        {
-          type: `checkboxes`,
-          label: `Additional IAQ equipment (select all that apply):`,
-          choices: [
-            `Whole-home dehumidifier`,
-            `Basement dehumidifier`,
-            `Humidifier`,
-            `ERV/HRV (energy/heat recovery ventilator)`,
-            `Positive pressure ventilation`,
-            `UV light`,
-            `Make-up air`,
-            `None`
-          ],
-          id: `additional_iaq_equipment_select_all_that_apply`
-        },
-        ]
-    },
-    {
-      id: `plumbing_water_supply`,
-      title: `Plumbing — Water Supply`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Water Supply Piping`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Water supply piping type:`,
-          choices: [
-            `PEX-A`,
-            `PEX-B`,
-            `Copper (Type L, M, K)`,
-            `CPVC`
-          ],
-          allowOther: true,
-          id: `water_supply_piping_type`
-        },
-        {
-          type: `short`,
-          label: `Water supply piping brand:`,
-          id: `water_supply_piping_brand`
-        },
-        {
-          type: `yesno`,
-          label: `Is a manifold system used?`,
-          id: `is_a_manifold_system_used`
-        },
-        {
-          type: `subheading`,
-          label: `Drain/Waste/Vent Piping`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `DWV piping type:`,
-          choices: [
-            `PVC (Schedule 40)`,
-            `ABS`,
-            `Cast iron`
-          ],
-          allowOther: true,
-          id: `dwv_piping_type`
-        }
-      ]
-    },
-    {
-      id: `plumbing_hot_water_treatment`,
-      title: `Plumbing — Hot Water & Treatment`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Hot Water Heater`,
-          helper: ``
-        },
-        {
-          type: `radio`,
-          label: `Hot water heater type:`,
-          choices: [
-            `Tank water heater`,
-            `Tankless (on-demand)`
-          ],
-          allowOther: true,
-          id: `hot_water_heater_type`
-        },
-        {
-          type: `radio`,
-          label: `Water heater fuel type:`,
-          choices: [
-            `Natural gas`,
-            `Electric`,
-            `Propane`
-          ],
-          allowOther: true,
-          id: `water_heater_fuel_type`
-        },
-        {
-          type: `yesno`,
-          label: `Will a recirculation pump be installed?`,
-          id: `will_a_recirculation_pump_be_installed`
-        },
-        {
-          type: `subheading`,
-          label: `Water Treatment/Filtration`,
-          helper: ``
-        },
-        {
-          type: `checkboxes`,
-          label: `Water treatment systems included (select all that apply):`,
-          choices: [
-            `Whole-house filter`,
-            `Water softener`,
-            `Reverse osmosis (kitchen)`,
-            `UV purification`,
-            `None`
-          ],
-          id: `water_treatment_systems_included_select_all_that_apply`
-        },
-        ]
-    },
-    {
-      id: `electrical_service_wiring`,
-      title: `Electrical — Service & Wiring`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Electrical Service & Panel`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Electrical panel brand:`,
-          id: `electrical_panel_brand`
-        },
-        {
-          type: `yesno`,
-          label: `Are subpanels included?`,
-          id: `are_subpanels_included`
-        },
-        {
-          type: `short`,
-          label: `If yes, subpanel locations:`,
-          id: `if_yes_subpanel_locations`,
-          showIf: {
-            field: `are_subpanels_included`,
+            field: `flat_roof_above_deck_ci`,
             equals: `Yes`
           }
         },
         {
           type: `subheading`,
-          label: `Wiring`,
+          label: `6D · Gutters & Downspouts`,
           helper: ``
         },
         {
+          id: `gutters`,
+          type: `short`,
+          label: `Gutter and downspout size and material`,
+          required: true,
+          placeholder: `e.g., 6-inch aluminum gutters, 3x4 inch downspouts`
+        }
+      ]
+    },
+    {
+      id: `windows_doors`,
+      title: `Windows & Doors`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `7A · Windows`,
+          helper: ``
+        },
+        {
+          id: `window_manufacturer`,
+          type: `short`,
+          label: `Window manufacturer and product line/series`,
+          required: true
+        },
+        {
+          id: `window_frame_material`,
           type: `radio`,
-          label: `Wiring type:`,
+          label: `Window frame material`,
+          required: true,
+          choices: [
+            `Vinyl`,
+            `Aluminum-clad wood`,
+            `Fiberglass`,
+            `Wood`,
+            `Aluminum`,
+            `Other (describe in notes)`
+          ]
+        },
+        {
+          id: `window_install_type`,
+          type: `radio`,
+          label: `Window installation type`,
+          required: true,
+          choices: [
+            `Flanged (nail fin) — new construction`,
+            `Flangeless / block frame`,
+            `Retrofit/insert — replacement`,
+            `Other (describe in notes)`
+          ]
+        },
+        {
+          id: `glass_type`,
+          type: `radio`,
+          label: `Glass type`,
+          required: true,
+          choices: [
+            `Double-pane`,
+            `Triple-pane`
+          ]
+        },
+        {
+          type: `subheading`,
+          label: `7B · Window Flashing & Air Sealing`,
+          helper: ``
+        },
+        {
+          id: `flashing_tape`,
+          type: `short`,
+          label: `Flashing tape brand and type`,
+          required: true,
+          placeholder: `e.g., Zip System stretch tape, Prosoco FastFlash`,
+          allowDontKnow: true
+        },
+        {
+          id: `head_flashing`,
+          type: `yesno`,
+          label: `Is a rigid head flashing installed above windows?`,
+          required: true,
+          allowDontKnow: true
+        },
+        {
+          id: `drip_cap`,
+          type: `yesno`,
+          label: `Is a drip cap included above windows?`,
+          required: true
+        },
+        {
+          type: `subheading`,
+          label: `7C · Exterior Doors`,
+          helper: ``
+        },
+        {
+          id: `exterior_door_material`,
+          type: `radio`,
+          label: `Exterior door material`,
+          required: true,
+          choices: [
+            `Fiberglass (preferred)`,
+            `Wood`,
+            `Steel`,
+            `Composite`,
+            `Other (describe in notes)`
+          ]
+        }
+      ]
+    },
+    {
+      id: `garage`,
+      title: `Garage`,
+      description: `Only shown if profile_has_garage is not 'No garage'.`,
+      skipIf: {
+        field: `profile_has_garage`,
+        equals: `No garage`
+      },
+      items: [
+        {
+          id: `garage_doors_insulated`,
+          type: `yesno`,
+          label: `Are garage doors insulated?`,
+          required: true
+        },
+        {
+          id: `garage_conditioned`,
+          type: `yesno`,
+          label: `Will the garage be conditioned (heated/cooled)?`,
+          required: true
+        },
+        {
+          id: `living_over_garage`,
+          type: `yesno`,
+          label: `Is there living space over the garage?`,
+          required: true
+        },
+        {
+          id: `living_over_garage_assembly`,
+          type: `paragraph`,
+          label: `If yes — describe insulation and air barrier between garage ceiling and room above`,
+          showIf: {
+            field: `living_over_garage`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `garage_slab_vapor_barrier`,
+          type: `yesno`,
+          label: `Is a vapor barrier installed under the garage slab?`,
+          required: true
+        }
+      ]
+    },
+    {
+      id: `hvac`,
+      title: `HVAC`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `9A · System Design & Load Calculations`,
+          helper: ``
+        },
+        {
+          id: `manual_j`,
+          type: `radio`,
+          label: `Was a Manual J load calculation performed or will it be?`,
+          required: true,
+          choices: [
+            `Yes — already performed`,
+            `Yes — will be performed before equipment selection`,
+            `No`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `hvac_calcs`,
+          type: `checkboxes`,
+          label: `Were the following also performed or planned? (select all that apply)`,
+          required: true,
+          choices: [
+            `Manual D (duct design)`,
+            `Manual S (equipment selection)`,
+            `Manual T (register sizing)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `mechanical_engineer`,
+          type: `radio`,
+          label: `Will mechanical plans be prepared by a mechanical engineer or HERS rater?`,
+          required: true,
+          choices: [
+            `Yes`,
+            `No — contractor designed`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `blower_door`,
+          type: `yesno`,
+          label: `Is a blower door test required by code or planned?`,
+          required: true
+        },
+        {
+          id: `blower_door_ach50`,
+          type: `short`,
+          label: `If yes — target ACH50`,
+          placeholder: `e.g., 3.0 ACH50 or below 2.0`,
+          showIf: {
+            field: `blower_door`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `construction_climate_control`,
+          type: `yesno`,
+          label: `Will temporary heat, cooling, and/or dehumidification be used during construction?`,
+          required: true,
+          helper: `Direct-fired propane heaters add significant moisture to the air and are not recommended. Indirect-fired (vented) or electric heat is strongly preferred.`
+        },
+        {
+          id: `construction_heat_type`,
+          type: `radio`,
+          label: `If yes — temporary heat type`,
+          choices: [
+            `Direct-fired propane (not recommended)`,
+            `Indirect-fired / vented`,
+            `Packaged units`,
+            `Electric`,
+            `Heat pump`,
+            `Other`
+          ],
+          showIf: {
+            field: `construction_climate_control`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `construction_dehum_type`,
+          type: `radio`,
+          label: `If yes — dehumidification type`,
+          choices: [
+            `Portable dehumidifiers`,
+            `Whole-home dehumidifier installed early`,
+            `None`
+          ],
+          showIf: {
+            field: `construction_climate_control`,
+            equals: `Yes`
+          }
+        },
+        {
+          type: `subheading`,
+          label: `9B · HVAC Equipment`,
+          helper: ``
+        },
+        {
+          id: `hvac_system_type`,
+          type: `checkboxes`,
+          label: `HVAC system type (select all that apply)`,
+          required: true,
+          choices: [
+            `Central forced air (gas or electric)`,
+            `Air source heat pump`,
+            `Ground source / geothermal`,
+            `Mini-split / multi-split`,
+            `Radiant floor heating`,
+            `Boiler with radiators`,
+            `VRF / VRV system`,
+            `Other (describe in notes)`
+          ]
+        },
+        {
+          id: `hvac_equipment_detail`,
+          type: `short`,
+          label: `HVAC manufacturer, model/series, staging, and efficiency rating`,
+          required: true,
+          placeholder: `e.g., Carrier 25VNA, variable speed, 18 SEER2`,
+          allowDontKnow: true
+        },
+        {
+          id: `hvac_zones`,
+          type: `short`,
+          label: `Number of HVAC zones`,
+          required: true,
+          placeholder: `e.g., 2 zones or single zone`
+        },
+        {
+          id: `air_handler_location`,
+          type: `radio`,
+          label: `Where is the air handler / furnace located?`,
+          required: true,
+          helper: `Air handler location has a major impact on duct efficiency, moisture risk, and indoor air quality. Unconditioned attic placement is strongly discouraged in all climate zones.`,
+          choices: [
+            `Conditioned basement (preferred)`,
+            `Conditioned mechanical closet inside envelope (preferred)`,
+            `Conditioned crawl space`,
+            `Unconditioned attic (not recommended)`,
+            `Garage (not recommended — combustion and fume risk)`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ],
+          newInV5: true
+        },
+        {
+          type: `subheading`,
+          label: `9C · Ductwork`,
+          helper: ``
+        },
+        {
+          id: `duct_material`,
+          type: `radio`,
+          label: `Ductwork material`,
+          required: true,
+          choices: [
+            `Sheet metal (preferred)`,
+            `Flex duct`,
+            `Combination — sheet metal mains with flex branches`,
+            `Other (describe in notes)`
+          ]
+        },
+        {
+          id: `duct_location`,
+          type: `radio`,
+          label: `Where are ducts located?`,
+          required: true,
+          devNote: `Drives duct blast question.`,
+          choices: [
+            `Conditioned space (within building envelope — preferred)`,
+            `Unconditioned space (attic, crawl, etc.)`,
+            `Combination`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `duct_sealing`,
+          type: `radio`,
+          label: `Duct sealing method`,
+          required: true,
+          choices: [
+            `Mastic`,
+            `Aeroseal`,
+            `Mastic + mesh tape`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `duct_blast`,
+          type: `yesno`,
+          label: `Will a duct blaster / duct leakage test be performed?`,
+          required: true,
+          helper: `Required if any ducts run through unconditioned space.`,
+          allowDontKnow: true
+        },
+        {
+          type: `subheading`,
+          label: `9D · Filtration, Ventilation & IAQ`,
+          helper: ``
+        },
+        {
+          id: `filter_location`,
+          type: `radio`,
+          label: `Filter location`,
+          required: true,
+          choices: [
+            `At returns`,
+            `At HVAC unit`,
+            `Both`
+          ]
+        },
+        {
+          id: `returns_in_bedrooms`,
+          type: `yesno`,
+          label: `Will there be return air grilles in the bedrooms?`,
+          required: true
+        },
+        {
+          id: `supplies_all_rooms`,
+          type: `yesno`,
+          label: `Will supply registers be located in all rooms?`,
+          required: true
+        },
+        {
+          id: `filter_type`,
+          type: `radio`,
+          label: `Filter type`,
+          required: true,
+          choices: [
+            `1-inch disposable`,
+            `4-inch media filter (preferred)`,
+            `5-inch media filter`,
+            `HEPA`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `range_hood`,
+          type: `short`,
+          label: `Range hood — CFM rating and venting type`,
+          required: true,
+          helper: `High-CFM range hoods (400+ CFM) in tight homes require makeup air. This must be coordinated with the mechanical contractor before equipment is selected.`,
+          placeholder: `e.g., 600 CFM, exterior vented or 400 CFM, recirculating`,
+          allowDontKnow: true
+        },
+        {
+          id: `bath_exhaust_fans`,
+          type: `short`,
+          label: `Bathroom exhaust fans — CFM rating and control type`,
+          required: true,
+          helper: `Bathroom exhaust fans are the primary moisture control strategy for bathrooms. A humidity-sensing fan or timer is strongly preferred over a simple on/off switch.`,
+          placeholder: `e.g., 110 CFM, humidity-sensing (Panasonic WhisperSense) or 80 CFM, timer`,
+          allowDontKnow: true,
+          newInV5: true
+        },
+        {
+          id: `iaq_equipment`,
+          type: `checkboxes`,
+          label: `Additional IAQ equipment (select all that apply)`,
+          required: true,
+          choices: [
+            `Whole-home dehumidifier`,
+            `Basement dehumidifier`,
+            `Humidifier`,
+            `ERV (Energy Recovery Ventilator)`,
+            `HRV (Heat Recovery Ventilator)`,
+            `Positive pressure ventilation`,
+            `UV light / air purifier`,
+            `Makeup air unit`,
+            `None`
+          ]
+        },
+        {
+          id: `makeup_air_detail`,
+          type: `short`,
+          label: `If makeup air unit is included — type and capacity`,
+          placeholder: `Type (pressure-sensing preferred), CFM, brand`,
+          allowDontKnow: true,
+          showIf: {
+            field: `iaq_equipment`,
+            contains: `Makeup air unit`
+          }
+        },
+        {
+          id: `erv_ducting`,
+          type: `radio`,
+          label: `If ERV or HRV is included — is it ducted independently or tied into the HVAC system?`,
+          choices: [
+            `Independently ducted (preferred)`,
+            `Tied into HVAC ductwork`,
+            `I don't know — I'll confirm with my sub`
+          ],
+          devNote: `Only shown if iaq_equipment includes ERV or HRV.`
+        }
+      ]
+    },
+    {
+      id: `plumbing`,
+      title: `Plumbing`,
+      description: ``,
+      items: [
+        {
+          type: `subheading`,
+          label: `10A · Water Supply Piping`,
+          helper: ``
+        },
+        {
+          id: `supply_piping_type`,
+          type: `radio`,
+          label: `Water supply piping type`,
+          required: true,
+          choices: [
+            `PE-RT (preferred — lowest toxicity)`,
+            `PEX-A (e.g., Uponor)`,
+            `PEX-B`,
+            `Copper (Type L, M, K)`,
+            `CPVC`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `supply_piping_brand`,
+          type: `short`,
+          label: `Brand`
+        },
+        {
+          id: `manifold_system`,
+          type: `radio`,
+          label: `Is a manifold system (home run) used?`,
+          required: true,
+          choices: [
+            `Yes — home run manifold`,
+            `No — trunk and branch`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `dedicated_water_lines`,
+          type: `checkboxes`,
+          label: `Will dedicated water lines be roughed in for any of the following? (select all that apply)`,
+          required: true,
+          choices: [
+            `Built-in / plumbed coffee maker`,
+            `Separate ice maker`,
+            `Pot filler`,
+            `Refrigerator water line`,
+            `Bathroom bidet(s)`,
+            `Other (describe in notes)`,
+            `None`
+          ]
+        },
+        {
+          id: `dedicated_water_lines_locations`,
+          type: `short`,
+          label: `Location(s) for each item selected`,
+          placeholder: `Location(s)`
+        },
+        {
+          type: `subheading`,
+          label: `10B · Drain, Waste & Vent Piping`,
+          helper: ``
+        },
+        {
+          id: `dwv_piping_type`,
+          type: `radio`,
+          label: `DWV piping type`,
+          required: true,
+          choices: [
+            `PVC (Schedule 40)`,
+            `ABS`,
+            `Cast iron`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          type: `subheading`,
+          label: `10C · Hot Water`,
+          helper: ``
+        },
+        {
+          id: `water_heater`,
+          type: `radio`,
+          label: `Hot water heater type and fuel`,
+          required: true,
+          choices: [
+            `Tank — natural gas`,
+            `Tank — electric`,
+            `Tankless (on demand) — natural gas`,
+            `Tankless (on demand) — electric`,
+            `Heat pump water heater (electric)`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        },
+        {
+          id: `recirc_pump`,
+          type: `yesno`,
+          label: `Will a hot water recirculation pump be installed?`,
+          required: true,
+          allowDontKnow: true
+        },
+        {
+          type: `subheading`,
+          label: `10D · Water Treatment & Filtration`,
+          helper: ``
+        },
+        {
+          id: `water_treatment`,
+          type: `checkboxes`,
+          label: `Water treatment systems included (select all that apply)`,
+          required: true,
+          choices: [
+            `Whole-house filter (chlorine, VOC, sediment)`,
+            `Water softener`,
+            `Reverse osmosis — point-of-use / under-sink (for PFAS removal)`,
+            `UV purification`,
+            `None`,
+            `I don't know — I'll confirm with my sub`
+          ]
+        }
+      ]
+    },
+    {
+      id: `electrical`,
+      title: `Electrical`,
+      description: ``,
+      items: [
+        {
+          id: `panel_brand`,
+          type: `short`,
+          label: `Electrical panel brand`,
+          required: true,
+          helper: `Avoid Federal Pacific and Zinsco panels. Preferred brands: Siemens, Square D QO, Eaton CH.`,
+          placeholder: `e.g., Siemens, Square D QO, Eaton CH`,
+          allowDontKnow: true
+        },
+        {
+          id: `panel_location`,
+          type: `radio`,
+          label: `Where is the main electrical panel located?`,
+          required: true,
+          helper: `Panel location affects EMF exposure in living and sleeping areas. A panel located on or adjacent to a bedroom wall is not recommended.`,
+          choices: [
+            `Basement (preferred — away from living areas)`,
+            `Dedicated mechanical room`,
+            `Garage`,
+            `Exterior of home`,
+            `Interior hallway or utility closet`,
+            `Other (describe in notes)`,
+            `I don't know — I'll confirm with my sub`
+          ],
+          newInV5: true
+        },
+        {
+          id: `subpanels`,
+          type: `yesno`,
+          label: `Are subpanels included?`,
+          required: true
+        },
+        {
+          id: `subpanel_locations`,
+          type: `short`,
+          label: `If yes — location(s)`,
+          showIf: {
+            field: `subpanels`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `wiring_type`,
+          type: `radio`,
+          label: `Wiring type`,
+          required: true,
           choices: [
             `Romex (NM cable)`,
             `MC cable (metal-clad)`,
-            `Mixed`
-          ],
-          allowOther: true,
-          id: `wiring_type`
-        }
-      ]
-    },
-    {
-      id: `electrical_outlets_appliances_smart_home`,
-      title: `Major Appliances & Low-Voltage`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Major Appliances`,
-          helper: ``
+            `Mixed`,
+            `Other (describe in notes)`
+          ]
         },
         {
-          type: `radio`,
-          label: `Range/cooktop type:`,
-          choices: [
-            `Gas`,
-            `Electric`,
-            `Induction`,
-            `Dual fuel`
-          ],
-          id: `range_cooktop_type`
-        },
-        {
-          type: `radio`,
-          label: `Dryer hookup type:`,
-          choices: [
-            `Gas`,
-            `Electric (240V)`,
-            `Heat pump dryer ready`,
-            `Both`
-          ],
-          id: `dryer_hookup_type`
-        },
-        {
+          id: `surge_protector`,
           type: `yesno`,
-          label: `Will a heat pump (ventless) dryer be installed?`,
-          helper: `Heat pump dryers are the only common dryer type that doesn't require an exterior vent.`,
-          id: `heat_pump_dryer_installed`
+          label: `Is a whole-home surge protector included?`,
+          required: true
         },
         {
-          type: `yesno`,
-          label: `Will a built-in coffee maker be installed?`,
-          id: `built_in_coffee_maker`
-        },
-        {
-          type: `yesno`,
-          label: `Will a separate ice maker be installed?`,
-          id: `separate_ice_maker`
-        },
-        {
-          type: `short`,
-          label: `EV charger circuit (describe if included):`,
-          id: `ev_charger_circuit_rough_in_describe_if_included`
-        },
-        {
-          type: `short`,
-          label: `Other appliance circuits:`,
-          id: `other_appliance_circuits`
-        },
-        {
-          type: `subheading`,
-          label: `Low-Voltage & Smart Home Wiring`,
-          helper: ``
-        },
-        {
+          id: `low_voltage_wiring`,
           type: `checkboxes`,
-          label: `Low-voltage/smart home wiring included (select all that apply):`,
+          label: `Low-voltage / smart home wiring included (select all that apply)`,
+          required: true,
           choices: [
             `CAT6 ethernet cabling`,
             `Pre-wire for TVs`,
-            `Pre-wire where computers will be used`,
+            `Pre-wire for home office / computer areas`,
             `Security system pre-wire`,
             `Doorbell camera wiring`
-          ],
-          id: `low_voltage_smart_home_wiring_included_select_all_that_apply`
+          ]
         },
         {
-          type: `yesno`,
-          label: `Is a whole home backup generator included?`,
-          id: `is_a_whole_home_backup_generator_included`
-        },
-        {
+          id: `ev_charger`,
           type: `short`,
-          label: `Generator location (must be a code-required distance from the home due to CO):`,
+          label: `EV charger circuit — is one roughed in or installed?`,
+          placeholder: `e.g., 50-amp circuit roughed in to garage or N/A`
+        },
+        {
+          id: `generator`,
+          type: `yesno`,
+          label: `Is a whole-home backup generator included?`,
+          required: true
+        },
+        {
+          id: `generator_location`,
+          type: `short`,
+          label: `If yes — location (must meet code-required CO clearance from home)`,
           showIf: {
-            field: `is_a_whole_home_backup_generator_included`,
+            field: `generator`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `recessed_lights_insulated_ceiling`,
+          type: `yesno`,
+          label: `Are recessed lights planned in any insulated ceiling or cathedral ceiling?`,
+          required: true,
+          helper: `Recessed lights in insulated or cathedral ceilings are a significant air sealing failure point. If yes, only IC-rated and airtight (ICAT) fixtures should be used, and all penetrations must be sealed.`,
+          newInV5: true
+        },
+        {
+          id: `recessed_lights_icat`,
+          type: `yesno`,
+          label: `If yes — are all recessed fixtures specified as IC-rated and airtight (ICAT)?`,
+          required: true,
+          showIf: {
+            field: `recessed_lights_insulated_ceiling`,
             equals: `Yes`
           },
-          id: `generator_location`
-        },
-        {
-          type: `yesno`,
-          label: `Is a whole-home surge protector included?`,
-          id: `whole_home_surge_protector`
+          allowDontKnow: true,
+          newInV5: true
         }
       ]
     },
     {
-      id: `shower_tub_waterproofing`,
-      title: `Shower & Tub Waterproofing`,
+      id: `shower_wet_area`,
+      title: `Shower & Wet Area Waterproofing`,
       description: ``,
       items: [
         {
-          type: `subheading`,
-          label: `Bathroom Comfort & Drying`,
-          helper: ``
-        },
-        {
-          type: `yesno`,
-          label: `Will radiant heat be installed in any bathrooms?`,
-          id: `bathroom_radiant_heat`
-        },
-        {
-          type: `yesno`,
-          label: `Will radiant heat be installed in any showers (or AirManda / similar shower-drying system)?`,
-          id: `shower_radiant_or_drying`
-        },
-        {
-          type: `subheading`,
-          label: `Shower Construction`,
-          helper: ``
-        },
-        {
+          id: `shower_substrate`,
           type: `radio`,
-          label: `What are showers built from?`,
+          label: `Shower substrate — what are shower walls built from?`,
+          required: true,
           choices: [
             `Cement board`,
-            `Foam tile backer board (Kerdi-Board, Wedi, etc.)`,
-            `GoBoard`
-          ],
-          allowOther: true,
-          id: `what_are_showers_built_from`
+            `Foam tile backer (Kerdi-Board, Wedi, GoBoard, etc.)`,
+            `Other (describe in notes)`
+          ]
         },
         {
-          type: `subheading`,
-          label: `Waterproofing System`,
-          helper: ``
-        },
-        {
+          id: `shower_waterproofing`,
           type: `radio`,
-          label: `Shower waterproofing system:`,
+          label: `Shower waterproofing system`,
+          required: true,
           choices: [
-            `Schluter Kerdi`,
-            `RedGard liquid membrane`,
+            `Schluter Kerdi (membrane)`,
+            `Wedi system`,
+            `RedGard (liquid membrane)`,
             `Hydroban`,
-            `Wedi system`
-          ],
-          allowOther: true,
-          id: `shower_waterproofing_system`
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `shower_waterproofing_brand`,
           type: `short`,
-          label: `Waterproofing brand/product:`,
-          id: `waterproofing_brand_product_2`
+          label: `Brand / product`
         },
         {
-          type: `short`,
-          label: `Will you waterproof the floor outside the shower? If so, with what?`,
-          id: `will_you_be_waterproofing_the_floor_outside_the_shower`
-        },
-        {
-          type: `subheading`,
-          label: `Shower Pan`,
-          helper: ``
-        },
-        {
+          id: `shower_pan`,
           type: `radio`,
-          label: `Shower pan construction:`,
+          label: `Shower pan construction`,
+          required: true,
           choices: [
             `Pre-sloped foam pan (Schluter, Wedi, etc.)`,
             `Traditional mud bed`,
             `Pre-fabricated acrylic/fiberglass base`,
-            `Vinyl`
-          ],
-          allowOther: true,
-          id: `shower_pan_construction`
+            `Vinyl liner`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `shower_pan_brand`,
           type: `short`,
-          label: `Shower pan brand/product:`,
-          id: `shower_pan_brand_product`
+          label: `Shower pan brand / product`
+        },
+        {
+          id: `bathroom_floor_waterproof`,
+          type: `yesno`,
+          label: `Will the bathroom floor OUTSIDE the shower also be waterproofed?`,
+          required: true,
+          allowDontKnow: true
+        },
+        {
+          id: `bathroom_floor_waterproof_product`,
+          type: `short`,
+          label: `If yes — product used`,
+          showIf: {
+            field: `bathroom_floor_waterproof`,
+            equals: `Yes`
+          }
+        },
+        {
+          id: `bathroom_radiant_heat`,
+          type: `yesno`,
+          label: `Will radiant heat be installed in any bathrooms?`,
+          required: true
+        },
+        {
+          id: `shower_drying_system`,
+          type: `yesno`,
+          label: `Will any showers have a drying system (radiant heat, AirManda, or similar)?`,
+          required: true
         }
       ]
     },
     {
-      id: `interior_finishes_drywall_paint`,
-      title: `Interior Finishes — Drywall & Paint`,
+      id: `interior_finishes`,
+      title: `Interior Finishes`,
       description: ``,
       items: [
         {
           type: `subheading`,
-          label: `Drywall`,
+          label: `13A · Drywall & Paint`,
           helper: ``
         },
         {
+          id: `drywall_brand`,
           type: `short`,
-          label: `Drywall — natural or synthetic? (and brand)`,
-          id: `drywall_brand`
+          label: `Drywall — brand and gypsum type (natural or synthetic?)`,
+          helper: `Natural gypsum is preferred. Synthetic gypsum (a coal combustion byproduct) is common — ask your drywall supplier which they carry.`,
+          placeholder: `e.g., National Gypsum, natural gypsum or USG, synthetic gypsum`
         },
         {
+          id: `drywall_finish_level`,
           type: `short`,
-          label: `Drywall finish level (0-5):`,
-          id: `drywall_finish_level_0_5`
+          label: `Drywall finish level (0–5)`,
+          required: true,
+          placeholder: `e.g., Level 4 or Level 5 in main living areas, Level 3 elsewhere`
         },
         {
+          id: `wet_area_drywall`,
           type: `radio`,
-          label: `Drywall type in wet areas (bathrooms, laundry — NOT inside shower):`,
+          label: `Drywall type in wet areas (bathrooms, laundry, basement — NOT inside shower)`,
+          required: true,
           choices: [
             `Green board (moisture-resistant)`,
-            `Purple board (mold/moisture-resistant)`,
-            `Fiberglass-faced drywall (DensGlass, etc.)`,
-            `Cement board`
-          ],
-          allowOther: true,
-          id: `drywall_type_in_wet_areas_bathrooms_laundry_not_inside_showe`
+            `Purple board (mold + moisture-resistant)`,
+            `Fiberglass-faced (DensGlass, etc.)`,
+            `Cement board`,
+            `Other (describe in notes)`
+          ]
         },
         {
+          id: `joint_compound`,
           type: `short`,
-          label: `Joint compound brand/type:`,
-          id: `joint_compound_brand_type`
+          label: `Joint compound brand and type`,
+          helper: `Setting-type (hot mud) compounds are lower VOC than premixed. Lightweight premixed compounds often contain fungicides and additives.`,
+          placeholder: `e.g., USG Durabond 90 (setting type) or USG Plus 3`
         },
         {
-          type: `subheading`,
-          label: `Interior Paint`,
-          helper: ``
-        },
-        {
+          id: `paint_brand`,
           type: `short`,
-          label: `Paint brand:`,
-          id: `paint_brand`
+          label: `Paint brand and product line`,
+          required: true,
+          placeholder: `e.g., Benjamin Moore Aura, zero-VOC`
         },
         {
-          type: `short`,
-          label: `Paint product line/type:`,
-          id: `paint_product_line_type`
-        },
-        {
-          type: `yesno`,
-          label: `Is low-VOC or zero-VOC primer AND paint included?`,
-          id: `is_low_voc_or_zero_voc_paint_used`
-        }
-      ]
-    },
-    {
-      id: `interior_finishes_trim_doors_cabinets`,
-      title: `Interior Finishes — Trim, Doors & Cabinets`,
-      description: ``,
-      items: [
-        {
-          type: `subheading`,
-          label: `Interior Trim & Millwork`,
-          helper: ``
-        },
-        {
+          id: `low_voc_paint`,
           type: `radio`,
-          label: `Trim material:`,
+          label: `Is low-VOC or zero-VOC primer AND paint specified?`,
+          required: true,
           choices: [
-            `Pine`,
-            `Poplar`,
-            `MDF (primed)`,
-            `Hardwood`
-          ],
-          allowOther: true,
-          id: `trim_material`
+            `Yes — both primer and paint are low/zero VOC`,
+            `No`,
+            `I don't know — I'll confirm with my sub`
+          ]
         },
         {
+          type: `subheading`,
+          label: `13B · Trim, Doors & Cabinets`,
+          helper: ``
+        },
+        {
+          id: `trim_material`,
           type: `radio`,
-          label: `Trim material for basements, bathrooms, and other moisture-prone areas:`,
+          label: `Interior trim/millwork material — standard dry areas`,
+          required: true,
           choices: [
             `Pine`,
             `Poplar`,
             `MDF (primed)`,
             `Hardwood`,
-            `AZEK / PVC trim`
-          ],
-          allowOther: true,
-          id: `trim_material_wet_areas`
+            `Other (describe in notes)`
+          ]
         },
         {
-          type: `subheading`,
-          label: `Interior Doors`,
-          helper: ``
-        },
-        {
+          id: `trim_material_wet`,
           type: `radio`,
-          label: `Interior door type:`,
+          label: `Trim material for moisture-prone areas (basements, bathrooms)`,
+          required: true,
+          choices: [
+            `AZEK / PVC trim (preferred for moisture areas)`,
+            `Pine`,
+            `Poplar`,
+            `MDF (not recommended for wet areas)`,
+            `Other (describe in notes)`
+          ]
+        },
+        {
+          id: `interior_door_type`,
+          type: `radio`,
+          label: `Interior door type`,
+          required: true,
           choices: [
             `Hollow core`,
             `Solid core`,
-            `Wood panel doors`
-          ],
-          allowOther: true,
-          id: `interior_door_type`
+            `Wood panel`,
+            `Other (describe in notes)`
+          ]
         },
         {
-          type: `subheading`,
-          label: `Cabinets`,
-          helper: ``
-        },
-        {
+          id: `cabinet_construction`,
           type: `radio`,
-          label: `Cabinet construction type:`,
+          label: `Cabinet construction type and box material`,
+          required: true,
+          helper: `Plywood box construction is preferred. Particleboard and MDF off-gas significantly more formaldehyde.`,
           choices: [
-            `Custom`,
-            `Semi-custom`,
-            `Stock`,
-            `RTA (ready-to-assemble)`
-          ],
-          id: `cabinet_construction_type`
-        },
-        {
-          type: `radio`,
-          label: `Cabinet box construction material:`,
-          choices: [
-            `Plywood box`,
-            `Melamine`,
-            `MDF`,
-            `Particleboard`
-          ],
-          allowOther: true,
-          id: `cabinet_construction_material`
+            `Custom — plywood box`,
+            `Semi-custom — plywood box`,
+            `Stock — plywood box`,
+            `Stock — particleboard box`,
+            `RTA — describe in notes`
+          ]
         }
       ]
     },
     {
       id: `flooring`,
       title: `Flooring`,
-      description: ``,
+      description: `Complete each subsection only for floor areas present in this project. Mark N/A for areas that don't apply.`,
       items: [
         {
-          type: `subheading`,
-          label: `Flooring — Basement (if applicable)`,
-          helper: ``
-        },
-        {
+          id: `basement_flooring_underlayment`,
           type: `short`,
-          label: `Basement flooring underlayment type AND brand (can be liquid or sheet):`,
-          id: `basement_flooring_underlayment_type`
+          label: `Basement flooring — underlayment type/brand (or liquid applied)`,
+          required: true,
+          placeholder: `e.g., DMX AG, DRICORE, or liquid membrane`,
+          devNote: `Only shown if profile_has_basement = true.`
         },
         {
+          id: `basement_flooring_type`,
           type: `checkboxes`,
-          label: `Primary basement flooring type (select all that apply):`,
+          label: `Basement primary flooring type (select all that apply)`,
+          required: true,
           choices: [
-            `Hardwood (solid)`,
             `Engineered hardwood`,
             `LVP/LVT`,
             `Laminate`,
             `Tile`,
-            `Carpet`
+            `Carpet`,
+            `N/A`
           ],
-          id: `primary_basement_flooring_type_select_all_that_apply`
+          devNote: `Only shown if profile_has_basement = true.`
         },
         {
-          type: `subheading`,
-          label: `Flooring — Slab on Grade (if applicable)`,
-          helper: ``
-        },
-        {
+          id: `slab_flooring_underlayment`,
           type: `short`,
-          label: `Slab-on-grade flooring underlayment (or liquid-applied) type:`,
-          id: `slab_on_grade_flooring_underlayment_type`
+          label: `Slab-on-grade flooring — underlayment type/brand (or liquid applied)`,
+          required: true,
+          placeholder: `e.g., Roberts AireFlow, liquid membrane`,
+          devNote: `Only shown if profile_foundation = Slab on grade.`
         },
         {
-          type: `short`,
-          label: `Slab-on-grade flooring underlayment (or liquid-applied) brand:`,
-          id: `slab_on_grade_flooring_underlayment_brand`
-        },
-        {
+          id: `slab_flooring_type`,
           type: `checkboxes`,
-          label: `Primary slab-on-grade flooring type (select all that apply):`,
+          label: `Slab-on-grade primary flooring type (select all that apply)`,
+          required: true,
+          choices: [
+            `Engineered hardwood`,
+            `LVP/LVT`,
+            `Tile`,
+            `Carpet`,
+            `N/A`
+          ],
+          devNote: `Only shown if profile_foundation = Slab on grade.`
+        },
+        {
+          id: `upper_floor_flooring`,
+          type: `checkboxes`,
+          label: `Upper floor(s) — primary flooring type`,
+          required: true,
           choices: [
             `Hardwood (solid)`,
             `Engineered hardwood`,
             `LVP/LVT`,
             `Tile`,
-            `Carpet`
-          ],
-          id: `primary_slab_on_grade_flooring_type_select_all_that_apply`
-        },
-        {
-          type: `subheading`,
-          label: `Flooring — Upper Floors`,
-          helper: ``
-        },
-        {
-          type: `short`,
-          label: `Upper floor underlayment type:`,
-          id: `upper_floor_underlayment_type`
-        },
-        {
-          type: `short`,
-          label: `Upper floor underlayment brand:`,
-          id: `upper_floor_underlayment_brand`
-        },
-        {
-          type: `checkboxes`,
-          label: `Primary upper floor flooring type (select all that apply):`,
-          choices: [
-            `Hardwood (solid)`,
-            `Engineered hardwood`,
-            `LVP/LVT`,
-            `Tile`,
-            `Carpet`
-          ],
-          id: `primary_upper_floor_flooring_type_select_all_that_apply`
+            `Carpet`,
+            `N/A`
+          ]
         }
       ]
     },
     {
-      id: `site_work_cleanup`,
-      title: `Site Work & Cleanup`,
+      id: `site_work_closeout`,
+      title: `Site Work & Closeout`,
       description: ``,
       items: [
         {
-          type: `short`,
-          label: `How often is the site cleaned up during construction?`,
-          id: `site_cleanup_frequency`
-        },
-        {
+          id: `walls_vacuumed_before_insulation`,
           type: `yesno`,
           label: `Are walls vacuumed before insulation is installed?`,
-          id: `walls_vacuumed_before_insulation`
+          required: true
         },
         {
-          type: `yesno`,
-          label: `Is wall sheathing checked for moisture before insulation is installed?`,
-          id: `sheathing_moisture_checked_before_insulation`
-        }
-      ]
-    },
-    {
-      id: `project_timeline_notes`,
-      title: `Project Timeline & Notes`,
-      description: ``,
-      items: [
-        {
-          type: `date`,
-          label: `Estimated start date:`,
-          id: `estimated_start_date`
+          id: `sheathing_moisture_checked`,
+          type: `radio`,
+          label: `Is wall sheathing moisture-checked before insulation is installed?`,
+          required: true,
+          choices: [
+            `Yes — with a moisture meter`,
+            `No`
+          ]
         },
         {
-          type: `date`,
-          label: `Estimated completion date:`,
-          id: `estimated_completion_date`
-        },
-        {
+          id: `additional_notes`,
           type: `paragraph`,
-          label: `Key milestones/phases:`,
-          id: `key_milestones_phases`
-        },
-        {
-          type: `paragraph`,
-          label: `Any additional specifications, special conditions, or clarifications?`,
-          id: `any_additional_specifications_special_conditions_or_clarific`
+          label: `Any additional specifications, special conditions, or clarifications?`
         }
       ]
     }
@@ -2898,6 +2929,9 @@ function renderQuestion(q) {
 
   const v = STATE.responses[q.id];
 
+  // The standard "I don't know" string used across the form
+  const DK = "I don't know — I'll confirm with my sub";
+
   if (q.type === 'short') {
     // Determine HTML5 autocomplete + input type from question id (best-guess)
     let inputType = q.inputType || 'text';
@@ -2907,13 +2941,29 @@ function renderQuestion(q) {
     else if (q.id === 'address') { autocomplete = 'street-address'; }
     else if (q.id === 'contact_person') { autocomplete = 'name'; }
     else if (q.id === 'contractor_company_name') { autocomplete = 'organization'; }
+    const isDK = (v === DK);
     card.appendChild(el('input', {
       id:'f_'+q.id, class:'field-input', type: inputType,
-      value: v || '',
-      placeholder: 'Type your answer…',
+      value: isDK ? '' : (v || ''),
+      placeholder: q.placeholder || 'Type your answer…',
       autocomplete: autocomplete,
+      disabled: isDK ? '' : false,
       oninput: e => setValue(q.id, e.target.value)
     }));
+    if (q.allowDontKnow) {
+      const wrap = el('div', {class:'mt-2'});
+      wrap.appendChild(el('button', {
+        type:'button',
+        class:'chip',
+        'aria-pressed': isDK ? 'true' : 'false',
+        onclick: () => {
+          const cur = STATE.responses[q.id];
+          setValue(q.id, cur === DK ? '' : DK);
+          renderSection();  // force re-render so chip + input state update
+        }
+      }, DK));
+      card.appendChild(wrap);
+    }
   } else if (q.type === 'paragraph') {
     card.appendChild(el('textarea', {
       id:'f_'+q.id, class:'field-input', rows:3,
@@ -2935,6 +2985,13 @@ function renderQuestion(q) {
         onclick: () => { setValue(q.id, v === opt ? '' : opt); }
       }, opt));
     });
+    if (q.allowDontKnow) {
+      wrap.appendChild(el('button', {
+        type:'button', class:'chip',
+        'aria-pressed': v === DK ? 'true' : 'false',
+        onclick: () => setValue(q.id, v === DK ? '' : DK)
+      }, DK));
+    }
     card.appendChild(wrap);
   } else if (q.type === 'radio' || q.type === 'select') {
     // Match Google Forms behavior: when "Other" is selected, store the raw freeform
